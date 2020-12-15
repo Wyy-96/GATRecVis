@@ -1,0 +1,15 @@
+.View-title {
+  /* text-align: center; */
+  text-align: left;
+  color: #fff;
+  height:30px;
+  width:100%;
+  background:  rgb(77, 115, 187);
+}
+.View-title p{
+  padding-top:3px;
+  margin-block-start: 5px;
+  margin-block-end: 0;
+  margin-left:20px;
+  margin-top:5px;
+}
