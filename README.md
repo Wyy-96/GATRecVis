@@ -1,6 +1,3 @@
-# pc-vue
-# pc web 前端母版
-
 ## Project setup
 ```
 yarn install
