@@ -5,7 +5,7 @@ const path = require('path');
 const DBHelper = require('../utils/DBHelper');
 const sql = require('../sqlMap');
 const async = require('async')
-
+const  _  = require('lodash');
 // 查询用户
 router.post('/selectUser', (req, res) => {
     let sqlStr = sql.user.findName;
@@ -30,7 +30,7 @@ router.post('/getHeatmap',(req, res) =>{
 
 
 router.post('/getUserTopology', async (req, res) =>{
-    id = '1'
+    var id = '0'
     let jsondata={}
     jsondata['nodes']=[]
     jsondata['links'] = []
@@ -60,18 +60,68 @@ router.post('/getUserTopology', async (req, res) =>{
     //         }
     //     });
     // })
+    let nodeGourp = handlerDatas(jsondata['links'])
 
+    jsondata['nodes'].forEach((item,index) => {
+        if(item['name'].indexOf('user') != -1){
+            if( item['name'] == 'user'+(Number(id)+1)){
+                return false
+            }   
+            nodeGourp.some((nodeG,index2) =>{
+                if(nodeG.indexOf(item['name']) != -1){
+                    jsondata['nodes'][index]['name'] = 'gourp'+index2.toString()
+                    jsondata['nodes'][index]['id'] = index2.toString()
+                    jsondata['nodes'][index]['size'] = (nodeG.split(',')).length
+                    return true;
+                }
+            })
+        }
+    })
+    var uniqHolderArr =  _ .uniqWith(jsondata['nodes'],  _ .isEqual);
+    jsondata['nodes'] = uniqHolderArr
     
+    let att = {}
+    jsondata['links'].forEach((item,index) => {
+        if(item['target'].indexOf('user') != -1){
+            if( item['target'] == 'user'+(Number(id)+1)){
+                return false
+            } 
+            nodeGourp.some((nodeG,index2) =>{
+                if(nodeG.indexOf(item['target']) != -1){
+                    jsondata['links'][index]['target'] = 'gourp'+index2.toString()
+                    
+
+                    if(Object.keys(att).indexOf('gourp'+index2.toString()) == -1){
+                        att['gourp'+index2.toString()] = [0.0,(nodeG.split(',')).length]
+                    }else {
+                        att['gourp'+index2.toString()][0] += parseFloat(jsondata['links'][index]['value'])
+                    }
+
+                    jsondata['links'][index]['value'] = index2.toString()
+                    return true;
+                }
+            })
+        };
+    });
+    // jsondata['links'] = _ .uniqWith(jsondata['links'],  _ .isEqual);
+    jsondata['links'].forEach((item,index) => {
+        if(item['target'].indexOf('gourp') != -1){
+            
+            jsondata['links'][index]['value'] = att[jsondata['links'][index]['target']][0] /att[jsondata['links'][index]['target']][1]
+        }
+    });
+    let datatest = JSON.stringify(jsondata);
+    fs.writeFileSync('student.json', datatest);
     res.json(jsondata)
 });
     
-
+    
 function getNeighbors_attWeights(id,type){
     id = Number(id)
-    return new Promise(( resolve, reject ) => {
-        let conn = new DBHelper().getConn();
-        let data;
-        let sqlstr;
+    let conn = new DBHelper().getConn();
+    let data;
+    let sqlstr;
+    return new Promise(( resolve, reject ) => { 
         switch(type){
             case 'user':
                 sqlstr = sql.user.findNeighbors_attWeights;break;
@@ -103,7 +153,7 @@ let getrecResult = async function(Nodes,id,jsondata,revlinks){
     let sourcerealID = dbinfo['id']
     let sourceType = dbinfo['type']
     let sourceName = await getName(sourcerealID,sourceType)
-    
+
     let getrec = async function(id){
         return new Promise(( resolve, reject ) => {
         let conn = new DBHelper().getConn();
@@ -120,13 +170,11 @@ let getrecResult = async function(Nodes,id,jsondata,revlinks){
         })
     })
     }
-    if (sourceName in Nodes){
-        console.log("重复啦",sourceName)
-    }else {
-        Nodes.push(sourceName)
-        oneNode = {'id':id,'name':sourceName,'type': sourceType}
-        jsondata['nodes'].push(oneNode)
-    }
+
+    Nodes.push(sourceName)
+    oneNode = {'id':id,'name':sourceName,'type': sourceType,'size':1}
+    jsondata['nodes'].push(oneNode)
+
 
     let rec = await getrec(sourcerealID)
     for (let recR of rec.recResult){
@@ -142,18 +190,17 @@ let getrecResult = async function(Nodes,id,jsondata,revlinks){
             revlinks[targetName]=[]
             revlinks[targetName].push(sourceName)
         }
-        if (targetName in Nodes){
 
-        }else {
-            Nodes.push(targetName)
-            oneNode = {'id':recR,'name':targetName,'type': 'recmovie'}
-            jsondata['nodes'].push(oneNode)
-        }
+        Nodes.push(targetName)
+        oneNode = {'id':recR,'name':targetName,'type': 'recmovie','size':1}
+        jsondata['nodes'].push(oneNode)
+
         oneLink = {'source':sourceName, 'target':targetName, 'value':1,'type':sourceType+'_recmovie'}
         jsondata['links'].push(oneLink)
         await getneighborLink(Nodes,Number(recR)+5977,jsondata,revlinks)
     }
 }
+
 function getdbinfo(id){
     id =  Number(id);
     if (id < 5978)
@@ -170,9 +217,9 @@ function getdbinfo(id){
 
 function getName(id,type){
     id = Number(id)
-    return new Promise(( resolve, reject ) => {
-        let conn = new DBHelper().getConn();
-        let sqlstr;
+    let conn = new DBHelper().getConn();
+    let sqlstr;
+    return new Promise(( resolve, reject ) => {       
         switch(type){
             case 'user':
                 sqlstr = sql.user.findName;
@@ -211,13 +258,6 @@ let getneighborLink = async function(Nodes,id,jsondata,revlinks){
     let neighbors = neighbors_Weights['neighbors'];
     let weights = neighbors_Weights['att_weights'];
 
-    if (sourceName in Nodes){
-
-    }else {
-        Nodes.push(sourceName)
-        oneNode = {'id':id,'name':sourceName,'type': sourceType}
-        jsondata['nodes'].push(oneNode)
-    }
 
     let index = 0
 
@@ -233,18 +273,55 @@ let getneighborLink = async function(Nodes,id,jsondata,revlinks){
             revlinks[targetName]=[]
             revlinks[targetName].push(sourceName)
         }
-        if (targetName in Nodes){
+        
+        Nodes.push(targetName)
+        oneNode = {'id':targetID,'name':targetName,'type': targetType,'size':1}
+        jsondata['nodes'].push(oneNode)
 
-        }else {
-            Nodes.push(targetName)
-            oneNode = {'id':targetID,'name':targetName,'type': targetType}
-            jsondata['nodes'].push(oneNode)
-        }
         oneLink = {'source':sourceName, 'target':targetName, 'value':weights[index],'type':sourceType+'_'+targetType}
         jsondata['links'].push(oneLink)
     }
     return neighbors
 }
+
+let handlerDatas = function(arr){
+      let obj = {};
+      arr.forEach((item, index) => {
+          let { target } = item;
+          let { source } =item
+
+          if(target.indexOf("user") != -1){
+            if (!obj[target]) {
+                obj[target] = []
+            }
+            obj[target].push(source);
+          }
+      });
+      let data = Object.values(obj); // 最终输出
+
+      indexR = {}
+      data.forEach((item,index) => {
+        one = item.toString()
+        if(!indexR[one]){
+            indexR[one] = []
+        }
+        indexR[one].push(index)
+      });
+      let R = Object.values(indexR)
+
+      gourp = []
+      let UR = Object.keys(obj)
+      for(let rvalue of R ){
+          let gourpIndex =[]
+          for (let value of rvalue){
+           gourpIndex.push(UR[value])
+          }
+          gourp.push(gourpIndex.toString())
+      }
+
+      return gourp
+}
+
 module.exports = router;
 
 
