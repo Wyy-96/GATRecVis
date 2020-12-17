@@ -1,14 +1,17 @@
 <template>
   <div class="right">
     <div class="View-title"><p>Forceview</p></div>
-    <div class="View-directed-ForceView"></div>
+    <directedForceView></directedForceView>
   </div>
 </template>
 
 <script>
+import directedForceView from '../draw/Directedforce'
 export default {
   name: "Right",
-  components: {},
+  components: {
+    directedForceView,
+  },
   data() {
     return {
      
@@ -23,10 +26,5 @@ export default {
     width:1450px;
     height:99%;
     float:left;
-}
-.View-directed-ForceView {
-    width:1450px;
-    height:900px;
-    background:#eef;
 }
 </style>

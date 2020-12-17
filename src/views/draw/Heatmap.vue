@@ -1,11 +1,12 @@
 <template>
-  <div @click="getTest()" id="Heatmap">
-  </div>
+    <div @click="getTest()" id="Heatmap" class="Heatmap" ref="Heatmap">
+    </div>
 </template>
 
 <script>
 import axios from 'axios'
 import * as d3 from 'd3';
+
 export default {
   name: "Heatmap",
   data() {
@@ -13,7 +14,9 @@ export default {
      
     };
   },
-  // created: function() {
+  created: function() {
+
+  },
   //   axios.post('api/getdata/getHeatmap'
   //     ).then(res=>{
   //       var data = res.data;
@@ -118,23 +121,26 @@ export default {
         
          
   // },
+  mounted() {
+    // new RelationChart(this.$refs.Heatmap, data)
+  },
   methods: {
-     getTest() {
-       axios.post('api/getdata/getUserTopology'
-       ).then(res=>{
-          console.log(res.data)
-       })
-       .catch(err=>{
-        console.log(err)
-      })
-     }
+    // getTest() {
+    //   axios.post('api/getdata/getUserTopology'
+    //     ).then(res=>{
+    //       console.log(res.data)
+    //     })
+    //     .catch(err=>{
+    //     console.log(err)
+    //   })
+    // }
   }
 };
 </script>
 <style lang="stylus" scoped>
 #Heatmap {
     width:380px;
-    height:550px;
+    height:655px;
     background:#eee;
 }
 </style>

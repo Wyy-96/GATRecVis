@@ -103,7 +103,7 @@ router.post('/getUserTopology', async (req, res) =>{
             })
         };
     });
-    // jsondata['links'] = _ .uniqWith(jsondata['links'],  _ .isEqual);
+    jsondata['links'] = _ .uniqWith(jsondata['links'],  _ .isEqual);
     jsondata['links'].forEach((item,index) => {
         if(item['target'].indexOf('gourp') != -1){
             
@@ -302,13 +302,15 @@ let handlerDatas = function(arr){
       indexR = {}
       data.forEach((item,index) => {
         one = item.toString()
-        if(!indexR[one]){
+        if (one.split(",").length < 2){
+            if(!indexR[one]){
             indexR[one] = []
+            }
+            indexR[one].push(index)
         }
-        indexR[one].push(index)
       });
       let R = Object.values(indexR)
-
+      
       gourp = []
       let UR = Object.keys(obj)
       for(let rvalue of R ){
@@ -318,7 +320,6 @@ let handlerDatas = function(arr){
           }
           gourp.push(gourpIndex.toString())
       }
-
       return gourp
 }
 

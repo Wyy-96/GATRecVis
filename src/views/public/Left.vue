@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import heatmapView from './Heatmap'
+import heatmapView from '../draw/Heatmap'
 export default {
   name: "Left",
   components: {
