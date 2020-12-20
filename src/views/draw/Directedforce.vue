@@ -26,22 +26,16 @@ let data = {
     // 线条列表
     links:[
         {
-            "source": 0,            // 起始节点在 nodes[] 中的索引
-            "target": 1,            // 目标节点在 nodes[] 中的索引
-            "relation": "电影",      // 关系名称
-            "color": "734646"       // 自定义细条颜色,#734646
+            "source": "user2",            // 起始节点在 nodes[] 中的索引
+            "target": "冥界警局 R.I.P.D.",            // 目标节点在 nodes[] 中的索引
         },
         {
-            "source": 2,
-            "target": 1,
-            "relation": "导演",
-            "color": "734646"
+            "source": "布拉德·兰弗洛",
+            "target": "冥界警局 R.I.P.D.",
         },
         {
-            "source": 1,
-            "target": 2,
-            "relation": "指导",
-            "color": "734646"
+            "source": "冥界警局 R.I.P.D.",
+            "target": "布拉德·兰弗洛",
         },
     ],
 }
@@ -63,7 +57,8 @@ const Config = {
     strokeColor: '#fff',     // 头像外围包裹的颜色
     strokeWidth: 1,             // 头像外围包裹的宽度
 }
-import RelationForce from '../../components/js/index'
+var appData = require('@/assets/student0.json');
+import RelationForce from '@/components/js/index'
 export default {
   name: "Forcerelation",
   data() {
@@ -75,7 +70,7 @@ export default {
 
   },
   mounted() {
-    new RelationChart(this.$refs.Forcerelation, data,Config)
+    new RelationForce(this.$refs.Forcerelation, appData,Config)
   },
   methods: {
     
