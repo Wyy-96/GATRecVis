@@ -44,22 +44,22 @@ export default class RelationForce {
 
         // 画布
         this.map = d3.select(selector);
-        
+
         this.links = data.links.map(d => Object.create(d));
         this.nodes = data.nodes.map(d => Object.create(d));
         // 合并配置
         this.config = {
             isHighLight: true,        // 是否启动 鼠标 hover 到节点上高亮与节点有关的节点，其他无关节点透明的功能
-            isScale: true,              // 是否启用缩放平移zoom功能
+            
             scaleExtent: [0.5, 5],    // 缩放的比例尺
             chargeStrength: -300,        // 万有引力
             collide: 10,                 // 碰撞力的大小 （节点之间的间距）
             nodeWidth: 100,             // 每个node节点所占的宽度，正方形
             margin: 20,                 // node节点距离父亲div的margin
             alphaDecay: 0.0228,          // 控制力学模拟衰减率
-            r: 8,                      // 头像的半径 [30 - 45]
+            r: 15,                      // 头像的半径 [30 - 45]
             relFontSize: 12,           // 关系文字字体大小
-            linkSrc: 10,                // 划线时候的弧度
+            linkSrc: 18,                // 划线时候的弧度
             linkColor: '#bad4ed',        // 链接线默认的颜色
             strokeColor: '#fff',     // 头像外围包裹的颜色
             strokeWidth: 1,             // 头像外围包裹的宽度
@@ -84,8 +84,8 @@ export default class RelationForce {
 
         this.simulation = d3.forceSimulation(this.nodes)
             .force("link", d3.forceLink(this.links).id(d => d.name))
-            .force("charge", d3.forceManyBody().strength(-400))
-            .force("collide", d3.forceCollide(10).strength(0.2).iterations(5))
+            .force("charge", d3.forceManyBody().strength(-300))
+            // .force("collide", d3.forceCollide(30).strength(0.2).iterations(5))
             // d3.forceCenter()用指定的x坐标和y坐标创建一个新的居中力。
             .force("center", d3.forceCenter(this.defaultWH.width / 2, this.defaultWH.height / 2))
             .force("x", d3.forceX())
@@ -124,12 +124,12 @@ export default class RelationForce {
             .attr('id', "marker")
             .attr("markerWidth", 10)    //marker视窗的宽
             .attr("markerHeight", 10)   //marker视窗的高
-            .attr("refX", this.config.r* 0.3 )       //refX和refY，指的是图形元素和marker连接的位置坐标
-            .attr("refY", 1)
+            .attr("refX", this.config.r* 0.7 )       //refX和refY，指的是图形元素和marker连接的位置坐标
+            .attr("refY", 2)
             .attr("orient","auto")     //orient="auto"设置箭头的方向为自动适应线条的方向
             .attr("markerUnits", "userSpaceOnUse")  //marker是否进行缩放 ,默认值是strokeWidth,会缩放
             .append("path")
-            .attr("d", "M 0 0 2 1 0 2Z")    //箭头的路径 从 （0,0） 到 （8,4） 到（0,8）
+            .attr("d", "M 0 0 4 2 0 4Z")    //箭头的路径 从 （0,0） 到 （8,4） 到（0,8）
             .attr("fill", "steelblue");     
     
         // 3.2 添加多个头像图片的 <pattern>
@@ -226,6 +226,7 @@ export default class RelationForce {
             })
             .on('click', function (d) {
                 console.log('头像节点click')
+                console.log(d.index)
                 // 展示方式2 ：浮窗展示
                 // event = d3.event || window.event;
                 var pageX = event.pageX ? event.pageX : (event.clientX + (document.body.scrollLeft || document.documentElement.scrollLeft));
@@ -277,10 +278,9 @@ export default class RelationForce {
             .style("marker-end", "url(#marker)")
             // .attr("refX",this.config.r)
             .attr("stroke", d => this.color(d.type))
-            .attr("stroke-width", d => {
-                if ( d.value >= 1) return d.value;
-                return d.value*10
-            }) ; //d => d.value
+            .attr("stroke-width",d => d.value * 1.5 )
+            
+            
     }
 
     ticked() {
@@ -356,8 +356,27 @@ export default class RelationForce {
             this.links.forEach((lkItem) => {
                 if (objIndex == lkItem['source']['index']) {
                     this.dependsNode = this.dependsNode.concat([lkItem.target.index]);
-                } else if (objIndex == lkItem['target']['index']) {
+                    this.dependsLinkAndText = this.dependsLinkAndText.concat([lkItem.target.index]);
+                    this.dependsLinkAndText = this.dependsLinkAndText.concat([lkItem.source.index]);
+                    this.links.forEach((nextItem) => {
+                        if (lkItem.target.index == (nextItem['source']['index'])) {
+                            this.dependsNode = this.dependsNode.concat([nextItem.target.index]);
+                        }else if(lkItem.target.index == (nextItem['target']['index'])){
+                            this.dependsNode = this.dependsNode.concat([nextItem.source.index]);
+                        }
+                    })
+                } 
+                else if (objIndex == lkItem['target']['index']) {
                     this.dependsNode = this.dependsNode.concat([lkItem.source.index]);
+                    this.dependsLinkAndText = this.dependsLinkAndText.concat([lkItem.source.index]);
+                    this.dependsLinkAndText = this.dependsLinkAndText.concat([lkItem.target.index]);
+                    this.links.forEach((nextItem) => {
+                        if (lkItem.source.index == (nextItem['source']['index'])) {
+                            this.dependsNode = this.dependsNode.concat([nextItem.target.index]);
+                        }else if(lkItem.source.index == (nextItem['target']['index'])){
+                            this.dependsNode = this.dependsNode.concat([nextItem.target.index]);
+                        }
+                    })
                 }
             });
 

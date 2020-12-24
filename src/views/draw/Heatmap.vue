@@ -1,5 +1,5 @@
 <template>
-    <div @click="getTest()" id="Heatmap" class="Heatmap" ref="Heatmap">
+    <div  id="Heatmap" class="Heatmap" ref="Heatmap">
     </div>
 </template>
 
@@ -125,15 +125,7 @@ export default {
     // new RelationChart(this.$refs.Heatmap, data)
   },
   methods: {
-    // getTest() {
-    //   axios.post('api/getdata/getUserTopology'
-    //     ).then(res=>{
-    //       console.log(res.data)
-    //     })
-    //     .catch(err=>{
-    //     console.log(err)
-    //   })
-    // }
+    
   }
 };
 </script>

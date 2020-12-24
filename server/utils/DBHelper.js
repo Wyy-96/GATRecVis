@@ -10,7 +10,7 @@ class DBHelper{
             port:'3306', 
             user:'xiao',
             password:'123456',
-            database:'douban2020'  // 数据库名
+            database:'douban_rec'  // 数据库名
         });
         conn.connect();
         return conn;

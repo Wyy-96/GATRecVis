@@ -1,16 +1,16 @@
 <template>
   <div class="right">
     <div class="View-title"><p>Forceview</p></div>
-    <directedForceView></directedForceView>
+    <RadialAreaView></RadialAreaView>
   </div>
 </template>
 
 <script>
-import directedForceView from '../draw/Directedforce'
+import RadialAreaView from '../draw/RadialArea'
 export default {
   name: "Right",
   components: {
-    directedForceView,
+    RadialAreaView,
   },
   data() {
     return {

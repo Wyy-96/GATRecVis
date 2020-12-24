@@ -1,44 +1,16 @@
 <template>
-    <div id="Forcerelation" class="Forcerelation" ref="Forcerelation"> 
+    <div>
+        <button @click="getTest()" > test</button>
+        <div  id="Forcerelation" class="Forcerelation" ref="Forcerelation">
        <!-- @click="" -->
+        </div>
     </div>
 </template>
 <script>
 import axios from 'axios'
 import * as d3 from 'd3';
 import RelationChart from 'relation-chart';
-let data = {
-    // 节点列表
-    nodes:[
-        {
-            "name": "user2",
-            "avatar": ""
-        },
-        {
-            "name": "冥界警局 R.I.P.D.",
-            "avatar": ""
-        },
-        {
-            "name": "布拉德·兰弗洛",
-            "avatar": ""
-        },
-    ],
-    // 线条列表
-    links:[
-        {
-            "source": "user2",            // 起始节点在 nodes[] 中的索引
-            "target": "冥界警局 R.I.P.D.",            // 目标节点在 nodes[] 中的索引
-        },
-        {
-            "source": "布拉德·兰弗洛",
-            "target": "冥界警局 R.I.P.D.",
-        },
-        {
-            "source": "冥界警局 R.I.P.D.",
-            "target": "布拉德·兰弗洛",
-        },
-    ],
-}
+
 const Config = {
     width: 1000,                 // 总画布svg的宽,单位为px,默认为容器的宽
     height: 800,                // 高，默认为容器的高
@@ -70,10 +42,20 @@ export default {
 
   },
   mounted() {
-    new RelationForce(this.$refs.Forcerelation, appData,Config)
+    
   },
   methods: {
-    
+    getTest() {
+      axios.post('api/getrec/getRec'
+        ).then(res=>{
+          console.log(res.data)
+          // this.$refs.Forcerelation.innerHTML =  '' ;
+          // new RelationForce(this.$refs.Forcerelation, res.data,Config)
+        })
+        .catch(err=>{
+        console.log(err)
+      })
+    }
   }
 };
 </script>
