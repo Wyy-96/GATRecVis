@@ -7,7 +7,7 @@ Vue.config.productionTip = false
 
 
 import * as d3 from 'd3'
-Vue.prototype.$d3 = d3 //echarts全局挂载
+Vue.prototype.$d3 = d3 //ds全局挂载
 
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';// 默认主题

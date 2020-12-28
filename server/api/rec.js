@@ -179,6 +179,17 @@ let getRecinfo = async function(id){
         }
     }
 
+    oneinfo['user'+ id] = {
+            "id":id,
+            "name":'user'+ id,
+            "user": 20,
+            "Tuser": 20,
+            "actor":{},
+            "director":{},
+            "genre":{},
+            "position":s,
+            "hit":false,
+        }
 
    for(let one of recResult){
         let jsondata ={}
@@ -194,7 +205,7 @@ let getRecinfo = async function(id){
             "actor":{},
             "director":{},
             "genre":{},
-            "distance":0,
+            "position":{},
             "hit":false,
         }
         let getinfo = getdbinfo(one)
@@ -206,9 +217,8 @@ let getRecinfo = async function(id){
 
         oneinfo[one]["name"] = Name
         oneinfo[one]["id"] = one
-        oneinfo[one]["distance"] = getDis(s, t)
         oneinfo[one]["hit"] = flag
-
+        oneinfo[one]["position"] = t
         let nei = await getneighbors(one)
         for(let n of nei){
             if(!jsondata[n]){
@@ -265,8 +275,107 @@ let getRecinfo = async function(id){
    return oneinfo
 }
 
-function getDis(s, t) {
-    return Math.sqrt((s.x - t.x) * (s.x - t.x) + (s.y - t.y) * (s.y - t.y));
+let getRercodsinfo = async function (id) {
+    let neighbors = await getneighbors(id)
+    let recResult =  await getrecResult(id)
+    let movieRecords = (await getMovieRecords(id)).split(",")
+
+
+    let json ={}
+    let oneinfo ={}
+    for(let item of neighbors){
+        let nei = await getneighbors(item)
+        for(let n of nei){
+            if(!json[n]){
+                json[n]=[]
+            }
+            json[n].push(item)
+        }
+    }
+
+
+   for(let one of recResult){
+        let jsondata ={}
+        let flag = false
+        if( movieRecords.includes(one) ) flag = true
+        one = (Number(one) + 3154).toString()
+
+        oneinfo[one] = {
+            "id":"",
+            "name":"",
+            "user": 0,
+            "Tuser": 0,
+            "actor":{},
+            "director":{},
+            "genre":{},
+            "position":{},
+            "hit":false,
+        }
+        let getinfo = getdbinfo(one)
+        let Name = await getName(getinfo['id'],'movie')
+
+        let position = (await getPosition(getinfo['id'],'movie')).split(",")
+        let t = {x:position[0], y:position[1]}
+
+
+        oneinfo[one]["name"] = Name
+        oneinfo[one]["id"] = one
+        oneinfo[one]["hit"] = flag
+        oneinfo[one]["position"] = t
+        let nei = await getneighbors(one)
+        for(let n of nei){
+            if(!jsondata[n]){
+                jsondata[n]=[]
+            }
+            jsondata[n].push(one)
+        }
+        
+        
+        for( let item of Object.keys(jsondata)){
+            let info = getdbinfo(item)
+            switch(info['type']){
+                case 'user':
+                    oneinfo[one]['user'] += 1;
+                    if( Object.keys(json).includes(item)){
+                        oneinfo[one]['Tuser'] += json[item].length;
+                    }   
+                    break;
+                case 'movie':
+                    let movieName = await getName(info['id'],'movie')
+                    oneinfo[one]['movie'][movieName] = 0
+                    if( Object.keys(json).includes(item)){
+                        oneinfo[one]['movie'][movieName] += json[item].length;
+                    }
+                    break;
+                case 'actor':
+                    let actorName = await getName(info['id'],'actor')
+                    if (actorName == "空") continue
+                    oneinfo[one]['actor'][actorName] = 0
+                    if( Object.keys(json).includes(item)){
+                        oneinfo[one]['actor'][actorName] += json[item].length;
+                    }
+                    break;
+                case 'director':
+                    let directorName = await getName(info['id'],'director')
+                    oneinfo[one]['director'][directorName] = 0
+                    if( Object.keys(json).includes(item)){
+                        oneinfo[one]['director'][directorName] += json[item].length;
+                    }
+                    break;
+                case 'genre':
+                    let genreName = await getName(info['id'],'genre')
+                    if(genreName == "空") continue
+                    oneinfo[one]['genre'][genreName] = 0
+                    if( Object.keys(json).includes(item)){
+                        oneinfo[one]['genre'][genreName] += json[item].length;
+                    }
+                    
+                    break;
+            }
+        
+        }
+   }
+   return oneinfo
 }
 
 module.exports = router;

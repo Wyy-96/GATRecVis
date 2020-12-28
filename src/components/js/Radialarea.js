@@ -82,15 +82,16 @@ export default class RadialArea {
 
 
         this.patterns.append("circle")
-           .attr("cx","30px")
-           .attr("cy","30px")
-           .attr("r",d => d.user)
+           .attr("cx","20px")
+           .attr("cy","20px")
+           .attr("r",d => d.user/2)
            .attr("fill",d =>{
+               if(d.name.indexOf('user') != -1) return 'red';
                return this.nodeColor(d.Tuser)
            })
         this.patterns.append("circle")
-           .attr("cx","30px")
-           .attr("cy","30px")
+           .attr("cx","20px")
+           .attr("cy","20px")
            .attr("r",d => {
                console.log(d.hit)
                if(d.hit == true) return 2
@@ -109,15 +110,17 @@ export default class RadialArea {
             .attr("fill", function (d,index) {
                 return ("url(#movie" + index + ")");
             })
-
+        
+        let center_width = Number(this.defaultWH.width) /1.5
+        let center_height = Number(this.defaultWH.height)/3.0
         this.node.append("circle")
-                .attr("r", 30)
+                .attr("r", 20)
                 .attr("cx", function(d,index){
-                    return 50+(index%8)*150
+                    return  center_width + Number(d.position.x) *8
                 })
                 .attr("cy", function(d,index){
-                    
-                    return 50+parseInt(index /8)*150
+                    return  center_height + Number(d.position.y) *8
+
                 })
                 .attr("id", d=> d.id)
                 .on('click', function (d) {
@@ -136,8 +139,8 @@ export default class RadialArea {
                     var data1 = data.concat(Object.values(d.director),Object.values(d.genre));                                 
                     var area = d3.areaRadial()
                         .curve(d3.curveLinearClosed)
-                        .innerRadius(d => 40+d*1.5)
-                        .outerRadius(d => 41+d*1.5)
+                        .innerRadius(d => 25+d*1.5)
+                        .outerRadius(d => 26+d*1.5)
                         .angle((d,i) => {
                             return radia(i)
                         })
@@ -145,7 +148,7 @@ export default class RadialArea {
                                    
                 })
                 .attr('transform', (d,index)=> {
-                        return 'translate('+ (50+(index%8)*150) +"," +(50+parseInt(index /8)*150)+")"
+                        return 'translate('+ (center_width + Number(d.position.x) *8) +"," +(center_height + Number(d.position.y) *8)+")"
                 })
 
         
@@ -161,8 +164,8 @@ export default class RadialArea {
                     var data1 = data.concat(Object.values(d.director));                                 
                     var area = d3.areaRadial()
                         // .curve(d3.curveLinearClosed)
-                        .innerRadius(d => 40+d*1.5)
-                        .outerRadius(d => 41+d*1.5)
+                        .innerRadius(d => 25+d*1.5)
+                        .outerRadius(d => 26+d*1.5)
                         .angle((d,i) => {
                             return radia(i)
                         })
@@ -170,7 +173,7 @@ export default class RadialArea {
                                    
                 })
                 .attr('transform', (d,index)=> {
-                        return 'translate('+ (50+(index%8)*150) +"," +(50+parseInt(index /8)*150)+")"
+                        return 'translate('+ (center_width + Number(d.position.x) *8) +"," +(center_height + Number(d.position.y) *8)+")"
                 })
 
         this.node.append("path")
@@ -184,8 +187,8 @@ export default class RadialArea {
                     let data1 = Object.values(d.actor)
                     var area = d3.areaRadial()
                         // .curve(d3.curveLinearClosed)
-                        .innerRadius(d => 40+d*1.5)
-                        .outerRadius(d => 41+d*1.5)
+                        .innerRadius(d => 25+d*1.5)
+                        .outerRadius(d => 26+d*1.5)
                         .angle((d,i) => {
                             return radia(i)
                         })
@@ -193,7 +196,7 @@ export default class RadialArea {
                                    
                 })
                 .attr('transform', (d,index)=> {
-                        return 'translate('+ (50+(index%8)*150) +"," +(50+parseInt(index /8)*150)+")"
+                        return 'translate('+ (center_width + Number(d.position.x) *8) +"," +(center_height + Number(d.position.y) *8)+")"
                 })
                 .on('mouseover', function (d) {
                     // d3.select(this).attr('stroke-width', '8');
