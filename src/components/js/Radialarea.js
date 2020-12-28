@@ -87,6 +87,7 @@ export default class RadialArea {
            .attr("r",d => d.user/2)
            .attr("fill",d =>{
                if(d.name.indexOf('user') != -1) return 'red';
+               if (d.type == 'recordsmovie') return 'blue'
                return this.nodeColor(d.Tuser)
            })
         this.patterns.append("circle")
@@ -112,7 +113,7 @@ export default class RadialArea {
             })
         
         let center_width = Number(this.defaultWH.width) /1.5
-        let center_height = Number(this.defaultWH.height)/3.0
+        let center_height = Number(this.defaultWH.height)/4
         this.node.append("circle")
                 .attr("r", 20)
                 .attr("cx", function(d,index){

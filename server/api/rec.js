@@ -12,7 +12,9 @@ router.post('/getRec', async (req, res) => {
     // 比数据库里的ID小1
     var id = (Number(req.body.data)-1).toString()
     let j = await getRecinfo(id)
-    res.json(Object.values(j))
+    let records = await getRercodsinfo(id)
+    let jsondata = Object.values(j).concat(Object.values(records))
+    res.json(jsondata)
 });
 
 // 获取邻居节点id 、对应注意力权重值    
@@ -188,6 +190,7 @@ let getRecinfo = async function(id){
             "director":{},
             "genre":{},
             "position":s,
+            "type":'targetuser',
             "hit":false,
         }
 
@@ -198,7 +201,7 @@ let getRecinfo = async function(id){
         one = (Number(one) + 3154).toString()
 
         oneinfo[one] = {
-            "id":"",
+            "id":one,
             "name":"",
             "user": 0,
             "Tuser": 0,
@@ -206,6 +209,7 @@ let getRecinfo = async function(id){
             "director":{},
             "genre":{},
             "position":{},
+            "type":'recmovie',
             "hit":false,
         }
         let getinfo = getdbinfo(one)
@@ -216,7 +220,6 @@ let getRecinfo = async function(id){
 
 
         oneinfo[one]["name"] = Name
-        oneinfo[one]["id"] = one
         oneinfo[one]["hit"] = flag
         oneinfo[one]["position"] = t
         let nei = await getneighbors(one)
@@ -280,28 +283,14 @@ let getRercodsinfo = async function (id) {
     let recResult =  await getrecResult(id)
     let movieRecords = (await getMovieRecords(id)).split(",")
 
-
-    let json ={}
     let oneinfo ={}
-    for(let item of neighbors){
-        let nei = await getneighbors(item)
-        for(let n of nei){
-            if(!json[n]){
-                json[n]=[]
-            }
-            json[n].push(item)
-        }
-    }
 
 
-   for(let one of recResult){
-        let jsondata ={}
-        let flag = false
-        if( movieRecords.includes(one) ) flag = true
+   for(let one of movieRecords){
         one = (Number(one) + 3154).toString()
 
         oneinfo[one] = {
-            "id":"",
+            "id":one,
             "name":"",
             "user": 0,
             "Tuser": 0,
@@ -309,71 +298,15 @@ let getRercodsinfo = async function (id) {
             "director":{},
             "genre":{},
             "position":{},
+            "type":'recordsmovie',
             "hit":false,
         }
-        let getinfo = getdbinfo(one)
-        let Name = await getName(getinfo['id'],'movie')
-
-        let position = (await getPosition(getinfo['id'],'movie')).split(",")
-        let t = {x:position[0], y:position[1]}
-
-
-        oneinfo[one]["name"] = Name
-        oneinfo[one]["id"] = one
-        oneinfo[one]["hit"] = flag
-        oneinfo[one]["position"] = t
-        let nei = await getneighbors(one)
-        for(let n of nei){
-            if(!jsondata[n]){
-                jsondata[n]=[]
-            }
-            jsondata[n].push(one)
-        }
+        let info = getdbinfo(one)
+        oneinfo[one]["name"] = await getName(info['id'],'movie')
+        oneinfo[one]["user"] = 20
+        let position = (await getPosition(info['id'],'movie')).split(",")
+        oneinfo[one]["position"] = {x:position[0], y:position[1]}
         
-        
-        for( let item of Object.keys(jsondata)){
-            let info = getdbinfo(item)
-            switch(info['type']){
-                case 'user':
-                    oneinfo[one]['user'] += 1;
-                    if( Object.keys(json).includes(item)){
-                        oneinfo[one]['Tuser'] += json[item].length;
-                    }   
-                    break;
-                case 'movie':
-                    let movieName = await getName(info['id'],'movie')
-                    oneinfo[one]['movie'][movieName] = 0
-                    if( Object.keys(json).includes(item)){
-                        oneinfo[one]['movie'][movieName] += json[item].length;
-                    }
-                    break;
-                case 'actor':
-                    let actorName = await getName(info['id'],'actor')
-                    if (actorName == "空") continue
-                    oneinfo[one]['actor'][actorName] = 0
-                    if( Object.keys(json).includes(item)){
-                        oneinfo[one]['actor'][actorName] += json[item].length;
-                    }
-                    break;
-                case 'director':
-                    let directorName = await getName(info['id'],'director')
-                    oneinfo[one]['director'][directorName] = 0
-                    if( Object.keys(json).includes(item)){
-                        oneinfo[one]['director'][directorName] += json[item].length;
-                    }
-                    break;
-                case 'genre':
-                    let genreName = await getName(info['id'],'genre')
-                    if(genreName == "空") continue
-                    oneinfo[one]['genre'][genreName] = 0
-                    if( Object.keys(json).includes(item)){
-                        oneinfo[one]['genre'][genreName] += json[item].length;
-                    }
-                    
-                    break;
-            }
-        
-        }
    }
    return oneinfo
 }
