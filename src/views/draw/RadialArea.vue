@@ -1,7 +1,5 @@
 <template>
     <div>
-        <el-input v-model="input" placeholder="请输入内容"></el-input>
-        <button @click="getTest()" > test</button>
         <div  id="RadialArea" class="RadialArea" ref="RadialArea">
        <!-- @click="" -->
         </div>
@@ -20,51 +18,39 @@ export default {
     };
   },
   created: function() {
-
+    axios.get('/data.csv').then(res => {
+      var data = d3.csvParse(res.data,(d, _, columns) => {
+        let total = 0;
+        for (let i = 1; i < columns.length; ++i) total += d[columns[i]] = +d[columns[i]];
+        d.total = total;
+        return d;
+      })
+      new RadialArea(this.$refs.RadialArea,data)
+    })
+    
   },
   mounted() {
     
   },
   methods: {
-    getTest() {
-      console.log(this.input)
-      axios.post('api/getrec/getRec',{data:this.input}
-        ).then(res=>{
-          console.log(res.data)
-          this.$refs.RadialArea.innerHTML =  '' ;
-          new RadialArea(this.$refs.RadialArea, res.data)
-        })
-        .catch(err=>{
-        console.log(err)
-      })
-    },
-    // test(){
-    //     var angle = 2*Math.PI
-    //     var data = [[100,80,60,90,90,100]]
-    //     var areaRadial = d3.areaRadial()
-    //                     .innerRadius(d => d/2)
-    //                     .outerRadius(d => d)
-    //                     .angle((d,i) => {
-    //                         if(i == 5)  return 0
-    //                         return (i/5)*angle
-    //                     })
-    //     var svg = d3.selectAll("#RadialArea").append("svg")
-    //     var areaRadialChart = svg.selectAll('path').data(data)
-    //     areaRadialChart.enter().append('path')
-    //         .attr('transform','translate(100,100)')
-    //         .attr('d',function(d){return areaRadial(d)})
-    //         .style('fill','#eef')
-    // }
+    // getTest() {
+    //   console.log(this.input)
+    //   axios.post('api/getrec/getRec',{data:this.input}
+    //     ).then(res=>{
+    //       console.log(res.data)
+    //       this.$refs.RadialArea.innerHTML =  '' ;
+    //       new RadialArea(this.$refs.RadialArea, res.data)
+    //     })
+    //     .catch(err=>{
+    //     console.log(err)
+    //   })
+    // },
   }
 };
 </script>
 <style lang="stylus" scoped>
 #RadialArea {
-   width:1450px;
-    height:1010px;
-    background:black;
-}
-.relMap_g{
-    background:blue;
+    height: 700px;
+    width: 700px;
 }
 </style>

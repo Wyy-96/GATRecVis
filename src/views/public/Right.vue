@@ -1,6 +1,6 @@
 <template>
   <div class="right">
-    <div class="View-title"><p>Forceview</p></div>
+    <div class="View-title"></div>
     <RadialAreaView></RadialAreaView>
   </div>
 </template>
@@ -23,8 +23,8 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .right {
-    width:1450px;
-    height:99%;
+    width:85%;
+    height:100%;
     float:left;
 }
 </style>

@@ -131,8 +131,6 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #Heatmap {
-    width:380px;
-    height:655px;
     background:#eee;
 }
 </style>

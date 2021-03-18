@@ -3,7 +3,7 @@ import actor from '@/assets/actor.svg'
 import user from '@/assets/user.svg'
 import director from '@/assets/director.svg'
 import genre from '@/assets/genre.svg'
-import movie from '@/assets/movie.svg'
+
 
 function getDis(s, t) {
     return Math.sqrt((s.x - t.x) * (s.x - t.x) + (s.y - t.y) * (s.y - t.y));

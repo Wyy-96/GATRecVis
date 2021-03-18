@@ -27,15 +27,12 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .home {
-  height: 100%;
+  width:1900px;
+  height: 970px;
   display: flex;
   align-items: center;
   flex-direction: row;
   justify-content: center;
   flex-wrap: nowrap;
-  // background: url('~@/assets/login/login-background.png');
-  background-size: 100% 80%;
-  background-repeat: no-repeat;
-  background-position:50% 50%;
 }
 </style>

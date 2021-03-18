@@ -1,11 +1,11 @@
 #app{
-  min-width:900px;
-  min-height:600px;
+  min-width:1900px;
+  min-height:970px;
 }
   
-.el-drawer__body {
+/* .el-drawer__body {
   overflow: auto
 }
 .el-dialog {
   min-width:800px;
-}
+} */
