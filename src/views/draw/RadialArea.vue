@@ -51,6 +51,7 @@ export default {
 <style lang="stylus" scoped>
 #RadialArea {
     height: 800px;
-    width: 700px;
+    width: 800px;
+    border:solid 1px black;
 }
 </style>

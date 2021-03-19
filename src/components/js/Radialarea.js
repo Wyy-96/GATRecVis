@@ -215,9 +215,9 @@ import * as d3 from 'd3';
 
 export default class RadialArea {
     constructor(selector,data) {
-        let mapW = 500
+        let mapW = 1000
         //parseInt(d3.select(selector).style('width'))
-        let mapH = 500
+        let mapH = 1000
         //parseInt(d3.select(selector).style('height'))
 
         this.defaultWH = {
