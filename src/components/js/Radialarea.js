@@ -260,14 +260,49 @@ export default class RadialArea {
         //             relMap_g.attr("transform", transform);
         // }));
 
+        var startAngle = 0
+        var endAngle = 0
+        var startX = 0
+        var startY = 0
         function dragstarted(event, d) {
-            console.log(event.x)
+            var A = {'x':400, 'y':400}
+            var B = {'x':400, 'y':100}
+            var lengthAB = Math.sqrt( Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2))
+            var lengthAC = Math.sqrt( Math.pow(A.x - event.sourceEvent.layerX, 2) + Math.pow(A.y - event.sourceEvent.layerY, 2))
+            var lengthBC = Math.sqrt( Math.pow(B.x - event.sourceEvent.layerX, 2) + Math.pow(B.y -event.sourceEvent.layerY, 2))
+            var cosA = (Math.pow(lengthAB, 2) + Math.pow(lengthAC, 2) - Math.pow(lengthBC, 2)) / (2 * lengthAB * lengthAC);
+            var angleA =  Math.acos(cosA)
+            if (event.sourceEvent.layerX < 400)
+                angleA =  -angleA
+            startAngle = angleA
+            startX = event.sourceEvent.layerX
+            startY = event.sourceEvent.layerY
+            inter.selectAll('path')
+                .data([{ "startAngle": startAngle, "endAngle": startAngle+0.01, "padAngle": 0}])
+                .join("path")
+                .attr('d',arc_brush)
+                .attr('fill','#7b6888')
+                .attr("opacity", "1");
         }
         function dragCircle(event, d) {
-            console.log(event.x)
+            var A = {'x':400, 'y':400}
+            var B = {'x':startX, 'y':startY}
+            var lengthAB = Math.sqrt( Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2))
+            var lengthAC = Math.sqrt( Math.pow(A.x - event.sourceEvent.layerX, 2) + Math.pow(A.y - event.sourceEvent.layerY, 2))
+            var lengthBC = Math.sqrt( Math.pow(B.x - event.sourceEvent.layerX, 2) + Math.pow(B.y -event.sourceEvent.layerY, 2))
+            var cosA = (Math.pow(lengthAB, 2) + Math.pow(lengthAC, 2) - Math.pow(lengthBC, 2)) / (2 * lengthAB * lengthAC);
+            var angleA =  Math.acos(cosA)
+
+            endAngle = angleA + startAngle
+            inter.selectAll('path')
+                .data([{ "startAngle": startAngle, "endAngle": endAngle, "padAngle": 0}])
+                .join("path")
+                .attr('d',arc_brush)
+                .attr('fill','#7b6888')
+                .attr("opacity", "0.2");
         }
         function endDragging(event, d) {
-            console.log(event.x)
+            
         }
 
        
@@ -276,6 +311,11 @@ export default class RadialArea {
         // 4.放图的容器
         const relMap_g = this.SVG.append("g")
             .attr("class", "relMap_g")
+            .attr("width", this.defaultWH.width)
+            .attr("height", this.defaultWH.height);
+        
+        const interMap_g = this.SVG.append("g")
+            .attr("class", "interMap_g")
             .call(drag_x)
             .attr("width", this.defaultWH.width)
             .attr("height", this.defaultWH.height);
@@ -306,20 +346,18 @@ export default class RadialArea {
             .outerRadius(this.outerRadius)
             .innerRadius(this.innerRadius);
 
-        var pie = d3.pie()
-            .value(function(d) { return d.count; })
-            .sort(null);
-
         var dataset = [{ "startAngle": 0, "endAngle": 2 * Math.PI, "padAngle": 0}
         ]
 
 
-        relMap_g.selectAll('path')
+        interMap_g.selectAll('path')
         .data(dataset)
         .join("path")
         .attr('d',arc_brush)
         .attr('fill','#7b6888')
         .attr("opacity", "0");
+
+        const inter = interMap_g.append('g')
 
 
         relMap_g.append("g")
