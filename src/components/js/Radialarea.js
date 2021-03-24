@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { event } from 'jquery';
 
 // export default class RadialArea {
 //     constructor(selector, data, configs = {}) {
@@ -53,7 +54,7 @@ import * as d3 from 'd3';
 //                     this.relMap_g.attr("transform", d3.event.transform);
 //                 }
 //             }))
-//             // .on('click', () => console.log('画布 click'))
+//             //
 //             // .on("dblclick.zoom", null);
         
 //          // 4.放图的容器
@@ -224,35 +225,72 @@ export default class RadialArea {
             width: mapW,
             height: mapH,
         }
-
+        this.config = {
+                        cellColor1: 'white',
+                        cellColor2: 'green',
+                        scaleExtent: [0.5, 5],    // 缩放的比例尺
+                        isScale: true,              // 是否启用缩放平移zoom功能
+        };
         // 画布
         this.map = d3.select(selector);
         this.data = data
         this.innerRadius = 180
-        this.outerRadius = 487.5
+        this.outerRadius = 400
 
         this.drawRadial_Stacked_Bar_Chart()
-        console.log(this.data.columns.slice(1))
 
         
     }
     drawRadial_Stacked_Bar_Chart(){
+        const drag_x = d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragCircle)
+            .on("end", endDragging);
         this.SVG = this.map.append("svg")
         .attr("viewBox", `${- this.defaultWH.width / 2} ${- this.defaultWH.height / 2} ${ this.defaultWH.width} ${ this.defaultWH.height}`)
         .style("width", "100%")
         .style("height", "auto")
-        .style("font", "10px sans-serif");
+        .style("font", "10px sans-serif")
         
+        // .on('click', (event,d) => {console.log(event)})
+        // .call(d3.zoom()
+        //     .extent([[0, 0], [ this.defaultWH.width, this.defaultWH.height]])
+        //     .scaleExtent([1, 8])
+        //     .on("zoom", function({transform}){
+        //             relMap_g.attr("transform", transform);
+        // }));
+
+        function dragstarted(event, d) {
+            console.log(event.x)
+        }
+        function dragCircle(event, d) {
+            console.log(event.x)
+        }
+        function endDragging(event, d) {
+            console.log(event.x)
+        }
+
+       
+            // .on("drag", dragged)
+            // .on("end", dragended);
+        // 4.放图的容器
+        const relMap_g = this.SVG.append("g")
+            .attr("class", "relMap_g")
+            .call(drag_x)
+            .attr("width", this.defaultWH.width)
+            .attr("height", this.defaultWH.height);
+
+        
+
         this.color = d3.scaleOrdinal()
             .domain(this.data.columns.slice(1))
-            .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"])
+            .range(["#98abc5", "#6b486b", "#ff8c00", "#7b6888", "#a05d56", "#d0743c", "#8a89a6"])
 
         this.arc = d3.arc()
             .innerRadius(d => this.y(d[0]))
             .outerRadius(d => this.y(d[1]))
             .startAngle(d => this.x(d.data.State))
             .endAngle(d => this.x(d.data.State) + this.x.bandwidth())
-            .padAngle(0.01)
             .padRadius(this.innerRadius)
 
         this.x = d3.scaleBand()
@@ -264,9 +302,27 @@ export default class RadialArea {
             .domain([0, d3.max(this.data, d => d.total)])
             .range([this.innerRadius, this.outerRadius])
 
+        var arc_brush = d3.arc()
+            .outerRadius(this.outerRadius)
+            .innerRadius(this.innerRadius);
+
+        var pie = d3.pie()
+            .value(function(d) { return d.count; })
+            .sort(null);
+
+        var dataset = [{ "startAngle": 0, "endAngle": 2 * Math.PI, "padAngle": 0}
+        ]
 
 
-        this.SVG.append("g")
+        relMap_g.selectAll('path')
+        .data(dataset)
+        .join("path")
+        .attr('d',arc_brush)
+        .attr('fill','#7b6888')
+        .attr("opacity", "0");
+
+
+        relMap_g.append("g")
                 .selectAll("g")
                 .data(d3.stack().keys(this.data.columns.slice(1))(this.data))
                 .join("g")
@@ -275,7 +331,15 @@ export default class RadialArea {
                 .data(d => d)
                 .join("path")
                 .attr("d", this.arc);
-        
+    
+    
+        relMap_g.append("circle")
+                .attr("cx","0px")
+                .attr("cy","0px")
+                .attr("r",'8')
+                .attr("fill", "#8a89a6")
+                .attr("opacity", "0.7");
+
         this.xAxis = g => g
                 .attr("text-anchor", "middle")
                 .call(g => g.selectAll("g")
@@ -293,12 +357,13 @@ export default class RadialArea {
                             ? "rotate(90)translate(0,16)"
                             : "rotate(-90)translate(0,-9)")
                     .text(d => d.State)))
+
         this.yAxis = g => g
             .attr("text-anchor", "middle")
             .call(g => g.append("text")
                 .attr("y", d => -this.y(this.y.ticks(5).pop()))
-                .attr("dy", "-1em")
-                .text("Population"))
+                .attr("dy", "-1em"))
+                // .text("Population"))
             .call(g => g.selectAll("g")
                 .data(this.y.ticks(5).slice(1))
                 .join("g")
@@ -312,7 +377,7 @@ export default class RadialArea {
                         .attr("dy", "0.35em")
                         .attr("stroke", "#fff")
                         .attr("stroke-width", 5)
-                        .text(this.y.tickFormat(5, "s"))
+                        // .text(this.y.tickFormat(5, "s"))
                     .clone(true)
                         .attr("fill", "#000")
                         .attr("stroke", "none")))
@@ -321,7 +386,7 @@ export default class RadialArea {
             .selectAll("g")
             .data(this.data.columns.slice(1).reverse())
             .join("g")
-                .attr("transform", (d, i) => `translate(-40,${(i - (this.data.columns.length - 1) / 2) * 20})`)
+                .attr("transform", (d, i) => `translate(-450,${(i - (this.data.columns.length + 20) ) * 20})`)
                 .call(g => g.append("rect")
                     .attr("width", 18)
                     .attr("height", 18)
@@ -332,12 +397,12 @@ export default class RadialArea {
                     .attr("dy", "0.35em")
                     .text(d => d))
 
-        this.SVG.append("g")
-                .call(this.xAxis);
-        this.SVG.append("g")
+        // this.SVG.append("g")
+        //         .call(this.xAxis);
+        relMap_g.append("g")
                 .call(this.yAxis);
           
-        this.SVG.append("g")
+        relMap_g.append("g")
                 .call(this.legend);
 
         
