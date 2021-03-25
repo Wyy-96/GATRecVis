@@ -18,7 +18,7 @@ export default {
     };
   },
   created: function() {
-    axios.get('/test_data_9625.csv').then(res => {
+    axios.get('/test_data_9625_no0.csv').then(res => {
       var data = d3.csvParse(res.data,(d, _, columns) => {
         let total = 0;
         for (let i = 1; i < columns.length; ++i) total += d[columns[i]] = +d[columns[i]];
@@ -50,8 +50,8 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #RadialArea {
-    height: 900px;
-    width: 900px;
+    height: 600px;
+    width: 600px;
     border:solid 1px black;
 }
 </style>
