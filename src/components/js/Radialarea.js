@@ -30,13 +30,13 @@ import { event } from 'jquery';
 //         }
 //         let types = ['movie_user','movie_actor','movie_director','user_movie']
 //         this.color = d3.scaleOrdinal(types, d3.schemeCategory10)
-        
+
 //          /* ----------------------------颜色转换------------------------  */
 //         this.nodeColor = d3.scaleLinear()
 //             .domain([0, d3.max(datamax(data))])
 //             .range([this.config.cellColor1, this.config.cellColor2]);
 
-        
+
 //         // 需要高亮的node和link
 //         this.dependsNode = [];
 //         this.dependsLinkAndText = [];
@@ -56,7 +56,7 @@ import { event } from 'jquery';
 //             }))
 //             //
 //             // .on("dblclick.zoom", null);
-        
+
 //          // 4.放图的容器
 //         this.relMap_g = this.SVG.append("g")
 //             .attr("class", "relMap_g")
@@ -65,7 +65,7 @@ import { event } from 'jquery';
 
 //         // 3.defs  <defs>标签的内容不会显示，只有调用的时候才显示
 //         this.defs = this.SVG.append('defs');
- 
+
 //         // 3.2 添加多个 <pattern>
 //         this.patterns = this.defs
 //             .append("pattern")
@@ -102,7 +102,7 @@ import { event } from 'jquery';
 //            .attr("fill","red")
 //         //    .attr("opacity", "0.5");
 
-        
+
 
 //         this.node = this.relMap_g
 //             .selectAll("g")
@@ -112,7 +112,7 @@ import { event } from 'jquery';
 //             .attr("fill", function (d,index) {
 //                 return ("url(#movie" + index + ")");
 //             })
-        
+
 //         let center_width = Number(this.defaultWH.width) /1.5
 //         let center_height = Number(this.defaultWH.height)/4
 //         this.node.append("circle")
@@ -147,13 +147,13 @@ import { event } from 'jquery';
 //                             return radia(i)
 //                         })
 //                     return area(data1);
-                                   
+
 //                 })
 //                 .attr('transform', (d,index)=> {
 //                         return 'translate('+ (center_width + Number(d.position.x) *8) +"," +(center_height + Number(d.position.y) *8)+")"
 //                 })
 
-        
+
 //         this.node.append("path")
 //                 .attr("fill", "red")
 //                 .attr("stroke-width", 1)
@@ -172,7 +172,7 @@ import { event } from 'jquery';
 //                             return radia(i)
 //                         })
 //                     return area(data1);
-                                   
+
 //                 })
 //                 .attr('transform', (d,index)=> {
 //                         return 'translate('+ (center_width + Number(d.position.x) *8) +"," +(center_height + Number(d.position.y) *8)+")"
@@ -195,7 +195,7 @@ import { event } from 'jquery';
 //                             return radia(i)
 //                         })
 //                     return area(data1);
-                                   
+
 //                 })
 //                 .attr('transform', (d,index)=> {
 //                         return 'translate('+ (center_width + Number(d.position.x) *8) +"," +(center_height + Number(d.position.y) *8)+")"
@@ -209,13 +209,13 @@ import { event } from 'jquery';
 //                 });
 
 
-        
-        
+
+
 //     }
 // }
 
 export default class RadialArea {
-    constructor(selector,data) {
+    constructor(selector, data) {
         let mapW = 1000
         //parseInt(d3.select(selector).style('width'))
         let mapH = 1000
@@ -226,225 +226,278 @@ export default class RadialArea {
             height: mapH,
         }
         this.config = {
-                        cellColor1: 'white',
-                        cellColor2: 'green',
-                        scaleExtent: [0.5, 5],    // 缩放的比例尺
-                        isScale: true,              // 是否启用缩放平移zoom功能
+            cellColor1: 'white',
+            cellColor2: 'green',
+            scaleExtent: [0.5, 5],    // 缩放的比例尺
+            isScale: true,              // 是否启用缩放平移zoom功能
         };
         // 画布
         this.map = d3.select(selector);
         this.data = data
         this.innerRadius = 180
-        this.outerRadius = 400
+        this.outerRadius = 500
 
         this.drawRadial_Stacked_Bar_Chart()
 
-        
+
     }
-    drawRadial_Stacked_Bar_Chart(){
-        const drag_x = d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragCircle)
-            .on("end", endDragging);
+    drawRadial_Stacked_Bar_Chart() {
         this.SVG = this.map.append("svg")
-        .attr("viewBox", `${- this.defaultWH.width / 2} ${- this.defaultWH.height / 2} ${ this.defaultWH.width} ${ this.defaultWH.height}`)
-        .style("width", "100%")
-        .style("height", "auto")
-        .style("font", "10px sans-serif")
-        
-        // .on('click', (event,d) => {console.log(event)})
-        // .call(d3.zoom()
-        //     .extent([[0, 0], [ this.defaultWH.width, this.defaultWH.height]])
-        //     .scaleExtent([1, 8])
-        //     .on("zoom", function({transform}){
-        //             relMap_g.attr("transform", transform);
-        // }));
+            .attr("viewBox", `${- this.defaultWH.width / 2} ${- this.defaultWH.height / 2} ${this.defaultWH.width} ${this.defaultWH.height}`)
+            .style("width", "100%")
+            .style("height", "auto")
+            .style("font", "10px sans-serif")
+            // .on('click', (event,d) => {console.log(event)})
+            .call(d3.zoom()
+                .extent([[0, 0], [this.defaultWH.width, this.defaultWH.height]])
+                .scaleExtent([1, 8])
+                .on("zoom", function ({ transform }) {
+                    relMap_g.attr("transform", transform)
+                    interMap_g.attr("transform", transform)
+                }));
 
-        var startAngle = 0
-        var endAngle = 0
-        var startX = 0
-        var startY = 0
-        function dragstarted(event, d) {
-            var A = {'x':400, 'y':400}
-            var B = {'x':400, 'y':100}
-            var lengthAB = Math.sqrt( Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2))
-            var lengthAC = Math.sqrt( Math.pow(A.x - event.sourceEvent.layerX, 2) + Math.pow(A.y - event.sourceEvent.layerY, 2))
-            var lengthBC = Math.sqrt( Math.pow(B.x - event.sourceEvent.layerX, 2) + Math.pow(B.y -event.sourceEvent.layerY, 2))
-            var cosA = (Math.pow(lengthAB, 2) + Math.pow(lengthAC, 2) - Math.pow(lengthBC, 2)) / (2 * lengthAB * lengthAC);
-            var angleA =  Math.acos(cosA)
-            if (event.sourceEvent.layerX < 400)
-                angleA =  -angleA
-            startAngle = angleA
-            startX = event.sourceEvent.layerX
-            startY = event.sourceEvent.layerY
-            inter.selectAll('path')
-                .data([{ "startAngle": startAngle, "endAngle": startAngle+0.01, "padAngle": 0}])
-                .join("path")
-                .attr('d',arc_brush)
-                .attr('fill','#7b6888')
-                .attr("opacity", "1");
-        }
-        function dragCircle(event, d) {
-            var A = {'x':400, 'y':400}
-            var B = {'x':startX, 'y':startY}
-            var lengthAB = Math.sqrt( Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2))
-            var lengthAC = Math.sqrt( Math.pow(A.x - event.sourceEvent.layerX, 2) + Math.pow(A.y - event.sourceEvent.layerY, 2))
-            var lengthBC = Math.sqrt( Math.pow(B.x - event.sourceEvent.layerX, 2) + Math.pow(B.y -event.sourceEvent.layerY, 2))
-            var cosA = (Math.pow(lengthAB, 2) + Math.pow(lengthAC, 2) - Math.pow(lengthBC, 2)) / (2 * lengthAB * lengthAC);
-            var angleA =  Math.acos(cosA)
 
-            endAngle = angleA + startAngle
-            inter.selectAll('path')
-                .data([{ "startAngle": startAngle, "endAngle": endAngle, "padAngle": 0}])
-                .join("path")
-                .attr('d',arc_brush)
-                .attr('fill','#7b6888')
-                .attr("opacity", "0.2");
-        }
-        function endDragging(event, d) {
-            
-        }
-
-       
-            // .on("drag", dragged)
-            // .on("end", dragended);
-        // 4.放图的容器
+        // 放图的容器
         const relMap_g = this.SVG.append("g")
             .attr("class", "relMap_g")
             .attr("width", this.defaultWH.width)
             .attr("height", this.defaultWH.height);
-        
-        const interMap_g = this.SVG.append("g")
-            .attr("class", "interMap_g")
-            .call(drag_x)
-            .attr("width", this.defaultWH.width)
-            .attr("height", this.defaultWH.height);
 
-        
 
+        //颜色范围
         this.color = d3.scaleOrdinal()
             .domain(this.data.columns.slice(1))
             .range(["#98abc5", "#6b486b", "#ff8c00", "#7b6888", "#a05d56", "#d0743c", "#8a89a6"])
 
+        //曲形柱状堆叠图
         this.arc = d3.arc()
-            .innerRadius(d => this.y(d[0]))
-            .outerRadius(d => this.y(d[1]))
-            .startAngle(d => this.x(d.data.State))
-            .endAngle(d => this.x(d.data.State) + this.x.bandwidth())
+            .innerRadius(d => y(d[0]))
+            .outerRadius(d => y(d[1]))
+            .startAngle(d => x(d.data.State))
+            .endAngle(d => x(d.data.State) + x.bandwidth())
             .padRadius(this.innerRadius)
 
-        this.x = d3.scaleBand()
+        const x = d3.scaleBand()
             .domain(this.data.map(d => d.State))
             .range([0, 2 * Math.PI])
             .align(0)
 
-        this.y = d3.scaleRadial()
+        const y = d3.scaleRadial()
             .domain([0, d3.max(this.data, d => d.total)])
             .range([this.innerRadius, this.outerRadius])
 
-        var arc_brush = d3.arc()
-            .outerRadius(this.outerRadius)
-            .innerRadius(this.innerRadius);
-
-        var dataset = [{ "startAngle": 0, "endAngle": 2 * Math.PI, "padAngle": 0}
-        ]
-
-
-        interMap_g.selectAll('path')
-        .data(dataset)
-        .join("path")
-        .attr('d',arc_brush)
-        .attr('fill','#7b6888')
-        .attr("opacity", "0");
-
-        const inter = interMap_g.append('g')
-
-
         relMap_g.append("g")
-                .selectAll("g")
-                .data(d3.stack().keys(this.data.columns.slice(1))(this.data))
-                .join("g")
-                .attr("fill", d => this.color(d.key))
-                .selectAll("path")
-                .data(d => d)
-                .join("path")
-                .attr("d", this.arc);
-    
-    
+            .selectAll("g")
+            .data(d3.stack().keys(this.data.columns.slice(1))(this.data))
+            .join("g")
+            .attr("fill", d => this.color(d.key))
+            .selectAll("path")
+            .data(d => d)
+            .join("path")
+            .attr("d", this.arc);
+
+
         relMap_g.append("circle")
-                .attr("cx","0px")
-                .attr("cy","0px")
-                .attr("r",'8')
-                .attr("fill", "#8a89a6")
-                .attr("opacity", "0.7");
+            .attr("cx", "0px")
+            .attr("cy", "0px")
+            .attr("r", '8')
+            .attr("fill", "#8a89a6")
+            .attr("opacity", "0.7");
 
         this.xAxis = g => g
-                .attr("text-anchor", "middle")
-                .call(g => g.selectAll("g")
+            .attr("text-anchor", "middle")
+            .call(g => g.selectAll("g")
                 .data(this.data)
                 .join("g")
-                    .attr("transform", d => `
-                      rotate(${((this.x(d.State) + this.x.bandwidth() / 2) * 180 / Math.PI - 90)})
+                .attr("transform", d => `
+                      rotate(${((x(d.State) + x.bandwidth() / 2) * 180 / Math.PI - 93.5)})
                       translate(${this.innerRadius},0)
                     `)
                 .call(g => g.append("line")
                     .attr("x2", -5)
                     .attr("stroke", "#000"))
                 .call(g => g.append("text")
-                    .attr("transform", d => (this.x(d.State) + this.x.bandwidth() / 2 + Math.PI / 2) % (2 * Math.PI) < Math.PI
-                            ? "rotate(90)translate(0,16)"
-                            : "rotate(-90)translate(0,-9)")
+                    .attr("transform", d => (x(d.State) + x.bandwidth() / 2 + Math.PI / 2) % (2 * Math.PI) < Math.PI
+                        ? "rotate(90)translate(0,16)"
+                        : "rotate(-90)translate(0,-9)")
                     .text(d => d.State)))
 
         this.yAxis = g => g
             .attr("text-anchor", "middle")
             .call(g => g.append("text")
-                .attr("y", d => -this.y(this.y.ticks(5).pop()))
+                .attr("y", d => -y(y.ticks(5).pop()))
                 .attr("dy", "-1em"))
-                // .text("Population"))
+            // .text("Population"))
             .call(g => g.selectAll("g")
-                .data(this.y.ticks(5).slice(1))
+                .data(y.ticks(5).slice(1))
                 .join("g")
-                    .attr("fill", "none")
-                    .call(g => g.append("circle")
-                        .attr("stroke", "#000")
-                        .attr("stroke-opacity", 0.5)
-                        .attr("r",this. y))
-                    .call(g => g.append("text")
-                        .attr("y", d => -this.y(d))
-                        .attr("dy", "0.35em")
-                        .attr("stroke", "#fff")
-                        .attr("stroke-width", 5)
-                        // .text(this.y.tickFormat(5, "s"))
+                .attr("fill", "none")
+                .call(g => g.append("circle")
+                    .attr("stroke", "#000")
+                    .attr("stroke-opacity", 0.5)
+                    .attr("r", y))
+                .call(g => g.append("text")
+                    .attr("y", d => -y(d))
+                    .attr("dy", "0.35em")
+                    .attr("stroke", "#fff")
+                    .attr("stroke-width", 5)
+                    // .text(y.tickFormat(5, "s"))
                     .clone(true)
-                        .attr("fill", "#000")
-                        .attr("stroke", "none")))
+                    .attr("fill", "#000")
+                    .attr("stroke", "none")))
 
         this.legend = g => g.append("g")
             .selectAll("g")
             .data(this.data.columns.slice(1).reverse())
             .join("g")
-                .attr("transform", (d, i) => `translate(-450,${(i - (this.data.columns.length + 20) ) * 20})`)
-                .call(g => g.append("rect")
-                    .attr("width", 18)
-                    .attr("height", 18)
-                    .attr("fill", this.color))
-                .call(g => g.append("text")
-                    .attr("x", 24)
-                    .attr("y", 9)
-                    .attr("dy", "0.35em")
-                    .text(d => d))
+            .attr("transform", (d, i) => `translate(-450,${(i - (this.data.columns.length + 20)) * 20})`)
+            .call(g => g.append("rect")
+                .attr("width", 18)
+                .attr("height", 18)
+                .attr("fill", this.color))
+            .call(g => g.append("text")
+                .attr("x", 24)
+                .attr("y", 9)
+                .attr("dy", "0.35em")
+                .text(d => d))
 
-        // this.SVG.append("g")
-        //         .call(this.xAxis);
+        // relMap_g.append("g")
+        //     .call(this.xAxis);
         relMap_g.append("g")
-                .call(this.yAxis);
-          
+            .call(this.yAxis);
+
         relMap_g.append("g")
-                .call(this.legend);
+            .call(this.legend);
 
-        
+        var Ini_angle = 0
+        var Ini_angleEND = 0
+        const drag_x = function (data) {
+            var Angle = 0
+            var startX = 0
+            var startY = 0
+            function dragstarted(event, d) {
+                startX = event.sourceEvent.layerX
+                startY = event.sourceEvent.layerY
+            }
+            function dragCircle(event, d) {
+                var A = { 'x': 400, 'y': 400 }
+                var B = { 'x': startX, 'y': startY }
+                var lengthAB = Math.sqrt(Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2))
+                var lengthAC = Math.sqrt(Math.pow(A.x - event.sourceEvent.layerX, 2) + Math.pow(A.y - event.sourceEvent.layerY, 2))
+                var lengthBC = Math.sqrt(Math.pow(B.x - event.sourceEvent.layerX, 2) + Math.pow(B.y - event.sourceEvent.layerY, 2))
+                var cosA = (Math.pow(lengthAB, 2) + Math.pow(lengthAC, 2) - Math.pow(lengthBC, 2)) / (2 * lengthAB * lengthAC);
+                Angle = Math.acos(cosA)
 
-        
+                var rotate = parseFloat(d3.select(this).attr('transform').split(',')[0].replace('rotate(', ''))
+                d3.select(this)
+                    .attr("transform", `rotate(${Angle * 180 / Math.PI + rotate}, ${0} ${0})`)
+                    .attr('text', rotate * Math.PI / 180 + Angle)
+
+                startX = event.sourceEvent.layerX
+                startY = event.sourceEvent.layerY
+                if (d3.select(this).attr('class') == 'Selec_cri') {
+                    var a = parseFloat(d3.selectAll('.Selec_cri')._groups[0][0].attributes.text.value) + 0.03
+                    var b = parseFloat(d3.selectAll('.Selec_cri')._groups[0][1].attributes.text.value) + 0.02
+
+                    d3.select('.Selec_area').selectAll('path')
+                        .data([{ "startAngle": a, "endAngle": b, "padAngle": 0 }
+                        ])
+                        .join("path")
+                        .attr('d', arc_brush)
+                        .attr('fill', '#7b6888')
+                        .attr('class', 'Selec_area')
+                        .attr('z-index', 1)
+                        .attr("transform", `rotate(${0}, ${0} ${0})`)
+                        .attr("opacity", "0.2");
+                }
+            }
+            function endDragging(event, d) {
+                var a = parseFloat(d3.selectAll('.Selec_cri')._groups[0][0].attributes.transform.value.split(',')[0].replace('rotate(', ''))
+                var b = parseFloat(d3.selectAll('.Selec_cri')._groups[0][1].attributes.transform.value.split(',')[0].replace('rotate(', ''))
+                var selectData = []
+                data.forEach(function (item, i) {
+                    if ((x(item.State) + x.bandwidth() / 2) * 180 / Math.PI < d3.max([a, b]) && (x(item.State) + x.bandwidth() / 2) * 180 / Math.PI > d3.min([a, b]))
+                        selectData.push(item)
+                })
+                test(selectData)
+            }
+            return d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragCircle)
+                .on("end", endDragging);
+        }
+
+
+        function test(testdata){
+            
+            const x = d3.scaleBand()
+                .domain(testdata.map(d => d.State))
+                .range([-300, 300])
+                .padding(0.1)
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(testdata, d => d.total)])
+                .rangeRound([0, 100])
+
+
+            scaleMap_g
+                .selectAll("rect")
+                .data(testdata)
+                .join('rect')
+                .attr("x", (d, i) => x(d.State))
+                .attr("y", d => y(d.total))
+                .attr("height", d => y(d.total) - y(d.rate1))
+                .attr("width", x.bandwidth());
+                
+        }
+        // 交互的容器
+        const interMap_g = this.SVG.append("g")
+            .attr("class", "interMap_g")
+            .attr("width", this.defaultWH.width)
+            .attr("height", this.defaultWH.height);
+
+        // 交互区域构建
+        var arc_brush = d3.arc()
+            .outerRadius(this.outerRadius - 35)
+            .innerRadius(this.innerRadius);
+
+        interMap_g.selectAll('path')
+            .data([{ "startAngle": 0, "endAngle": 2 * Math.PI, "padAngle": 0 }])
+            .join("path")
+            .attr('d', arc_brush)
+            .attr('fill', '#7b6888')
+            .attr("opacity", "0");
+
+        //选择器
+        const inter = interMap_g.append('g')
+
+        inter.selectAll('path')
+            .data([{ "startAngle": 0, "endAngle": 0.025, "padAngle": 0 },
+            { "startAngle": 0.03, "endAngle": 0.055, "padAngle": 0 }
+            ])
+            .join("path")
+            .attr('d', arc_brush)
+            .attr('fill', '#7b6888')
+            .call(drag_x(this.data))
+            .attr('class', 'Selec_cri')
+            .attr('text', 0)
+            .attr('z-index', 99)
+            .attr("transform", `rotate(${0}, ${0} ${0})`)
+            .attr("opacity", "0.7");
+
+        inter.append('g')
+            .attr('class', 'Selec_area')
+            .selectAll('path')
+            .data([{ "startAngle": 0.025, "endAngle": 0.03, "padAngle": 0 }
+            ])
+            .join("path")
+            .attr('d', arc_brush)
+            .attr('fill', '#7b6888')
+            .attr("transform", `rotate(${0}, ${0} ${0})`)
+            .attr("opacity", "0.2");
+
+
+        const scaleMap_g = this.SVG.append("g")
+            .attr('class', 'scaleMap_g')
+
     }
 }
