@@ -247,7 +247,7 @@ export default class RadialArea {
             .style("width", "100%")
             .style("height", "auto")
             .style("font", "10px sans-serif")
-        // .on('click', (event,d) => {console.log(event)})
+        .on('click', (event,d) => {console.log(event)})
         // .call(d3.zoom()
         //     .extent([[0, 0], [this.defaultWH.width, this.defaultWH.height]])
         //     .scaleExtent([1, 8])
@@ -284,7 +284,7 @@ export default class RadialArea {
         
         
         const y = d3.scaleRadial()
-            .domain([0, d3.max(this.data, d => d.total) - 0.2])
+            .domain([0, d3.max(this.data, d => d.total)])
             .range([this.outerRadius, this.innerRadius])
 
         relMap_g.append("g")
@@ -370,36 +370,43 @@ export default class RadialArea {
         relMap_g.append("g")
             .call(this.legend);
 
-        var Ini_angle = 0
-        var Ini_angleEND = 0
+        var time_s = true
         const drag_x = function (data) {
-            var Angle = 0
-            var startX = 0
-            var startY = 0
             function dragstarted(event, d) {
-                startX = event.sourceEvent.layerX
-                startY = event.sourceEvent.layerY
             }
             function dragCircle(event, d) {
-                var A = { 'x': 400, 'y': 400 }
-                var B = { 'x': startX, 'y': startY }
+                if(time_s == true){
+                    time_s = false
+                    setTimeout(()=>{
+                        time_s=true
+                    }, 100);
+                }else{
+                    return
+                }
+                console.log("==========" )
+                var Angle = 0
+                var A = { 'x': 300, 'y': 300 }
+                var B = { 'x': 300, 'y': 0 }
                 var lengthAB = Math.sqrt(Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2))
                 var lengthAC = Math.sqrt(Math.pow(A.x - event.sourceEvent.layerX, 2) + Math.pow(A.y - event.sourceEvent.layerY, 2))
                 var lengthBC = Math.sqrt(Math.pow(B.x - event.sourceEvent.layerX, 2) + Math.pow(B.y - event.sourceEvent.layerY, 2))
                 var cosA = (Math.pow(lengthAB, 2) + Math.pow(lengthAC, 2) - Math.pow(lengthBC, 2)) / (2 * lengthAB * lengthAC);
                 Angle = Math.acos(cosA)
 
-                var rotate = parseFloat(d3.select(this).attr('transform').split(',')[0].replace('rotate(', ''))
-                d3.select(this)
-                    .attr("transform", `rotate(${Angle * 180 / Math.PI + rotate}, ${0} ${0})`)
-                    .attr('text', rotate * Math.PI / 180 + Angle)
+                if(event.sourceEvent.layerX < 300)
+                    Angle = 2*Math.PI-Angle
 
-                startX = event.sourceEvent.layerX
-                startY = event.sourceEvent.layerY
+                d3.select(this)
+                    .attr("transform", `rotate(${Angle *180 / Math.PI  }, ${0} ${0})`)  
+                    .attr('text',Angle)
+
                 if (d3.select(this).attr('class') == 'Selec_cri') {
                     var a = parseFloat(d3.selectAll('.Selec_cri')._groups[0][0].attributes.text.value) + 0.04
                     var b = parseFloat(d3.selectAll('.Selec_cri')._groups[0][1].attributes.text.value) + 0.045
+                    if(a > b)
+                        a = - 2*Math.PI  +a
 
+                    // 绘制指针间扇形面积
                     d3.select('.Selec_area').selectAll('path')
                         .data([{ "startAngle": a, "endAngle": b, "padAngle": 0 }
                         ])
@@ -410,25 +417,26 @@ export default class RadialArea {
                         .attr('z-index', 1)
                         .attr("transform", `rotate(${0}, ${0} ${0})`)
                         .attr("opacity", "0.2");
-                    var aa = parseFloat(d3.selectAll('.Selec_cri')._groups[0][0].attributes.transform.value.split(',')[0].replace('rotate(', ''))
-                    var ba = parseFloat(d3.selectAll('.Selec_cri')._groups[0][1].attributes.transform.value.split(',')[0].replace('rotate(', ''))
+                    
+                    // 根据指针角度 筛选数据
                     var selectData = new Array()
                     data.forEach(function (item, i) {
-                        if ((x(item.State) + x.bandwidth() / 2) * 180 / Math.PI < d3.max([aa, ba]) && (x(item.State) + x.bandwidth() / 2) * 180 / Math.PI > d3.min([aa, ba]))
-                            selectData.push(item)
+                        var data_rotate = x(item.State) + x.bandwidth() / 2 
+                        if( a < 0)
+                            if (data_rotate < b  && data_rotate > 0)
+                                selectData.push(item)
+                            if(data_rotate < 2*Math.PI  && data_rotate > a +2*Math.PI)
+                                selectData.unshift(item)
+                        if ( a > 0)
+                            if (data_rotate < b  && data_rotate > a)
+                                selectData.push(item)
                     })
-                    test(selectData)
+                    // 绘制所选区域数据
+                    DrawSelectData(selectData)
                 }
             }
             function endDragging(event, d) {
-                // var a = parseFloat(d3.selectAll('.Selec_cri')._groups[0][0].attributes.transform.value.split(',')[0].replace('rotate(', ''))
-                // var b = parseFloat(d3.selectAll('.Selec_cri')._groups[0][1].attributes.transform.value.split(',')[0].replace('rotate(', ''))
-                // var selectData = new Array()
-                // data.forEach(function (item, i) {
-                //     if ((x(item.State) + x.bandwidth() / 2) * 180 / Math.PI < d3.max([a, b]) && (x(item.State) + x.bandwidth() / 2) * 180 / Math.PI > d3.min([a, b]))
-                //         selectData.push(item)
-                // })
-                // test(selectData)
+
             }
             return d3.drag()
                 .on("start", dragstarted)
@@ -436,12 +444,13 @@ export default class RadialArea {
                 .on("end", endDragging);
         }
 
+      
 
-        function test(testdata) {
+        function DrawSelectData(testdata) {
 
             const x = d3.scaleBand()
                 .domain(testdata.map(d => d.State))
-                .range([-500, 500])
+                .range([-300, 300])
                 .padding(0.1)
             const y = d3.scaleLinear()
                 .domain([0, d3.max(testdata, d => d.total)])
@@ -502,14 +511,7 @@ export default class RadialArea {
 
         inter.append('g')
             .attr('class', 'Selec_area')
-            .selectAll('path')
-            .data([{ "startAngle": 0.025, "endAngle": 0.03, "padAngle": 0 }
-            ])
-            .join("path")
-            .attr('d', arc_brush)
-            .attr('fill', '#7b6888')
-            .attr("transform", `rotate(${0}, ${0} ${0})`)
-            .attr("opacity", "0.2");
+
 
 
         const scaleMap_g = this.SVG.append("g")
