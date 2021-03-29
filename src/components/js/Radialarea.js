@@ -214,7 +214,6 @@ export default class RadialArea {
             .attr('d', arc_brush)
             .attr('fill', '#7b6888')
             .attr('class', 'Selec_area')
-            .attr('z-index', 1)
             .attr("transform", `rotate(${0}, ${0} ${0})`)
             .attr("opacity", "0.2");
 
