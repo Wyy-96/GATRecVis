@@ -1,37 +1,36 @@
 <template>
-    <div>
-        <div  id="RadialArea" class="RadialArea" ref="RadialArea">
-       <!-- @click="" -->
-        </div>
+  <div>
+    <div id="RadialArea" class="RadialArea" ref="RadialArea">
+      <!-- @click="" -->
     </div>
+  </div>
 </template>
 <script>
-import axios from 'axios'
-import * as d3 from 'd3';
+import axios from "axios";
+import * as d3 from "d3";
 
-import RadialArea from '@/components/js/Radialarea'
+import RadialArea from "@/components/js/Radialarea";
 export default {
   name: "RadialArea",
   data() {
     return {
-        input: ''
+      input: "",
     };
   },
-  created: function() {
-    axios.get('/test_data_9625_no0.csv').then(res => {
-      var data = d3.csvParse(res.data,(d, _, columns) => {
+  created: function () {
+    axios.get("/data.csv").then((res) => { //test_data_9625_no0
+      var data = d3.csvParse(res.data, (d, _, columns) => {
         let total = 0;
-        for (let i = 1; i < columns.length; ++i) total += d[columns[i]] = +d[columns[i]];
+        for (let i = 1; i < columns.length; ++i)
+          total += d[columns[i]] = +d[columns[i]];
         d.total = total;
         return d;
-      })
-      new RadialArea(this.$refs.RadialArea,data)
-    })
-    
+      });
+      // console.log(res.data)
+      new RadialArea(this.$refs.RadialArea, data);
+    });
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     // getTest() {
     //   console.log(this.input)
@@ -45,13 +44,13 @@ export default {
     //     console.log(err)
     //   })
     // },
-  }
+  },
 };
 </script>
 <style lang="stylus" scoped>
 #RadialArea {
-    height: 600px;
-    width: 600px;
-    border:solid 1px black;
+  height: 600px;
+  width: 600px;
+  border: solid 1px black;
 }
 </style>
