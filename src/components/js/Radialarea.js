@@ -46,7 +46,7 @@ export default class RadialArea {
       .style("width", "100%")
       .style("height", "auto")
       .style("font", "10px sans-serif")
-    // .on('click', (event, d) => { console.log(event) })
+    // .on('click', (event, d) => { console.log(d3.select(this)) })
     // .call(d3.zoom()
     //     .extent([[0, 0], [this.defaultWH.width, this.defaultWH.height]])
     //     .scaleExtent([1, 8])
@@ -97,7 +97,7 @@ export default class RadialArea {
       .join("path")
       .attr("d", arc);
 
-    console.log(d3.stack().keys(this.data.columns.slice(1))(this.data))
+    
     relMap_g.append("circle")
       .attr("cx", "0px")
       .attr("cy", "0px")
@@ -267,6 +267,11 @@ export default class RadialArea {
         .attr("y", function (d) {
           return y(d[1])
         })
+        .on('click',(event,d)=>{
+          //小矩形的id  例，u217
+          console.log(d.data.State)
+        })
+        .attr('id',d=>'rect_'+d.data.State)
         .attr("transform", `translate(0, 0)`)
         .attr("height", d => y(d[0]) - y(d[1]))
         .attr("width", x.bandwidth());

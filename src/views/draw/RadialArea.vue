@@ -18,7 +18,7 @@ export default {
     };
   },
   created: function () {
-    axios.get("/data.csv").then((res) => { //test_data_9625_no0
+    axios.get("/test_data_9625.csv").then((res) => { //test_data_9625_no0
       var data = d3.csvParse(res.data, (d, _, columns) => {
         let total = 0;
         for (let i = 1; i < columns.length; ++i)
