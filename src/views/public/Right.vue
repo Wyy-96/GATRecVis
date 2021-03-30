@@ -1,11 +1,16 @@
 <template>
-  <div class="right"></div>
+  <div class="right">
+      <resultView></resultView>
+  </div>
 </template>
 
 <script>
+import resultView from "../draw/result.vue";
 export default {
   name: "Right",
-  components: {},
+  components: {
+    resultView,
+  },
   data() {
     return {};
   },
@@ -16,7 +21,5 @@ export default {
 .right {
   width: 85%;
   height: 100%;
-  float: left;
-  border: 1px solid black;
 }
 </style>
