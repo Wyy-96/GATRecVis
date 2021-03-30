@@ -33,7 +33,7 @@
             style="width: 80%; float: left"
           >
             <el-table-column prop="date" width="80"> </el-table-column>
-            <el-table-column prop="name" width="317"> </el-table-column>
+            <el-table-column prop="name" width="315"> </el-table-column>
           </el-table>
         </template>
       </div>
@@ -136,9 +136,5 @@ export default {
 
 .header {
   background-color: #786585;
-}
-
-.el-table th {
-  padding: 5px 0px;
 }
 </style>

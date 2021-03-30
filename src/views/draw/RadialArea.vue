@@ -47,7 +47,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #RadialArea {
-  height: 55%;
+  height: 50%;
   width: 100%;
   border: solid 1px black;
 }
