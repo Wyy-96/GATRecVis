@@ -4,9 +4,9 @@ import { event } from 'jquery';
 
 export default class RadialArea {
   constructor(selector, data) {
-    let mapW = 600
+    let mapW = 500
     //parseInt(d3.select(selector).style('width'))
-    let mapH = 600
+    let mapH = 500
     //parseInt(d3.select(selector).style('height'))
 
     this.defaultWH = {
@@ -66,7 +66,7 @@ export default class RadialArea {
     //颜色范围
     const color = d3.scaleOrdinal()
       .domain(this.data.columns.slice(1))
-      .range(["#98abc5", "#6b486b", "#ff8c00", "#7b6888", "#a05d56", "#d0743c", "#8a89a6"])
+      .range(["#98abc5", "#6b486b", "#ff8c00"])
 
     //曲形柱状堆叠图
     const arc = d3.arc()
@@ -84,8 +84,7 @@ export default class RadialArea {
 
     const y = d3.scaleRadial()
       .domain([0, d3.max(this.data, d => d.total)]) //d3.max(this.data, d => d.total)
-      .range([200, 10])
-
+      .range([100, 250])
 
     relMap_g.append("g")
       .selectAll("g")
@@ -151,7 +150,7 @@ export default class RadialArea {
       .selectAll("g")
       .data(this.data.columns.slice(1).reverse())
       .join("g")
-      .attr("transform", (d, i) => `translate(-280,${(i - (this.data.columns.length + 11)) * 20})`)
+      .attr("transform", (d, i) => `translate(${-this.defaultWH.height/2 +20},${(i - (this.data.columns.length + 8)) * 20})`)
       .call(g => g.append("rect")
         .attr("width", 18)
         .attr("height", 18)
@@ -231,7 +230,7 @@ export default class RadialArea {
                 selectData.push(item)
           })
           // 绘制所选区域数据
-          DrawSelectData(selectData)
+          DrawSelectData(selectData,width,height)
         }
       }
       function endDragging(event, d) {
@@ -245,19 +244,21 @@ export default class RadialArea {
 
 
 
-    function DrawSelectData(testdata) {
-
+    function DrawSelectData(testdata, width, height) {
+      
       const x = d3.scaleBand()
         .domain(testdata.map(d => d.State))
-        .range([-300, 300])
+        .range([-width, width])
         .padding(0.1)
       const y = d3.scaleLinear()
         .domain([0, d3.max(testdata, d => d.total)])
-        .rangeRound([300, 200])
+        .rangeRound([width, width-90])
+
+      testdata.columns = Object.keys(testdata[0]).slice(0, 3)
 
       scaleMap_g
         .selectAll("g")
-        .data(d3.stack().keys(["rate1", "rate2"])(testdata))
+        .data(d3.stack().keys(testdata.columns.slice(1))(testdata))
         .join("g")
         .attr("fill", d => color(d.key))
         .selectAll("rect")

@@ -28,7 +28,7 @@ export default {
 <style lang="stylus" scoped>
 .home {
   width:1900px;
-  height: 970px;
+  height: 995px;
   display: flex;
   align-items: center;
   flex-direction: row;
