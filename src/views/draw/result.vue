@@ -1,7 +1,7 @@
 <template>
   <div id="result">
     <div id="force" class="force" ref="force"></div>
-    <div id="statistics" class="statistics" ref="statistics"></div>
+    <div id="coordinate" class="coordinate" ref="coordinate"></div>
     <div id="venn" class="venn" ref="venn"></div>
   </div>
 </template>
@@ -9,6 +9,7 @@
 <script>
 import axios from "axios";
 import Venn from "@/components/js/venn";
+import Coordinate from "@/components/js/coordinate";
 export default {
   name: "result",
   components: {},
@@ -16,9 +17,10 @@ export default {
     return {};
   },
   created: function () {
-    // axios.get("/test_data_9625_no0.csv").then((res) => {
+  },
+  mounted: function(){
     new Venn(this.$refs.venn);
-    // });
+    new Coordinate(this.$refs.coordinate);
   },
   methods: {},
 };
@@ -37,7 +39,7 @@ export default {
   border: 1px solid black;
 }
 
-#statistics {
+#coordinate {
   width: 50%;
   height: 30%;
   float: left;
