@@ -65,7 +65,6 @@ export default class Coordinate {
             .data(sample_data)  //sample_data.slice().sort((a, b) => d3.ascending(a[keyz], b[keyz]))
             .join("path")
             .attr("stroke", (d, i) => {
-                console.log(y)
                 return color[i]
             })
             .attr("d", d => line(d3.cross(keys, [d], (key, d) => [key, d[key]])))

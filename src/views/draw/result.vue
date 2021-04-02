@@ -9,6 +9,7 @@
 <script>
 import axios from "axios";
 import Venn from "@/components/js/venn";
+import Venn_result from "@/components/js/venn_result";
 import Coordinate from "@/components/js/coordinate";
 export default {
   name: "result",
@@ -20,6 +21,7 @@ export default {
   },
   mounted: function(){
     new Venn(this.$refs.venn);
+    new Venn_result(this.$refs.venn);
     new Coordinate(this.$refs.coordinate);
   },
   methods: {},
