@@ -20,22 +20,23 @@ export default class Coordinate {
 
         var sample_data = [
             {
-                "displacement (cc)": 360,
-                "power (hp)": 175,
-                "weight (lb)": 3821,
-                "0-60 mph (s)": 11,
+                "pre": 0.0213,
+                "rec": 0.1000,
+                "auc": 0.8447,
+                "personal": 0.0031,
             },
             {
 
-                "displacement (cc)": 390,
-                "power (hp)": 190,
-                "weight (lb)": 3850,
-                "0-60 mph (s)": 8.5,
+                "pre": 0.0106,
+                "rec": 0.05,
+                "auc": 0.8951,
+                "personal": 0.6098,
             }
         ]
 
-        let keys = Object.keys(sample_data[0])
-        let y = new Map(Array.from(keys, key => [key, d3.scaleLinear(d3.extent(sample_data, d => d[key]), [0, 450])]))
+        let keys = ["pre", "rec", "auc", "personal"]
+        let y = new Map(Array.from(keys, key => [key, d3.scaleLinear([0, 1], [450, 0])]))
+        //new Map(Array.from(keys, key => [key, d3.scaleLinear(d3.extent(sample_data, d => d[key]), [450, 0])]))  
         let x = d3.scalePoint(keys, [0, 550])
 
         let line = d3.line()
@@ -47,20 +48,31 @@ export default class Coordinate {
             .attr("viewBox", `${-this.defaultWH.width / 6} ${-this.defaultWH.height / 7} ${this.defaultWH.width * 1.8} ${this.defaultWH.height * 1.8}`)
             .style("width", "100%")
             .style("height", "auto")
+            .call(d3.zoom()
+                .extent([[0, 0], [this.defaultWH.width, this.defaultWH.height]])
+                .scaleExtent([1, 8])
+                .on("zoom", function ({ transform }) {
+                    Coordinate.attr("transform", transform)
+                }));
+        const color = ["#98abc5", "#6b486b", "#ff8c00"]
         
-        this.SVG.append("g")
+        const Coordinate = this.SVG.append("g")
+        Coordinate.append("g")
             .attr("fill", "none")
             .attr("stroke-width", 3)
             .attr("stroke-opacity", 1)
             .selectAll("path")
             .data(sample_data)  //sample_data.slice().sort((a, b) => d3.ascending(a[keyz], b[keyz]))
             .join("path")
-            .attr("stroke", '#7b6888')
+            .attr("stroke", (d, i) => {
+                console.log(y)
+                return color[i]
+            })
             .attr("d", d => line(d3.cross(keys, [d], (key, d) => [key, d[key]])))
             .append("title")
             .text(d => d.name);
 
-        this.SVG.append("g")
+        Coordinate.append("g")
             .selectAll("g")
             .data(keys)
             .join("g")
@@ -71,6 +83,7 @@ export default class Coordinate {
                 .attr("y", 470)
                 .attr("text-anchor", "start")
                 .attr("fill", "currentColor")
+                .attr("font-size", 22)
                 .text(d => d))
             .call(g => g.selectAll("text")
                 .clone(true).lower()

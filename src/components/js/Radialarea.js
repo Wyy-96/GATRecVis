@@ -200,8 +200,8 @@ export default class RadialArea {
           .attr('text', Angle)
 
         if (d3.select(this).attr('class') == 'Selec_cri') {
-          var a = parseFloat(d3.selectAll('.Selec_cri')._groups[0][0].attributes.text.value) + 0.04
-          var b = parseFloat(d3.selectAll('.Selec_cri')._groups[0][1].attributes.text.value) + 0.045
+          var a = parseFloat(d3.selectAll('.Selec_cri')._groups[0][0].attributes.text.value) - 0.0001
+          var b = parseFloat(d3.selectAll('.Selec_cri')._groups[0][1].attributes.text.value) + 0.01
           if (a > b)
             a = - 2 * Math.PI + a
 
@@ -218,19 +218,22 @@ export default class RadialArea {
 
           // 根据指针角度 筛选数据
           var selectData = new Array()
+          var selectData_rev = new Array()
           data.forEach(function (item, i) {
             var data_rotate = x(item.State) + x.bandwidth() / 2
-            if (a < 0)
+            if (a < 0){
               if (data_rotate < b && data_rotate > 0)
                 selectData.push(item)
-            if (data_rotate < 2 * Math.PI && data_rotate > a + 2 * Math.PI)
-              selectData.unshift(item)
+              if (data_rotate < 2 * Math.PI && data_rotate > a + 2 * Math.PI)
+                selectData_rev.push(item)
+            }
             if (a > 0)
               if (data_rotate < b && data_rotate > a)
                 selectData.push(item)
           })
           // 绘制所选区域数据
-          DrawSelectData(selectData,width,height)
+          let c = selectData_rev.concat(selectData);
+          DrawSelectData(c,width,height)
         }
       }
       function endDragging(event, d) {
@@ -301,8 +304,8 @@ export default class RadialArea {
     const inter = interMap_g.append('g')
 
     inter.selectAll('path')
-      .data([{ "startAngle": 0, "endAngle": 0.04, "padAngle": 0 },
-      { "startAngle": 0.045, "endAngle": 0.085, "padAngle": 0 }
+      .data([{ "startAngle": -0.04, "endAngle": 0, "padAngle": 0 },
+      { "startAngle": 0.01, "endAngle": 0.05, "padAngle": 0 }
       ])
       .join("path")
       .attr('d', arc_brush)
