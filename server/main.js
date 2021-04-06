@@ -3,7 +3,7 @@ const http = require('http');
 const badyParser = require('body-parser');
 const express = require('express');
 const dataApi = require('./api/getdata');
-const getrec = require('./api/rec');
+
 
 let app = express();
 let server = http.createServer(app);
@@ -15,9 +15,13 @@ app.use(badyParser.urlencoded({
 
 // 后端api路由
 app.use('/api/getdata', dataApi);
-app.use('/api/getrec', getrec);
+
 
 // 启动监听
-server.listen(8888, () => {
+server.listen(8888, '127.0.0.1', () => {
+    var host = server.address().address
+    var port = server.address().port
+
+    console.log("应用实例，访问地址为 http://%s:%s", host, port)
     console.log(' success!! port:9999')
 })

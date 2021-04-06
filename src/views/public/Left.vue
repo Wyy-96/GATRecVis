@@ -76,7 +76,7 @@ export default {
         {
           date: "user",
           name: "9625",
-          interact: "user-movie : 2195882",
+          interact: "user-movie : 2,195,882",
         },
         {
           date: "movie",
@@ -87,7 +87,7 @@ export default {
           name: "6287",
         },
         {
-          date: "ator",
+          date: "actor",
           name: "9598",
         },
         {
