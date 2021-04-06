@@ -24,7 +24,9 @@ export default {
   watch: {
      "$store.getters.userId"() {
        console.log(this.$store.getters.userId)
-
+    },
+    "$store.getters.HetGNNShow"() {
+       console.log(this.$store.getters.HetGNNShow)
     },
   },
   methods: {

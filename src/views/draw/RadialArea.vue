@@ -77,7 +77,7 @@ export default {
       const y = d3
         .scaleRadial()
         .domain([0, d3.max(data, (d) => d.total)]) //d3.max(this.data, d => d.total)
-        .range([100, 250]);
+        .range([120, 250]);
 
       relMap_g
         .append("g")

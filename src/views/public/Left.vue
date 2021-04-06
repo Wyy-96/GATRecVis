@@ -5,20 +5,20 @@
       <div class="modelSelect">
         <div class="" style="float: left; margin: 8px 20px 0px 20px">
           <el-switch
-            v-model="value1"
+            v-model="HetGNNIsShow"
             active-color="#98abc5"
             inactive-color="#D1D1D1"
           >
           </el-switch>
           <el-switch
-            v-model="value2"
+            v-model="KGATIsShow"
             style="display: block; margin-top: 28px"
             active-color="#6b486b"
             inactive-color="#D1D1D1"
           >
           </el-switch>
           <el-switch
-            v-model="value3"
+            v-model="NIRecIsShow"
             style="display: block; margin-top: 56px"
             active-color="#ff8c00"
             inactive-color="#D1D1D1"
@@ -96,9 +96,9 @@ export default {
           interact: "传记 犯罪 情色 喜剧 爱情 动作 纪录片...",
         },
       ],
-      value1: true,
-      value2: true,
-      value3: true,
+      HetGNNIsShow: true,
+      KGATIsShow: true,
+      NIRecIsShow: true,
       modeData: [
         {
           date: "HetGNN",
@@ -117,6 +117,17 @@ export default {
     };
   },
   created: function () {},
+  watch: {
+     HetGNNIsShow:function(val){
+        this.$store.commit("global/SET_HETGNN_SHOW", val);
+     },
+     KGATIsShow:function(val){
+        this.$store.commit("global/SET_KGAT_SHOW", val);
+     },
+     NIRecIsShow:function(val){
+        this.$store.commit("global/SET_NIRec_SHOW", val);
+     },
+  },
   methods: {},
 };
 </script>
