@@ -19,38 +19,25 @@ export default {
   mounted: function () {
     this.Venn(this.$refs.venn);
     this.VennResult(this.$refs.venn)
-    this.Coordinate(this.$refs.coordinate);
+    this.Coordinate(this.$refs.coordinate,[]);
   },
   watch: {
      "$store.getters.userId"() {
        console.log(this.$store.getters.userId)
        axios.post('api/getdata/selectUser',{data:this.$store.getters.userId}).then((res) => {
-          console.log(res.data[0].rec_result)
+          document.getElementById('coordinate').innerHTML = "";
+          this.Coordinate(this.$refs.coordinate,res.data)
        });
     },
   },
   methods: {
-    Coordinate(map) {
+    Coordinate(map,data) {
       const config = {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
-      var sample_data = [
-        {
-          pre: 0.0213,
-          rec: 0.1,
-          auc: 0.8447,
-          personal: 0.0031,
-        },
-        {
-          pre: 0.0106,
-          rec: 0.05,
-          auc: 0.8951,
-          personal: 0.6098,
-        },
-      ];
-
-      let keys = ["pre", "rec", "auc", "personal"];
+      var sample_data = data
+      let keys = ["precision", "recall", "auc", "personal"];
       let y = new Map(
         Array.from(keys, (key) => [key, d3.scaleLinear([0, 1], [450, 0])])
       );
@@ -97,11 +84,12 @@ export default {
         .data(sample_data) //sample_data.slice().sort((a, b) => d3.ascending(a[keyz], b[keyz]))
         .join("path")
         .attr("stroke", (d, i) => {
+          console.log(d)
           return color[i];
         })
         .attr("d", (d) => line(d3.cross(keys, [d], (key, d) => [key, d[key]])))
         .append("title")
-        .text((d) => d.name);
+        .text((d) => d.userId);
 
       Coordinate.append("g")
         .selectAll("g")

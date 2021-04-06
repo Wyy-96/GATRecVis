@@ -10,13 +10,15 @@ const _ = require('lodash');
 
 // 查询用户
 var KGAT = new Array()
+var HetGNN = new Array()
+
 var KGAT_f = fs.readFileSync('./data/KGAT_rec_result2.txt', 'utf-8').split('\n');
+var HetGNN_f = fs.readFileSync('./data/HetGNN_rec_result.txt', 'utf-8').split('\n');
 
 AnalyzeDdata(KGAT_f, KGAT)
-
+AnalyzeDdata(HetGNN_f, HetGNN)
 function AnalyzeDdata(data, object) {
   for (i = 0; i < data.length - 1; i++) {
-
     let line = data[i].split(',')
     let test = new Object()
 
@@ -25,15 +27,18 @@ function AnalyzeDdata(data, object) {
     test.recall = parseFloat(line[2])
     test.precision = parseFloat(line[3])
     test.auc = parseFloat(line[4])
-    test.personal = parseFloat(line[5])
+    test.personal = 1 - parseFloat(line[5])
 
     object.push(test)
   }
 }
 router.post('/selectUser', (req, res) => {
   let userId = parseInt(req.body.data.replace("u", ""))
-  console.log(userId)
-  res.json(KGAT)
+  var test1 = new Array()
+  
+  test1.push(KGAT[userId])
+  test1.push(HetGNN[userId])
+  res.json(test1)
 });
 
 module.exports = router;
