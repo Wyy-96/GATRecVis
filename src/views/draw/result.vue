@@ -18,25 +18,27 @@ export default {
   created: function () {},
   mounted: function () {
     this.Venn(this.$refs.venn);
-    this.VennResult(this.$refs.venn)
-    this.Coordinate(this.$refs.coordinate,[]);
+    this.VennResult(this.$refs.venn);
+    this.Coordinate(this.$refs.coordinate, []);
   },
   watch: {
-     "$store.getters.userId"() {
-       console.log(this.$store.getters.userId)
-       axios.post('api/getdata/selectUser',{data:this.$store.getters.userId}).then((res) => {
-          document.getElementById('coordinate').innerHTML = "";
-          this.Coordinate(this.$refs.coordinate,res.data)
-       });
+    "$store.getters.userId"() {
+      console.log(this.$store.getters.userId);
+      axios
+        .post("api/getdata/selectUser", { data: this.$store.getters.userId })
+        .then((res) => {
+          document.getElementById("coordinate").innerHTML = "";
+          this.Coordinate(this.$refs.coordinate, res.data);
+        });
     },
   },
   methods: {
-    Coordinate(map,data) {
+    Coordinate(map, data) {
       const config = {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
-      var sample_data = data
+      var sample_data = data;
       let keys = ["precision", "recall", "auc", "personal"];
       let y = new Map(
         Array.from(keys, (key) => [key, d3.scaleLinear([0, 1], [450, 0])])
@@ -84,7 +86,7 @@ export default {
         .data(sample_data) //sample_data.slice().sort((a, b) => d3.ascending(a[keyz], b[keyz]))
         .join("path")
         .attr("stroke", (d, i) => {
-          console.log(d)
+          console.log(d);
           return color[i];
         })
         .attr("d", (d) => line(d3.cross(keys, [d], (key, d) => [key, d[key]])))
@@ -223,73 +225,115 @@ export default {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
-      const SVG = d3
-        .select(map)
-        .select("svg")
-        .attr(
-          "viewBox",
-          `${-config.width / 6} ${-config.height / 7} ${config.width * 1.8} ${
-            config.height * 1.8
-          }`
-        )
-        .style("width", "100%")
-        .style("height", "auto");
-      
-        const drwacircle = SVG.append("g");
-        const data = [
-            {
-                "": "HetGNN",
-                "x": 90,
-                "y": 350,
-            },
-            {
-                "": "KGAT",
-                "x": 245,
-                "y": 90,
+      const SVG = d3.select(map).select("svg");
 
-            },
-            {
-                "": "KGAT,NIRec,HetGNN",
-                "x": 245,
-                "y": 260,
+      const drwacircle = SVG.append("g");
+      drwacircle
+        .append("ellipse")
+        .attr("cx", 245)
+        .attr("cy", 80)
+        .attr("rx", 120)
+        .attr("ry", 70);
 
-            },
-            {
-                "": "NIRec,HetGNN",
-                "x": 245,
-                "y": 375,
+      drwacircle
+        .append("ellipse")
+        .attr("cx", 245)
+        .attr("cy", 260)
+        .attr("rx", 65)
+        .attr("ry", 65);
 
-            },
-            {
-                "": "KGAT,HetGNN",
-                "x": 150,
-                "y": 205,
+      drwacircle
+        .append("ellipse")
+        .attr("cx", 245)
+        .attr("cy", 380)
+        .attr("rx", 45)
+        .attr("ry", 45);
 
-            },
-            {
-                "": "KGAT,NIRec",
-                "x": 345,
-                "y": 205,
+      function random(m, n) {
+        return Math.floor(Math.random() * (n - m)) + m;
+      }
+      let axis_x = random(125,365)
+      let y = Math.sqrt((1 - (Math.pow(axis_x - 245,2)/Math.pow(120,2))) * Math.pow(70,2)) + 80 
+      let axis_y = random(y-80,y)
+      console.log(axis_x,axis_y,y-80,y)
+      drwacircle
+        .append("circle")
+        .attr("cx", axis_x)
+        .attr("cy", axis_y)
+        .attr("r", 6)
+        .attr("fill", "red");
+      // const data = [
+      //     {
+      //         "": "HetGNN",
+      //         "x": 90,
+      //         "y": 350,
+      //     },
+      //     {
+      //         "": "KGAT",
+      //         "x": 350,
+      //         "y": 100,
 
-            },
-            {
-                "": "NIRec",
-                "x": 400,
-                "y": 350,
+      //     },
+      //     {
+      //         "": "KGAT",
+      //         "x": 120,
+      //         "y": 100,
 
-            },
-            
-        ]
-        const dot = drwacircle.append("g")
-            .attr("fill", "none")
-            .attr("stroke", "red")
-            .attr("stroke-width", 2)
-            .style('fill-opacity', 1)
-            .selectAll("g")
-            .data(data)
-            .join("circle")
-            .attr("transform", d => `translate(${d.x},${d.y})`)
-            .attr("r", d => 10)
+      //     },
+      //     {
+      //         "": "KGAT",
+      //         "x": 300,
+      //         "y": 110,
+
+      //     },
+      //     {
+      //         "": "KGAT",
+      //         "x": 245,
+      //         "y": 30,
+
+      //     },
+      //     {
+      //         "": "KGAT,NIRec,HetGNN",
+      //         "x": 245,
+      //         "y": 260,
+
+      //     },
+      //     {
+      //         "": "NIRec,HetGNN",
+      //         "x": 245,
+      //         "y": 375,
+
+      //     },
+      //     {
+      //         "": "KGAT,HetGNN",
+      //         "x": 150,
+      //         "y": 205,
+
+      //     },
+      //     {
+      //         "": "KGAT,NIRec",
+      //         "x": 345,
+      //         "y": 205,
+
+      //     },
+      //     {
+      //         "": "NIRec",
+      //         "x": 400,
+      //         "y": 350,
+
+      //     },
+
+      // ]
+      // const dot = drwacircle.append("g")
+      //     .attr("fill", "none")
+      //     .attr("stroke", "red")
+      //     .attr("stroke-width", 4)
+      //     .style('fill-opacity', 1)
+      //     .selectAll("g")
+      //     .data(data)
+      //     .join("circle")
+      //     .attr("transform", d => `translate(${d.x},${d.y})`)
+      //     .attr("r", d => 6)
     },
   },
 };
