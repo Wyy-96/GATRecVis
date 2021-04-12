@@ -1,6 +1,6 @@
 <template>
   <div id="result">
-    <div id="force" class="force" ref="force"></div>
+    <forceView></forceView>
     <div id="coordinate" class="coordinate" ref="coordinate"></div>
     <div id="venn" class="venn" ref="venn"></div>
   </div>
@@ -9,26 +9,34 @@
 <script>
 import axios from "axios";
 import * as d3 from "d3";
+import forceView from "../draw/forceView.vue";
+import store from "@/store";
 export default {
   name: "result",
-  components: {},
+  components: {
+    forceView,
+  },
   data() {
     return {};
   },
   created: function () {},
   mounted: function () {
     this.Venn(this.$refs.venn);
-    this.VennResult(this.$refs.venn);
     this.Coordinate(this.$refs.coordinate, []);
   },
   watch: {
     "$store.getters.userId"() {
-      console.log(this.$store.getters.userId);
+      // console.log(this.$store.getters.userId);
       axios
         .post("api/getdata/selectUser", { data: this.$store.getters.userId })
         .then((res) => {
           document.getElementById("coordinate").innerHTML = "";
-          this.Coordinate(this.$refs.coordinate, res.data);
+          this.Coordinate(this.$refs.coordinate, res.data.Coodinare);
+          let box = document.getElementsByClassName("none");
+          // 已经存在VennResult散点图  则删除
+          if (box.length == 1) box[box.length - 1].remove();
+          this.VennResult(this.$refs.venn, res.data.Vennresult);
+
         });
     },
   },
@@ -86,7 +94,6 @@ export default {
         .data(sample_data) //sample_data.slice().sort((a, b) => d3.ascending(a[keyz], b[keyz]))
         .join("path")
         .attr("stroke", (d, i) => {
-          console.log(d);
           return color[i];
         })
         .attr("d", (d) => line(d3.cross(keys, [d], (key, d) => [key, d[key]])))
@@ -204,7 +211,7 @@ export default {
         .join("path")
         .classed("active", false)
         .attr("d", (d) => d.d)
-        .attr("opacity", 1)
+        .attr("opacity", 0.6)
         .attr("fill", (d) => (d.blend ? d.blend : "transparent"));
 
       venn
@@ -220,120 +227,173 @@ export default {
       //     .attr("fill-opacity", 0.25);
       // });
     },
-    VennResult(map) {
+    VennResult(map, data) {
+      let keys = Object.keys(data);
+      for (var i = 0; i < keys.length; i++) {
+        let area = data[keys[i]];
+        for (var j = 0; j < area.length; j++) {
+          var asi = [0,0];
+          switch (i) {
+            case 0:
+              asi = recInHetGNN();
+              asi.push('H');
+              break;
+            case 1:
+              asi = recInKGAT();
+              asi.push('K')
+              break;
+            case 3:
+              asi = recInHK();
+              asi.push('HK');
+              break;
+            default:
+              break;
+          }
+          area[j].x = asi[0];
+          area[j].y = asi[1];
+          area[j].or = asi[2];
+        }
+      }
       const config = {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
       const SVG = d3.select(map).select("svg");
 
-      const drwacircle = SVG.append("g");
-      drwacircle
-        .append("ellipse")
-        .attr("cx", 245)
-        .attr("cy", 80)
-        .attr("rx", 120)
-        .attr("ry", 70);
-
-      drwacircle
-        .append("ellipse")
-        .attr("cx", 245)
-        .attr("cy", 260)
-        .attr("rx", 65)
-        .attr("ry", 65);
-
-      drwacircle
-        .append("ellipse")
-        .attr("cx", 245)
-        .attr("cy", 380)
-        .attr("rx", 45)
-        .attr("ry", 45);
+      const drwacircle = SVG.append("g").attr("class", "none");
 
       function random(m, n) {
         return Math.floor(Math.random() * (n - m)) + m;
       }
-      let axis_x = random(125,365)
-      let y = Math.sqrt((1 - (Math.pow(axis_x - 245,2)/Math.pow(120,2))) * Math.pow(70,2)) + 80 
-      let axis_y = random(y-80,y)
-      console.log(axis_x,axis_y,y-80,y)
+
+      function recInHetGNN() {
+        // .attr("transform", `rotate(${60}, ${0} ${0})`);
+        let x = random(230, 470);
+        let _y = Math.floor(
+          Math.sqrt(
+            (1 - Math.pow(x - 350, 2) / Math.pow(120, 2)) * Math.pow(70, 2)
+          ) + 100
+        );
+        let y = random(200 - _y, _y);
+        return [x, y];
+      }
+
+      function recInKGAT() {
+        let x = random(125, 365);
+        let _y = Math.floor(
+          Math.sqrt(
+            (1 - Math.pow(x - 245, 2) / Math.pow(120, 2)) * Math.pow(70, 2)
+          ) + 80
+        );
+        let y = random(160 - _y, _y);
+        return [x, y];
+      }
+
+      function recInNIRec() {
+        //.attr("transform", `rotate(${-60}, ${0} ${0})`);
+        let x = random(-220, 20);
+        let _y = Math.floor(
+          Math.sqrt(
+            (1 - Math.pow(x + 100, 2) / Math.pow(120, 2)) * Math.pow(70, 2)
+          ) + 525
+        );
+        let y = random(1050 - _y, _y);
+        return [x, y];
+      }
+
+      function recInHK() {
+        let x = random(95, 185);
+        let _y = Math.floor(
+          Math.sqrt(Math.pow(45, 2) - Math.pow(x - 140, 2)) + 200
+        );
+        let y = random(400 - _y, _y);
+        return [x, y];
+      }
+
+      function recInHN() {
+        let x = random(205, 285);
+        let _y = Math.floor(
+          Math.sqrt(Math.pow(45, 2) - Math.pow(x - 245, 2)) + 380
+        );
+        let y = random(760 - _y, _y);
+        return [x, y];
+      }
+
+      function recInKN() {
+        let x = random(305, 395);
+        let _y = Math.floor(
+          Math.sqrt(Math.pow(45, 2) - Math.pow(x - 350, 2)) + 200
+        );
+        let y = random(400 - _y, _y);
+        return [x, y];
+      }
+
+      function recInHKN() {
+        let x = random(175, 315);
+        let _y = Math.sqrt(Math.pow(60, 2) - Math.pow(x - 245, 2)) + 260;
+        let y = _y; // random(_y - 80, _y);
+        return [x, y];
+      }
+
+      // HetGNN
       drwacircle
-        .append("circle")
-        .attr("cx", axis_x)
-        .attr("cy", axis_y)
+        .append("g")
+        .attr("fill", "#627FA6")
+        // .attr("stroke", "red")
+        // .attr("stroke-width", 4)
+        .style("fill-opacity", 1)
+        .selectAll("g")
+        .data(data[keys[0]])
+        .join("circle")
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y)
+        .on("click", (event, d) => {
+          //小矩形的id  例，u217
+          store.commit("global/SET_MOVIE_ID", d.movieId+'_'+d.or);
+        })
+        .attr("transform", `rotate(${60}, ${0} ${0})`)
         .attr("r", 6)
-        .attr("fill", "red");
-      // const data = [
-      //     {
-      //         "": "HetGNN",
-      //         "x": 90,
-      //         "y": 350,
-      //     },
-      //     {
-      //         "": "KGAT",
-      //         "x": 350,
-      //         "y": 100,
+        .append("title")
+        .text((d) => d.movieName);
 
-      //     },
-      //     {
-      //         "": "KGAT",
-      //         "x": 120,
-      //         "y": 100,
+      // KGAT
+      drwacircle
+        .append("g")
+        .attr("fill", "#6b486b")
+        // .attr("stroke", "red")
+        // .attr("stroke-width", 4)
+        .style("fill-opacity", 1)
+        .selectAll("g")
+        .data(data[keys[1]])
+        .join("circle")
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y)
+        .attr("r", 6)
+        .on("click", (event, d) => {
+          //小矩形的id  例，u217
+          store.commit("global/SET_MOVIE_ID", d.movieId+'_'+d.or);
+        })
+        .append("title")
+        .text((d) => d.movieName);
 
-      //     },
-      //     {
-      //         "": "KGAT",
-      //         "x": 300,
-      //         "y": 110,
-
-      //     },
-      //     {
-      //         "": "KGAT",
-      //         "x": 245,
-      //         "y": 30,
-
-      //     },
-      //     {
-      //         "": "KGAT,NIRec,HetGNN",
-      //         "x": 245,
-      //         "y": 260,
-
-      //     },
-      //     {
-      //         "": "NIRec,HetGNN",
-      //         "x": 245,
-      //         "y": 375,
-
-      //     },
-      //     {
-      //         "": "KGAT,HetGNN",
-      //         "x": 150,
-      //         "y": 205,
-
-      //     },
-      //     {
-      //         "": "KGAT,NIRec",
-      //         "x": 345,
-      //         "y": 205,
-
-      //     },
-      //     {
-      //         "": "NIRec",
-      //         "x": 400,
-      //         "y": 350,
-
-      //     },
-
-      // ]
-      // const dot = drwacircle.append("g")
-      //     .attr("fill", "none")
-      //     .attr("stroke", "red")
-      //     .attr("stroke-width", 4)
-      //     .style('fill-opacity', 1)
-      //     .selectAll("g")
-      //     .data(data)
-      //     .join("circle")
-      //     .attr("transform", d => `translate(${d.x},${d.y})`)
-      //     .attr("r", d => 6)
+      drwacircle
+        .append("g")
+        .attr("fill", "#786A88")
+        // .attr("stroke", "red")
+        // .attr("stroke-width", 4)
+        .style("fill-opacity", 1)
+        .selectAll("g")
+        .data(data[keys[3]])
+        .join("circle")
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y)
+        .attr("r", 6)
+        .on("click", (event, d) => {
+          //小矩形的id  例，u217
+          store.commit("global/SET_MOVIE_ID", d.movieId+'_'+d.or);
+        })
+        .append("title")
+        .text((d) => d.movieName);
     },
   },
 };
@@ -342,27 +402,19 @@ export default {
 #result {
   width: 50%;
   height: 100%;
-  border: 1px solid black;
-}
-
-#force {
-  width: 100%;
-  height: 70%;
-  float: left;
-  border: 1px solid black;
+  border: 1px solid #A6A6A6;
 }
 
 #coordinate {
   width: 50%;
   height: 30%;
   float: left;
-  border: 1px solid black;
+  border-right: 1px solid #A6A6A6;
 }
 
 #venn {
   width: 49%;
   height: 30%;
   float: left;
-  border: 1px solid black;
 }
 </style>

@@ -1,6 +1,7 @@
 // 全局参数
 const state = {
     userId: '',
+    movieId: '',
     HetGNNShow:true,
     KGATShow: true,
     NIRecShow: true,
@@ -9,6 +10,9 @@ const state = {
 const mutations = {
     SET_USER_ID: (state, userId) => {
         state.userId = userId
+    },
+    SET_MOVIE_ID: (state, movieId) => {
+        state.movieId = movieId
     },
     SET_HETGNN_SHOW: (state, HetGNNShow) => {
         state.HetGNNShow = HetGNNShow

@@ -142,7 +142,7 @@ export default {
 .datainfo {
   height: 45%;
   width: 100%;
-  border: 1px solid black;
+  border: 1px solid #A6A6A6;
 }
 
 .header {

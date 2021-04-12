@@ -304,6 +304,6 @@ export default {
 #RadialArea {
   height: 50%;
   width: 100%;
-  border: solid 1px black;
+  border: solid 1px #A6A6A6;
 }
 </style>
