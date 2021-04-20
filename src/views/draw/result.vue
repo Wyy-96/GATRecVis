@@ -42,6 +42,7 @@ export default {
   },
   methods: {
     Coordinate(map, data) {
+      console.log(data)
       const config = {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
@@ -229,11 +230,12 @@ export default {
     },
     VennResult(map, data) {
       let keys = Object.keys(data);
+      console.log(keys)
       for (var i = 0; i < keys.length; i++) {
         let area = data[keys[i]];
         for (var j = 0; j < area.length; j++) {
           var asi = [0,0];
-          switch (i) {
+          switch (i) {  //["He", "KG", "IN", "HeKG", "HeNI", "KGNI", "HeKGNI"]
             case 0:
               asi = recInHetGNN();
               asi.push('H');
@@ -242,9 +244,25 @@ export default {
               asi = recInKGAT();
               asi.push('K')
               break;
+            case 2:
+              asi = recInNIRec();
+              asi.push('IN');
+              break;
             case 3:
               asi = recInHK();
               asi.push('HK');
+              break;
+            case 4:
+              asi = recInHN();
+              asi.push('HeNI');
+              break;
+            case 5:
+              asi = recInKN();
+              asi.push('KGNI');
+              break;
+            case 6:
+              asi = recInHKN();
+              asi.push('HeKGNI');
               break;
             default:
               break;
@@ -334,7 +352,7 @@ export default {
         let y = _y; // random(_y - 80, _y);
         return [x, y];
       }
-
+      console.log(data)
       // HetGNN
       drwacircle
         .append("g")
@@ -378,12 +396,89 @@ export default {
 
       drwacircle
         .append("g")
+        .attr("fill", "#FF9515")
+        // .attr("stroke", "red")
+        // .attr("stroke-width", 4)
+        .style("fill-opacity", 1)
+        .selectAll("g")
+        .data(data[keys[2]])
+        .join("circle")
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y)
+        .attr("r", 6)
+        .on("click", (event, d) => {
+          //小矩形的id  例，u217
+          store.commit("global/SET_MOVIE_ID", d.movieId+'_'+d.or);
+        })
+        .attr("transform", `rotate(${-60}, ${0} ${0})`)
+        .append("title")
+        .text((d) => d.movieName);
+
+      drwacircle
+        .append("g")
         .attr("fill", "#786A88")
         // .attr("stroke", "red")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
         .selectAll("g")
         .data(data[keys[3]])
+        .join("circle")
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y)
+        .attr("r", 6)
+        .on("click", (event, d) => {
+          //小矩形的id  例，u217
+          store.commit("global/SET_MOVIE_ID", d.movieId+'_'+d.or);
+        })
+        .append("title")
+        .text((d) => d.movieName);
+
+      drwacircle
+        .append("g")
+        .attr("fill", "#786A88")
+        // .attr("stroke", "red")
+        // .attr("stroke-width", 4)
+        .style("fill-opacity", 1)
+        .selectAll("g")
+        .data(data[keys[4]])
+        .join("circle")
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y)
+        .attr("r", 6)
+        .on("click", (event, d) => {
+          //小矩形的id  例，u217
+          store.commit("global/SET_MOVIE_ID", d.movieId+'_'+d.or);
+        })
+        .append("title")
+        .text((d) => d.movieName);
+      
+      drwacircle
+        .append("g")
+        .attr("fill", "#A77669")
+        // .attr("stroke", "red")
+        // .attr("stroke-width", 4)
+        .style("fill-opacity", 1)
+        .selectAll("g")
+        .data(data[keys[5]])
+        .join("circle")
+        .attr("cx", (d) => d.x)
+        .attr("cy", (d) => d.y)
+        .attr("r", 6)
+        .on("click", (event, d) => {
+          //小矩形的id  例，u217
+          store.commit("global/SET_MOVIE_ID", d.movieId+'_'+d.or);
+        })
+        .append("title")
+        .text((d) => d.movieName);
+      
+      drwacircle
+        .append("g")
+        .attr("fill", "#786A88")
+        // .attr("stroke", "red")
+        // .attr("stroke-width", 4)
+        .style("fill-opacity", 1)
+        .selectAll("g")
+        .data(data[keys[6]])
         .join("circle")
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)

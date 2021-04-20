@@ -22,1605 +22,770 @@ export default {
         .post("api/getdata/selectedMovie", {
           data: [this.$store.getters.userId, this.$store.getters.movieId],
         })
-        .then((res) => {});
+        .then((res) => {
+          //   let svgbox = document.getElementsByClassName("force");
+          //   if (svgbox.length == 1) svgbox[svgbox.length - 1].remove();
+          //   this.force(res.data)
+        });
     },
   },
   methods: {
-    force() {
+    force(data) {
       let testdata = {
         nodes: [
           {
-            id: "Myriel",
-            group: 1,
-          },
-          {
-            id: "Napoleon",
-            group: 1,
-          },
-          {
-            id: "Mlle.Baptistine",
-            group: 1,
-          },
-          {
-            id: "Mme.Magloire",
-            group: 1,
-          },
-          {
-            id: "CountessdeLo",
-            group: 1,
-          },
-          {
-            id: "Geborand",
-            group: 1,
-          },
-          {
-            id: "Champtercier",
-            group: 1,
-          },
-          {
-            id: "Cravatte",
-            group: 1,
-          },
-          {
-            id: "Count",
-            group: 1,
-          },
-          {
-            id: "OldMan",
-            group: 1,
-          },
-          {
-            id: "Labarre",
-            group: 2,
-          },
-          {
-            id: "Valjean",
-            group: 2,
-          },
-          {
-            id: "Marguerite",
-            group: 3,
-          },
-          {
-            id: "Mme.deR",
-            group: 2,
-          },
-          {
-            id: "Isabeau",
-            group: 2,
-          },
-          {
-            id: "Gervais",
-            group: 2,
-          },
-          {
-            id: "Tholomyes",
-            group: 3,
-          },
-          {
-            id: "Listolier",
-            group: 3,
-          },
-          {
-            id: "Fameuil",
-            group: 3,
-          },
-          {
-            id: "Blacheville",
-            group: 3,
-          },
-          {
-            id: "Favourite",
-            group: 3,
-          },
-          {
-            id: "Dahlia",
-            group: 3,
-          },
-          {
-            id: "Zephine",
-            group: 3,
-          },
-          {
-            id: "Fantine",
-            group: 3,
-          },
-          {
-            id: "Mme.Thenardier",
-            group: 4,
-          },
-          {
-            id: "Thenardier",
-            group: 4,
-          },
-          {
-            id: "Cosette",
-            group: 5,
-          },
-          {
-            id: "Javert",
-            group: 4,
-          },
-          {
-            id: "Fauchelevent",
-            group: 0,
-          },
-          {
-            id: "Bamatabois",
-            group: 2,
-          },
-          {
-            id: "Perpetue",
-            group: 3,
-          },
-          {
-            id: "Simplice",
-            group: 2,
-          },
-          {
-            id: "Scaufflaire",
-            group: 2,
-          },
-          {
-            id: "Woman1",
-            group: 2,
-          },
-          {
-            id: "Judge",
-            group: 2,
-          },
-          {
-            id: "Champmathieu",
-            group: 2,
-          },
-          {
-            id: "Brevet",
-            group: 2,
-          },
-          {
-            id: "Chenildieu",
-            group: 2,
-          },
-          {
-            id: "Cochepaille",
-            group: 2,
-          },
-          {
-            id: "Pontmercy",
-            group: 4,
-          },
-          {
-            id: "Boulatruelle",
+            id: "user35",
             group: 6,
           },
           {
-            id: "Eponine",
-            group: 4,
-          },
-          {
-            id: "Anzelma",
-            group: 4,
-          },
-          {
-            id: "Woman2",
-            group: 5,
-          },
-          {
-            id: "MotherInnocent",
-            group: 0,
-          },
-          {
-            id: "Gribier",
-            group: 0,
-          },
-          {
-            id: "Jondrette",
+            id: "九降风",
             group: 7,
           },
           {
-            id: "Mme.Burgon",
-            group: 7,
+            id: "转山",
+            group: 2,
           },
           {
-            id: "Gavroche",
-            group: 8,
-          },
-          {
-            id: "Gillenormand",
+            id: "剧情\r",
             group: 5,
           },
           {
-            id: "Magnon",
-            group: 5,
+            id: "除暴",
+            group: 2,
           },
           {
-            id: "Mlle.Gillenormand",
-            group: 5,
+            id: "忍者神龟",
+            group: 2,
           },
           {
-            id: "Mme.Pontmercy",
-            group: 5,
+            id: "微光城市",
+            group: 2,
           },
           {
-            id: "Mlle.Vaubois",
-            group: 5,
+            id: "悲伤的贝拉多娜",
+            group: 2,
           },
           {
-            id: "Lt.Gillenormand",
-            group: 5,
+            id: "魔发精灵",
+            group: 2,
           },
           {
-            id: "Marius",
-            group: 8,
+            id: "user39",
+            group: 1,
           },
           {
-            id: "BaronessT",
-            group: 5,
+            id: "user781",
+            group: 1,
           },
           {
-            id: "Mabeuf",
-            group: 8,
+            id: "user7537",
+            group: 1,
           },
           {
-            id: "Enjolras",
-            group: 8,
+            id: "user9177",
+            group: 1,
           },
           {
-            id: "Combeferre",
-            group: 8,
+            id: "篱笆墙外",
+            group: 2,
           },
           {
-            id: "Prouvaire",
-            group: 8,
+            id: "user9577",
+            group: 1,
           },
           {
-            id: "Feuilly",
-            group: 8,
+            id: "黑钱胜地",
+            group: 2,
           },
           {
-            id: "Courfeyrac",
-            group: 8,
+            id: "最长的一天",
+            group: 2,
           },
           {
-            id: "Bahorel",
-            group: 8,
+            id: "一个国家的诞生",
+            group: 2,
           },
           {
-            id: "Bossuet",
-            group: 8,
+            id: "user4648",
+            group: 1,
           },
           {
-            id: "Joly",
-            group: 8,
+            id: "user4733",
+            group: 1,
           },
           {
-            id: "Grantaire",
-            group: 8,
+            id: "user8468",
+            group: 1,
           },
           {
-            id: "MotherPlutarch",
-            group: 9,
+            id: "user8622",
+            group: 1,
           },
           {
-            id: "Gueulemer",
-            group: 4,
+            id: "世界旦夕之间",
+            group: 2,
           },
           {
-            id: "Babet",
-            group: 4,
+            id: "灭绝",
+            group: 2,
           },
           {
-            id: "Claquesous",
-            group: 4,
+            id: "user845",
+            group: 1,
           },
           {
-            id: "Montparnasse",
-            group: 4,
+            id: "盲侠大律师",
+            group: 2,
           },
           {
-            id: "Toussaint",
-            group: 5,
+            id: "不死鸟",
+            group: 2,
           },
           {
-            id: "Child1",
-            group: 10,
+            id: "user3690",
+            group: 1,
           },
           {
-            id: "Child2",
-            group: 10,
+            id: "深渊",
+            group: 2,
           },
           {
-            id: "Brujon",
-            group: 4,
+            id: "歪小子斯科特对抗全世界",
+            group: 2,
           },
           {
-            id: "Mme.Hucheloup",
-            group: 8,
+            id: "user8902",
+            group: 1,
+          },
+          {
+            id: "茉莉花开",
+            group: 2,
+          },
+          {
+            id: "唯爱永生",
+            group: 2,
+          },
+          {
+            id: "天伦之旅",
+            group: 2,
+          },
+          {
+            id: "user5071",
+            group: 1,
+          },
+          {
+            id: "算死草",
+            group: 2,
+          },
+          {
+            id: "我11",
+            group: 2,
+          },
+          {
+            id: "我自己的爱达荷",
+            group: 2,
+          },
+          {
+            id: "菊豆",
+            group: 2,
+          },
+          {
+            id: "诗",
+            group: 2,
+          },
+          {
+            id: "金枝欲孽",
+            group: 2,
+          },
+          {
+            id: "回忆三部曲",
+            group: 2,
+          },
+          {
+            id: "user9218",
+            group: 1,
           },
         ],
         links: [
           {
-            source: "Napoleon",
-            target: "Myriel",
-            value: 1,
-          },
-          {
-            source: "Mlle.Baptistine",
-            target: "Myriel",
-            value: 8,
-          },
-          {
-            source: "Mme.Magloire",
-            target: "Myriel",
-            value: 10,
-          },
-          {
-            source: "Mme.Magloire",
-            target: "Mlle.Baptistine",
-            value: 6,
-          },
-          {
-            source: "CountessdeLo",
-            target: "Myriel",
-            value: 1,
-          },
-          {
-            source: "Geborand",
-            target: "Myriel",
-            value: 1,
-          },
-          {
-            source: "Champtercier",
-            target: "Myriel",
-            value: 1,
-          },
-          {
-            source: "Cravatte",
-            target: "Myriel",
-            value: 1,
-          },
-          {
-            source: "Count",
-            target: "Myriel",
-            value: 2,
-          },
-          {
-            source: "OldMan",
-            target: "Myriel",
-            value: 1,
-          },
-          {
-            source: "Valjean",
-            target: "Labarre",
-            value: 1,
-          },
-          {
-            source: "Valjean",
-            target: "Mme.Magloire",
-            value: 3,
-          },
-          {
-            source: "Valjean",
-            target: "Mlle.Baptistine",
-            value: 3,
-          },
-          {
-            source: "Valjean",
-            target: "Myriel",
-            value: 5,
-          },
-          {
-            source: "Marguerite",
-            target: "Valjean",
-            value: 1,
-          },
-          {
-            source: "Mme.deR",
-            target: "Valjean",
-            value: 1,
-          },
-          {
-            source: "Isabeau",
-            target: "Valjean",
-            value: 1,
-          },
-          {
-            source: "Gervais",
-            target: "Valjean",
-            value: 1,
-          },
-          {
-            source: "Listolier",
-            target: "Tholomyes",
-            value: 4,
-          },
-          {
-            source: "Fameuil",
-            target: "Tholomyes",
-            value: 4,
-          },
-          {
-            source: "Fameuil",
-            target: "Listolier",
-            value: 4,
-          },
-          {
-            source: "Blacheville",
-            target: "Tholomyes",
-            value: 4,
-          },
-          {
-            source: "Blacheville",
-            target: "Listolier",
-            value: 4,
-          },
-          {
-            source: "Blacheville",
-            target: "Fameuil",
-            value: 4,
-          },
-          {
-            source: "Favourite",
-            target: "Tholomyes",
-            value: 3,
-          },
-          {
-            source: "Favourite",
-            target: "Listolier",
-            value: 3,
-          },
-          {
-            source: "Favourite",
-            target: "Fameuil",
-            value: 3,
-          },
-          {
-            source: "Favourite",
-            target: "Blacheville",
-            value: 4,
+            source: "转山",
+            target: "user35",
+            value: 0.00642,
           },
           {
-            source: "Dahlia",
-            target: "Tholomyes",
-            value: 3,
+            source: "剧情\r",
+            target: "转山",
+            value: 0.00027,
           },
           {
-            source: "Dahlia",
-            target: "Listolier",
-            value: 3,
+            source: "九降风",
+            target: "剧情\r",
+            value: 0.00272,
           },
           {
-            source: "Dahlia",
-            target: "Fameuil",
-            value: 3,
+            source: "除暴",
+            target: "user35",
+            value: 0.00201,
           },
           {
-            source: "Dahlia",
-            target: "Blacheville",
-            value: 3,
+            source: "剧情\r",
+            target: "除暴",
+            value: 0.00223,
           },
           {
-            source: "Dahlia",
-            target: "Favourite",
-            value: 5,
+            source: "九降风",
+            target: "剧情\r",
+            value: 0.00307,
           },
           {
-            source: "Zephine",
-            target: "Tholomyes",
-            value: 3,
+            source: "忍者神龟",
+            target: "user35",
+            value: .00137,
           },
           {
-            source: "Zephine",
-            target: "Listolier",
-            value: 3,
+            source: "剧情\r",
+            target: "忍者神龟",
+            value: 0.00209,
           },
           {
-            source: "Zephine",
-            target: "Fameuil",
-            value: 3,
+            source: "九降风",
+            target: "剧情\r",
+            value: 0.00294,
           },
           {
-            source: "Zephine",
-            target: "Blacheville",
-            value: 3,
+            source: "微光城市",
+            target: "user35",
+            value: 0.00173,
           },
           {
-            source: "Zephine",
-            target: "Favourite",
-            value: 4,
+            source: "剧情\r",
+            target: "微光城市",
+            value: 0.00255,
           },
           {
-            source: "Zephine",
-            target: "Dahlia",
-            value: 4,
+            source: "九降风",
+            target: "剧情\r",
+            value: 0.00178,
           },
           {
-            source: "Fantine",
-            target: "Tholomyes",
-            value: 3,
+            source: "悲伤的贝拉多娜",
+            target: "user35",
+            value: 0.00134,
           },
           {
-            source: "Fantine",
-            target: "Listolier",
-            value: 3,
+            source: "剧情\r",
+            target: "悲伤的贝拉多娜",
+            value: 0.00229,
           },
           {
-            source: "Fantine",
-            target: "Fameuil",
-            value: 3,
+            source: "九降风",
+            target: "剧情\r",
+            value: 0.00156,
           },
           {
-            source: "Fantine",
-            target: "Blacheville",
-            value: 3,
+            source: "魔发精灵",
+            target: "user35",
+            value: 0.00132,
           },
           {
-            source: "Fantine",
-            target: "Favourite",
-            value: 4,
+            source: "user39",
+            target: "魔发精灵",
+            value: 0.00203,
           },
           {
-            source: "Fantine",
-            target: "Dahlia",
-            value: 4,
+            source: "九降风",
+            target: "user39",
+            value: 0.00179,
           },
           {
-            source: "Fantine",
-            target: "Zephine",
-            value: 4,
+            source: "魔发精灵",
+            target: "user35",
+            value: 0.00181,
           },
           {
-            source: "Fantine",
-            target: "Marguerite",
-            value: 2,
+            source: "user781",
+            target: "魔发精灵",
+            value: 0.00163,
           },
           {
-            source: "Fantine",
-            target: "Valjean",
-            value: 9,
+            source: "九降风",
+            target: "user781",
+            value: 0.00124,
           },
           {
-            source: "Mme.Thenardier",
-            target: "Fantine",
-            value: 2,
-          },
-          {
-            source: "Mme.Thenardier",
-            target: "Valjean",
-            value: 7,
-          },
-          {
-            source: "Thenardier",
-            target: "Mme.Thenardier",
-            value: 13,
-          },
-          {
-            source: "Thenardier",
-            target: "Fantine",
+            source: "魔发精灵",
+            target: "user35",
             value: 1,
-          },
-          {
-            source: "Thenardier",
-            target: "Valjean",
-            value: 12,
-          },
-          {
-            source: "Cosette",
-            target: "Mme.Thenardier",
-            value: 4,
           },
           {
-            source: "Cosette",
-            target: "Valjean",
-            value: 31,
-          },
-          {
-            source: "Cosette",
-            target: "Tholomyes",
+            source: "user7537",
+            target: "魔发精灵",
             value: 1,
           },
           {
-            source: "Cosette",
-            target: "Thenardier",
+            source: "九降风",
+            target: "user7537",
             value: 1,
-          },
-          {
-            source: "Javert",
-            target: "Valjean",
-            value: 17,
           },
           {
-            source: "Javert",
-            target: "Fantine",
-            value: 5,
-          },
-          {
-            source: "Javert",
-            target: "Thenardier",
-            value: 5,
-          },
-          {
-            source: "Javert",
-            target: "Mme.Thenardier",
+            source: "魔发精灵",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Javert",
-            target: "Cosette",
+            source: "user9177",
+            target: "魔发精灵",
             value: 1,
-          },
-          {
-            source: "Fauchelevent",
-            target: "Valjean",
-            value: 8,
           },
           {
-            source: "Fauchelevent",
-            target: "Javert",
+            source: "九降风",
+            target: "user9177",
             value: 1,
           },
           {
-            source: "Bamatabois",
-            target: "Fantine",
+            source: "篱笆墙外",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Bamatabois",
-            target: "Javert",
+            source: "user9577",
+            target: "篱笆墙外",
             value: 1,
-          },
-          {
-            source: "Bamatabois",
-            target: "Valjean",
-            value: 2,
           },
           {
-            source: "Perpetue",
-            target: "Fantine",
+            source: "九降风",
+            target: "user9577",
             value: 1,
-          },
-          {
-            source: "Simplice",
-            target: "Perpetue",
-            value: 2,
-          },
-          {
-            source: "Simplice",
-            target: "Valjean",
-            value: 3,
-          },
-          {
-            source: "Simplice",
-            target: "Fantine",
-            value: 2,
           },
           {
-            source: "Simplice",
-            target: "Javert",
+            source: "黑钱胜地",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Scaufflaire",
-            target: "Valjean",
+            source: "user9577",
+            target: "黑钱胜地",
             value: 1,
           },
           {
-            source: "Woman1",
-            target: "Valjean",
-            value: 2,
-          },
-          {
-            source: "Woman1",
-            target: "Javert",
+            source: "九降风",
+            target: "user9577",
             value: 1,
-          },
-          {
-            source: "Judge",
-            target: "Valjean",
-            value: 3,
-          },
-          {
-            source: "Judge",
-            target: "Bamatabois",
-            value: 2,
-          },
-          {
-            source: "Champmathieu",
-            target: "Valjean",
-            value: 3,
-          },
-          {
-            source: "Champmathieu",
-            target: "Judge",
-            value: 3,
-          },
-          {
-            source: "Champmathieu",
-            target: "Bamatabois",
-            value: 2,
-          },
-          {
-            source: "Brevet",
-            target: "Judge",
-            value: 2,
           },
           {
-            source: "Brevet",
-            target: "Champmathieu",
-            value: 2,
-          },
-          {
-            source: "Brevet",
-            target: "Valjean",
-            value: 2,
-          },
-          {
-            source: "Brevet",
-            target: "Bamatabois",
+            source: "黑钱胜地",
+            target: "user35",
             value: 1,
-          },
-          {
-            source: "Chenildieu",
-            target: "Judge",
-            value: 2,
-          },
-          {
-            source: "Chenildieu",
-            target: "Champmathieu",
-            value: 2,
-          },
-          {
-            source: "Chenildieu",
-            target: "Brevet",
-            value: 2,
-          },
-          {
-            source: "Chenildieu",
-            target: "Valjean",
-            value: 2,
           },
           {
-            source: "Chenildieu",
-            target: "Bamatabois",
+            source: "剧情\r",
+            target: "黑钱胜地",
             value: 1,
-          },
-          {
-            source: "Cochepaille",
-            target: "Judge",
-            value: 2,
           },
           {
-            source: "Cochepaille",
-            target: "Champmathieu",
-            value: 2,
-          },
-          {
-            source: "Cochepaille",
-            target: "Brevet",
-            value: 2,
-          },
-          {
-            source: "Cochepaille",
-            target: "Chenildieu",
-            value: 2,
-          },
-          {
-            source: "Cochepaille",
-            target: "Valjean",
-            value: 2,
-          },
-          {
-            source: "Cochepaille",
-            target: "Bamatabois",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
           },
           {
-            source: "Pontmercy",
-            target: "Thenardier",
+            source: "最长的一天",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Boulatruelle",
-            target: "Thenardier",
+            source: "剧情\r",
+            target: "最长的一天",
             value: 1,
-          },
-          {
-            source: "Eponine",
-            target: "Mme.Thenardier",
-            value: 2,
           },
           {
-            source: "Eponine",
-            target: "Thenardier",
-            value: 3,
-          },
-          {
-            source: "Anzelma",
-            target: "Eponine",
-            value: 2,
-          },
-          {
-            source: "Anzelma",
-            target: "Thenardier",
-            value: 2,
-          },
-          {
-            source: "Anzelma",
-            target: "Mme.Thenardier",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
           },
           {
-            source: "Woman2",
-            target: "Valjean",
-            value: 3,
-          },
-          {
-            source: "Woman2",
-            target: "Cosette",
+            source: "一个国家的诞生",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Woman2",
-            target: "Javert",
+            source: "user4648",
+            target: "一个国家的诞生",
             value: 1,
-          },
-          {
-            source: "MotherInnocent",
-            target: "Fauchelevent",
-            value: 3,
           },
           {
-            source: "MotherInnocent",
-            target: "Valjean",
+            source: "九降风",
+            target: "user4648",
             value: 1,
-          },
-          {
-            source: "Gribier",
-            target: "Fauchelevent",
-            value: 2,
           },
           {
-            source: "Mme.Burgon",
-            target: "Jondrette",
+            source: "一个国家的诞生",
+            target: "user35",
             value: 1,
-          },
-          {
-            source: "Gavroche",
-            target: "Mme.Burgon",
-            value: 2,
           },
           {
-            source: "Gavroche",
-            target: "Thenardier",
+            source: "user4733",
+            target: "一个国家的诞生",
             value: 1,
           },
           {
-            source: "Gavroche",
-            target: "Javert",
+            source: "九降风",
+            target: "user4733",
             value: 1,
           },
           {
-            source: "Gavroche",
-            target: "Valjean",
+            source: "一个国家的诞生",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Gillenormand",
-            target: "Cosette",
-            value: 3,
-          },
-          {
-            source: "Gillenormand",
-            target: "Valjean",
-            value: 2,
-          },
-          {
-            source: "Magnon",
-            target: "Gillenormand",
+            source: "user8468",
+            target: "一个国家的诞生",
             value: 1,
           },
           {
-            source: "Magnon",
-            target: "Mme.Thenardier",
+            source: "九降风",
+            target: "user8468",
             value: 1,
-          },
-          {
-            source: "Mlle.Gillenormand",
-            target: "Gillenormand",
-            value: 9,
-          },
-          {
-            source: "Mlle.Gillenormand",
-            target: "Cosette",
-            value: 2,
-          },
-          {
-            source: "Mlle.Gillenormand",
-            target: "Valjean",
-            value: 2,
           },
           {
-            source: "Mme.Pontmercy",
-            target: "Mlle.Gillenormand",
+            source: "一个国家的诞生",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Mme.Pontmercy",
-            target: "Pontmercy",
+            source: "user8622",
+            target: "一个国家的诞生",
             value: 1,
           },
           {
-            source: "Mlle.Vaubois",
-            target: "Mlle.Gillenormand",
+            source: "九降风",
+            target: "user8622",
             value: 1,
-          },
-          {
-            source: "Lt.Gillenormand",
-            target: "Mlle.Gillenormand",
-            value: 2,
           },
           {
-            source: "Lt.Gillenormand",
-            target: "Gillenormand",
+            source: "一个国家的诞生",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Lt.Gillenormand",
-            target: "Cosette",
+            source: "user9577",
+            target: "一个国家的诞生",
             value: 1,
-          },
-          {
-            source: "Marius",
-            target: "Mlle.Gillenormand",
-            value: 6,
           },
           {
-            source: "Marius",
-            target: "Gillenormand",
-            value: 12,
-          },
-          {
-            source: "Marius",
-            target: "Pontmercy",
+            source: "九降风",
+            target: "user9577",
             value: 1,
           },
           {
-            source: "Marius",
-            target: "Lt.Gillenormand",
+            source: "一个国家的诞生",
+            target: "user35",
             value: 1,
-          },
-          {
-            source: "Marius",
-            target: "Cosette",
-            value: 21,
           },
           {
-            source: "Marius",
-            target: "Valjean",
-            value: 19,
-          },
-          {
-            source: "Marius",
-            target: "Tholomyes",
+            source: "剧情\r",
+            target: "一个国家的诞生",
             value: 1,
-          },
-          {
-            source: "Marius",
-            target: "Thenardier",
-            value: 2,
-          },
-          {
-            source: "Marius",
-            target: "Eponine",
-            value: 5,
-          },
-          {
-            source: "Marius",
-            target: "Gavroche",
-            value: 4,
           },
           {
-            source: "BaronessT",
-            target: "Gillenormand",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
           },
           {
-            source: "BaronessT",
-            target: "Marius",
+            source: "世界旦夕之间",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Mabeuf",
-            target: "Marius",
+            source: "user4733",
+            target: "世界旦夕之间",
             value: 1,
           },
           {
-            source: "Mabeuf",
-            target: "Eponine",
+            source: "九降风",
+            target: "user4733",
             value: 1,
           },
           {
-            source: "Mabeuf",
-            target: "Gavroche",
+            source: "灭绝",
+            target: "user35",
             value: 1,
-          },
-          {
-            source: "Enjolras",
-            target: "Marius",
-            value: 7,
-          },
-          {
-            source: "Enjolras",
-            target: "Gavroche",
-            value: 7,
-          },
-          {
-            source: "Enjolras",
-            target: "Javert",
-            value: 6,
           },
           {
-            source: "Enjolras",
-            target: "Mabeuf",
+            source: "user845",
+            target: "灭绝",
             value: 1,
-          },
-          {
-            source: "Enjolras",
-            target: "Valjean",
-            value: 4,
-          },
-          {
-            source: "Combeferre",
-            target: "Enjolras",
-            value: 15,
-          },
-          {
-            source: "Combeferre",
-            target: "Marius",
-            value: 5,
-          },
-          {
-            source: "Combeferre",
-            target: "Gavroche",
-            value: 6,
-          },
-          {
-            source: "Combeferre",
-            target: "Mabeuf",
-            value: 2,
           },
           {
-            source: "Prouvaire",
-            target: "Gavroche",
+            source: "九降风",
+            target: "user845",
             value: 1,
           },
           {
-            source: "Prouvaire",
-            target: "Enjolras",
-            value: 4,
-          },
-          {
-            source: "Prouvaire",
-            target: "Combeferre",
-            value: 2,
-          },
-          {
-            source: "Feuilly",
-            target: "Gavroche",
-            value: 2,
-          },
-          {
-            source: "Feuilly",
-            target: "Enjolras",
-            value: 6,
-          },
-          {
-            source: "Feuilly",
-            target: "Prouvaire",
-            value: 2,
-          },
-          {
-            source: "Feuilly",
-            target: "Combeferre",
-            value: 5,
-          },
-          {
-            source: "Feuilly",
-            target: "Mabeuf",
+            source: "盲侠大律师",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Feuilly",
-            target: "Marius",
+            source: "剧情\r",
+            target: "盲侠大律师",
             value: 1,
-          },
-          {
-            source: "Courfeyrac",
-            target: "Marius",
-            value: 9,
-          },
-          {
-            source: "Courfeyrac",
-            target: "Enjolras",
-            value: 17,
-          },
-          {
-            source: "Courfeyrac",
-            target: "Combeferre",
-            value: 13,
-          },
-          {
-            source: "Courfeyrac",
-            target: "Gavroche",
-            value: 7,
-          },
-          {
-            source: "Courfeyrac",
-            target: "Mabeuf",
-            value: 2,
           },
           {
-            source: "Courfeyrac",
-            target: "Eponine",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
-          },
-          {
-            source: "Courfeyrac",
-            target: "Feuilly",
-            value: 6,
-          },
-          {
-            source: "Courfeyrac",
-            target: "Prouvaire",
-            value: 3,
-          },
-          {
-            source: "Bahorel",
-            target: "Combeferre",
-            value: 5,
-          },
-          {
-            source: "Bahorel",
-            target: "Gavroche",
-            value: 5,
-          },
-          {
-            source: "Bahorel",
-            target: "Courfeyrac",
-            value: 6,
-          },
-          {
-            source: "Bahorel",
-            target: "Mabeuf",
-            value: 2,
-          },
-          {
-            source: "Bahorel",
-            target: "Enjolras",
-            value: 4,
-          },
-          {
-            source: "Bahorel",
-            target: "Feuilly",
-            value: 3,
           },
           {
-            source: "Bahorel",
-            target: "Prouvaire",
-            value: 2,
-          },
-          {
-            source: "Bahorel",
-            target: "Marius",
+            source: "不死鸟",
+            target: "user35",
             value: 1,
-          },
-          {
-            source: "Bossuet",
-            target: "Marius",
-            value: 5,
-          },
-          {
-            source: "Bossuet",
-            target: "Courfeyrac",
-            value: 12,
-          },
-          {
-            source: "Bossuet",
-            target: "Gavroche",
-            value: 5,
-          },
-          {
-            source: "Bossuet",
-            target: "Bahorel",
-            value: 4,
-          },
-          {
-            source: "Bossuet",
-            target: "Enjolras",
-            value: 10,
-          },
-          {
-            source: "Bossuet",
-            target: "Feuilly",
-            value: 6,
           },
           {
-            source: "Bossuet",
-            target: "Prouvaire",
-            value: 2,
-          },
-          {
-            source: "Bossuet",
-            target: "Combeferre",
-            value: 9,
-          },
-          {
-            source: "Bossuet",
-            target: "Mabeuf",
+            source: "user3690",
+            target: "不死鸟",
             value: 1,
           },
           {
-            source: "Bossuet",
-            target: "Valjean",
+            source: "九降风",
+            target: "user3690",
             value: 1,
-          },
-          {
-            source: "Joly",
-            target: "Bahorel",
-            value: 5,
-          },
-          {
-            source: "Joly",
-            target: "Bossuet",
-            value: 7,
-          },
-          {
-            source: "Joly",
-            target: "Gavroche",
-            value: 3,
-          },
-          {
-            source: "Joly",
-            target: "Courfeyrac",
-            value: 5,
-          },
-          {
-            source: "Joly",
-            target: "Enjolras",
-            value: 5,
           },
           {
-            source: "Joly",
-            target: "Feuilly",
-            value: 5,
-          },
-          {
-            source: "Joly",
-            target: "Prouvaire",
-            value: 2,
-          },
-          {
-            source: "Joly",
-            target: "Combeferre",
-            value: 5,
-          },
-          {
-            source: "Joly",
-            target: "Mabeuf",
+            source: "不死鸟",
+            target: "user35",
             value: 1,
-          },
-          {
-            source: "Joly",
-            target: "Marius",
-            value: 2,
-          },
-          {
-            source: "Grantaire",
-            target: "Bossuet",
-            value: 3,
           },
           {
-            source: "Grantaire",
-            target: "Enjolras",
-            value: 3,
-          },
-          {
-            source: "Grantaire",
-            target: "Combeferre",
+            source: "剧情\r",
+            target: "不死鸟",
             value: 1,
-          },
-          {
-            source: "Grantaire",
-            target: "Courfeyrac",
-            value: 2,
           },
           {
-            source: "Grantaire",
-            target: "Joly",
-            value: 2,
-          },
-          {
-            source: "Grantaire",
-            target: "Gavroche",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
           },
           {
-            source: "Grantaire",
-            target: "Bahorel",
+            source: "深渊",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Grantaire",
-            target: "Feuilly",
+            source: "剧情\r",
+            target: "深渊",
             value: 1,
           },
           {
-            source: "Grantaire",
-            target: "Prouvaire",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
-          },
-          {
-            source: "MotherPlutarch",
-            target: "Mabeuf",
-            value: 3,
-          },
-          {
-            source: "Gueulemer",
-            target: "Thenardier",
-            value: 5,
           },
           {
-            source: "Gueulemer",
-            target: "Valjean",
+            source: "歪小子斯科特对抗全世界",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Gueulemer",
-            target: "Mme.Thenardier",
+            source: "user8902",
+            target: "歪小子斯科特对抗全世界",
             value: 1,
           },
           {
-            source: "Gueulemer",
-            target: "Javert",
+            source: "九降风",
+            target: "user8902",
             value: 1,
           },
           {
-            source: "Gueulemer",
-            target: "Gavroche",
+            source: "茉莉花开",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Gueulemer",
-            target: "Eponine",
+            source: "剧情\r",
+            target: "茉莉花开",
             value: 1,
-          },
-          {
-            source: "Babet",
-            target: "Thenardier",
-            value: 6,
-          },
-          {
-            source: "Babet",
-            target: "Gueulemer",
-            value: 6,
           },
           {
-            source: "Babet",
-            target: "Valjean",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
           },
           {
-            source: "Babet",
-            target: "Mme.Thenardier",
+            source: "唯爱永生",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Babet",
-            target: "Javert",
-            value: 2,
-          },
-          {
-            source: "Babet",
-            target: "Gavroche",
+            source: "剧情\r",
+            target: "唯爱永生",
             value: 1,
           },
           {
-            source: "Babet",
-            target: "Eponine",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
-          },
-          {
-            source: "Claquesous",
-            target: "Thenardier",
-            value: 4,
-          },
-          {
-            source: "Claquesous",
-            target: "Babet",
-            value: 4,
-          },
-          {
-            source: "Claquesous",
-            target: "Gueulemer",
-            value: 4,
           },
           {
-            source: "Claquesous",
-            target: "Valjean",
+            source: "天伦之旅",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Claquesous",
-            target: "Mme.Thenardier",
+            source: "user5071",
+            target: "天伦之旅",
             value: 1,
           },
           {
-            source: "Claquesous",
-            target: "Javert",
+            source: "九降风",
+            target: "user5071",
             value: 1,
           },
           {
-            source: "Claquesous",
-            target: "Eponine",
+            source: "天伦之旅",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Claquesous",
-            target: "Enjolras",
+            source: "剧情\r",
+            target: "天伦之旅",
             value: 1,
           },
           {
-            source: "Montparnasse",
-            target: "Javert",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
-          },
-          {
-            source: "Montparnasse",
-            target: "Babet",
-            value: 2,
-          },
-          {
-            source: "Montparnasse",
-            target: "Gueulemer",
-            value: 2,
-          },
-          {
-            source: "Montparnasse",
-            target: "Claquesous",
-            value: 2,
           },
           {
-            source: "Montparnasse",
-            target: "Valjean",
+            source: "算死草",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Montparnasse",
-            target: "Gavroche",
+            source: "剧情\r",
+            target: "算死草",
             value: 1,
           },
           {
-            source: "Montparnasse",
-            target: "Eponine",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
           },
           {
-            source: "Montparnasse",
-            target: "Thenardier",
+            source: "我11",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Toussaint",
-            target: "Cosette",
-            value: 2,
-          },
-          {
-            source: "Toussaint",
-            target: "Javert",
+            source: "剧情\r",
+            target: "我11",
             value: 1,
           },
           {
-            source: "Toussaint",
-            target: "Valjean",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
-          },
-          {
-            source: "Child1",
-            target: "Gavroche",
-            value: 2,
-          },
-          {
-            source: "Child2",
-            target: "Gavroche",
-            value: 2,
           },
           {
-            source: "Child2",
-            target: "Child1",
-            value: 3,
+            source: "我自己的爱达荷",
+            target: "user35",
+            value: 1,
           },
           {
-            source: "Brujon",
-            target: "Babet",
-            value: 3,
+            source: "剧情\r",
+            target: "我自己的爱达荷",
+            value: 1,
           },
           {
-            source: "Brujon",
-            target: "Gueulemer",
-            value: 3,
+            source: "九降风",
+            target: "剧情\r",
+            value: 1,
           },
           {
-            source: "Brujon",
-            target: "Thenardier",
-            value: 3,
+            source: "菊豆",
+            target: "user35",
+            value: 1,
           },
           {
-            source: "Brujon",
-            target: "Gavroche",
+            source: "剧情\r",
+            target: "菊豆",
             value: 1,
           },
           {
-            source: "Brujon",
-            target: "Eponine",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
           },
           {
-            source: "Brujon",
-            target: "Claquesous",
+            source: "诗",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Brujon",
-            target: "Montparnasse",
+            source: "剧情\r",
+            target: "诗",
             value: 1,
           },
           {
-            source: "Mme.Hucheloup",
-            target: "Bossuet",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
           },
           {
-            source: "Mme.Hucheloup",
-            target: "Joly",
+            source: "金枝欲孽",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Mme.Hucheloup",
-            target: "Grantaire",
+            source: "剧情\r",
+            target: "金枝欲孽",
             value: 1,
           },
           {
-            source: "Mme.Hucheloup",
-            target: "Bahorel",
+            source: "九降风",
+            target: "剧情\r",
             value: 1,
           },
           {
-            source: "Mme.Hucheloup",
-            target: "Courfeyrac",
+            source: "回忆三部曲",
+            target: "user35",
             value: 1,
           },
           {
-            source: "Mme.Hucheloup",
-            target: "Gavroche",
+            source: "user9218",
+            target: "回忆三部曲",
             value: 1,
           },
           {
-            source: "Mme.Hucheloup",
-            target: "Enjolras",
+            source: "九降风",
+            target: "user9218",
             value: 1,
           },
         ],
       };
+      //   testdata = data
       const links = testdata.links.map((d) => Object.create(d));
       const nodes = testdata.nodes.map((d) => Object.create(d));
       const SVG = d3
         .select("#force")
         .append("svg")
+        .attr("class", "force")
         .attr("viewBox", [0, 0, 600, 600]);
-      function color(d) {
-        const scale = d3.scaleOrdinal(d3.schemeCategory10);
-        return scale(d.group);
-      }
+
+      const colors = [
+        "#797FA1",
+        "#708EC4",
+        "#DD8998",
+        "#FEC6B9",
+        "#F1DCDB",
+        "#ACC2E2",
+        "#F5A555",
+        "#ECE18C",
+        "#D9B3FF",
+        "#65D5A0",
+        "#C2384F",
+      ];
 
       const simulation = d3
         .forceSimulation(nodes)
@@ -1628,10 +793,12 @@ export default {
           "link",
           d3.forceLink(links).id((d) => d.id)
         )
-        .force("charge", d3.forceManyBody())
+        .force("x", d3.forceX())
+        .force("y", d3.forceY())
+        .force("charge", d3.forceManyBody().strength(-500).distanceMax(500))
         .force("center", d3.forceCenter(600 / 2, 600 / 2));
 
-      //.on("tick", () => this.ticked());
+    
 
       const drag = (simulation) => {
         function dragstarted(event) {
@@ -1672,9 +839,15 @@ export default {
         .selectAll("circle")
         .data(nodes)
         .join("circle")
-        .attr("r", 5)
-        .attr("fill", (d) => color(d))
+        .attr("r", (d) => {
+          if (d.group == 6 || d.group == 7) return 50;
+          else return 5;
+        })
+        .attr('id', (d,i)=> i)
+        .attr("fill", (d) => colors[d.group])
         .call(drag(simulation));
+
+      node.append("title").text((d) => d.id);
 
       simulation.on("tick", () => {
         link
@@ -1685,6 +858,7 @@ export default {
 
         node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
       });
+
     },
   },
 };

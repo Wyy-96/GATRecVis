@@ -5,8 +5,8 @@
 </template>
 <script>
 import axios from "axios";
-import * as d3 from 'd3'
-import store from '@/store'
+import * as d3 from "d3";
+import store from "@/store";
 export default {
   name: "RadialArea",
   data() {
@@ -14,289 +14,4750 @@ export default {
   },
   created: function () {},
   mounted() {
-    axios.get("/test_data_9625_no0.csv").then((res) => {
-      //test_data_9625_no0
-      var data = d3.csvParse(res.data, (d, _, columns) => {
-        let total = 0;
-        for (let i = 1; i < columns.length; ++i)
-          total += d[columns[i]] = +d[columns[i]];
-        d.total = total;
-        return d;
-      });
-      const config = {
-        width: 500,
-        height: 500,
-        innerRadius: 0,
-        outerRadius: 200,
-      };
-      this.drawRadialStackedBarChart(this.$refs.RadialArea, config, data);
-    });
+    this.drawRadialAreaChart(this.$refs.RadialArea)
+    // axios.get("/test_data_9625_no0.csv").then((res) => {
+    //   //test_data_9625_no0
+    //   var data = d3.csvParse(res.data, (d, _, columns) => {
+    //     let total = 0;
+    //     for (let i = 1; i < columns.length; ++i)
+    //       total += d[columns[i]] = +d[columns[i]];
+    //     d.total = total;
+    //     return d;
+    //   });
+    //   const config = {
+    //     width: 500,
+    //     height: 500,
+    //     innerRadius: 0,
+    //     outerRadius: 200,
+    //   };
+    //   this.drawRadialStackedBarChart(this.$refs.RadialArea, config, data);
+    // });
   },
   methods: {
-    drawRadialStackedBarChart(map, config, data) {
-      const SVG = d3
-        .select(map)
-        .append("svg")
-        .attr(
-          "viewBox",
-          `${-config.width / 2} ${-config.height / 2} ${config.width} ${
-            config.height
-          }`
-        )
-        .style("width", "100%")
-        .style("height", "auto")
-        .style("font", "10px sans-serif");
+//     drawRadialStackedBarChart(map, config, data) {
+//       const SVG = d3
+//         .select(map)
+//         .append("svg")
+//         .attr(
+//           "viewBox",
+//           `${-config.width / 2} ${-config.height / 2} ${config.width} ${
+//             config.height
+//           }`
+//         )
+//         .call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed))
+//         .style("width", "100%")
+//         .style("height", "auto")
+//         .style("font", "10px sans-serif")
+//         .append("g");
+//       function zoomed({ transform }) {
+//         SVG.attr("transform", transform);
+//       }
 
-      // 放图的容器
-      const relMap_g = SVG.append("g")
-        .attr("class", "relMap_g")
-        .attr("width", config.width)
-        .attr("height", config.height);
+//       // 放图的容器
+//       const relMap_g = SVG.append("g")
+//         .attr("class", "relMap_g")
+//         .attr("width", config.width)
+//         .attr("height", config.height);
 
-      //颜色范围
-      const color = d3
-        .scaleOrdinal()
-        .domain(data.columns.slice(1))
-        .range(["#98abc5", "#6b486b", "#ff8c00"]);
+//       //颜色范围
+//       const color = d3
+//         .scaleOrdinal()
+//         .domain(data.columns.slice(1))
+//         .range(["#6b486b", "#98abc5", "#ff8c00"]);
 
-      //曲形柱状堆叠图
-      const arc = d3
-        .arc()
-        .innerRadius((d) => y(d[0]))
-        .outerRadius((d) => y(d[1]))
-        .startAngle((d) => x(d.data.State))
-        .endAngle((d) => x(d.data.State) + x.bandwidth())
-        .padRadius(config.innerRadius);
+//       //曲形柱状堆叠图
+//       const arc = d3
+//         .arc()
+//         .innerRadius((d) => y(d[0]))
+//         .outerRadius((d) => y(d[1]))
+//         .startAngle((d) => x(d.data.State))
+//         .endAngle((d) => x(d.data.State) + x.bandwidth())
+//         .padRadius(config.innerRadius);
 
-      const x = d3
-        .scaleBand()
-        .domain(data.map((d) => d.State))
-        .range([0, 2 * Math.PI])
-        .align(0);
+//       const arc2 = d3
+//         .arc()
+//         .innerRadius((d) => y2(d[0]))
+//         .outerRadius((d) => y2(d[1]))
+//         .startAngle((d) => x(d.data.State))
+//         .endAngle((d) => x(d.data.State) + x.bandwidth())
+//         .padRadius(config.innerRadius);
 
-      const y = d3
-        .scaleRadial()
-        .domain([0, d3.max(data, (d) => d.total)]) //d3.max(this.data, d => d.total)
-        .range([120, 250]);
+//       const x = d3
+//         .scaleBand()
+//         .domain(data.map((d) => d.State))
+//         .range([0, 2 * Math.PI])
+//         .align(0);
 
-      relMap_g
-        .append("g")
-        .selectAll("g")
-        .data(d3.stack().keys(data.columns.slice(1))(data))
-        .join("g")
-        .attr("fill", (d) => color(d.key))
-        .selectAll("path")
-        .data((d) => d)
-        .join("path")
-        .attr("d", arc);
+//       const y = d3
+//         .scaleRadial()
+//         .domain([0, 1]) //d3.max(this.data, d => d.total)
+//         .range([120, 220]);
 
-      relMap_g
-        .append("circle")
-        .attr("cx", "0px")
-        .attr("cy", "0px")
-        .attr("r", "8")
-        .attr("fill", "#8a89a6")
-        .attr("opacity", "0.7");
+//       const y2 = d3
+//         .scaleRadial()
+//         .domain([0, 1]) //d3.max(this.data, d => d.total)
+//         .range([120, 220]);
 
-      const legend = (g) =>
-        g
-          .append("g")
-          .selectAll("g")
-          .data(data.columns.slice(1).reverse())
-          .join("g")
-          .attr(
-            "transform",
-            (d, i) =>
-              `translate(${-config.height / 2 + 20},${
-                (i - (data.columns.length + 8)) * 20
-              })`
-          )
-          .call((g) =>
-            g
-              .append("rect")
-              .attr("width", 18)
-              .attr("height", 18)
-              .attr("fill", color)
-          )
-          .call((g) =>
-            g
-              .append("text")
-              .attr("x", 24)
-              .attr("y", 9)
-              .attr("dy", "0.35em")
-              .text((d) => d)
-          );
+//       relMap_g
+//         .append("g")
+//         // .selectAll("g")
+//         // .data()
+//         // .join("g")
+//         .attr("fill", "#98abc5")
+//         .selectAll("path")
+//         .data(d3.stack().keys(data.columns.slice(1))(data)[0])
+//         .join("path")
+//         .attr("d", arc);
 
-      relMap_g.append("g").call(legend);
+//       relMap_g
+//         .append("g")
+//         // .selectAll("g")
+//         // .data()
+//         // .join("g")
+//         .attr("fill", "#6b486b")
+//         .selectAll("path")
+//         .data(d3.stack().keys(data.columns.slice(1))(data)[1])
+//         .join("path")
+//         .attr("d", arc2);
 
-      var time_s = true;
-      const drag_x =  (data, width, height)=> {
-        function dragstarted(event, d) {}
-        function dragCircle(event, d) {
-          // 延时刷新
-          if (time_s == true) {
-            time_s = false;
-            setTimeout(() => {
-              time_s = true;
-            }, 100);
-          } else {
-            return;
-          }
-          var Angle = 0;
-          var A = { x: width, y: height };
-          var B = { x: width, y: 0 };
-          var lengthAB = Math.sqrt(
-            Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2)
-          );
-          var lengthAC = Math.sqrt(
-            Math.pow(A.x - event.sourceEvent.layerX, 2) +
-              Math.pow(A.y - event.sourceEvent.layerY, 2)
-          );
-          var lengthBC = Math.sqrt(
-            Math.pow(B.x - event.sourceEvent.layerX, 2) +
-              Math.pow(B.y - event.sourceEvent.layerY, 2)
-          );
-          var cosA =
-            (Math.pow(lengthAB, 2) +
-              Math.pow(lengthAC, 2) -
-              Math.pow(lengthBC, 2)) /
-            (2 * lengthAB * lengthAC);
-          Angle = Math.acos(cosA);
+//       relMap_g
+//         .append("circle")
+//         .attr("cx", "0px")
+//         .attr("cy", "0px")
+//         .attr("r", "8")
+//         .attr("fill", "#8a89a6")
+//         .attr("opacity", "0.7");
 
-          if (event.sourceEvent.layerX < width) Angle = 2 * Math.PI - Angle;
+//       const legend = (g) =>
+//         g
+//           .append("g")
+//           .selectAll("g")
+//           .data(data.columns.slice(1).reverse())
+//           .join("g")
+//           .attr(
+//             "transform",
+//             (d, i) =>
+//               `translate(${-config.height / 2 + 20},${
+//                 (i - (data.columns.length + 8)) * 20
+//               })`
+//           )
+//           .call((g) =>
+//             g
+//               .append("rect")
+//               .attr("width", 18)
+//               .attr("height", 18)
+//               .attr("fill", color)
+//           )
+//           .call((g) =>
+//             g
+//               .append("text")
+//               .attr("x", 24)
+//               .attr("y", 9)
+//               .attr("dy", "0.35em")
+//               .text((d) => d)
+//           );
 
-          d3.select(this)
-            .attr("transform", `rotate(${(Angle * 180) / Math.PI}, ${0} ${0})`)
-            .attr("text", Angle);
+//       relMap_g.append("g").call(legend);
 
-          if (d3.select(this).attr("class") == "Selec_cri") {
-            var a =
-              parseFloat(
-                d3.selectAll(".Selec_cri")._groups[0][0].attributes.text.value
-              ) - 0.0001;
-            var b =
-              parseFloat(
-                d3.selectAll(".Selec_cri")._groups[0][1].attributes.text.value
-              ) + 0.01;
-            if (a > b) a = -2 * Math.PI + a;
+//       var time_s = true;
+//       const drag_x = (data, width, height) => {
+//         function dragstarted(event, d) {}
+//         function dragCircle(event, d) {
+//           // 延时刷新
+//           if (time_s == true) {
+//             time_s = false;
+//             setTimeout(() => {
+//               time_s = true;
+//             }, 100);
+//           } else {
+//             return;
+//           }
+//           var Angle = 0;
+//           var A = { x: width, y: height };
+//           var B = { x: width, y: 0 };
+//           var lengthAB = Math.sqrt(
+//             Math.pow(A.x - B.x, 2) + Math.pow(A.y - B.y, 2)
+//           );
+//           var lengthAC = Math.sqrt(
+//             Math.pow(A.x - event.sourceEvent.layerX, 2) +
+//               Math.pow(A.y - event.sourceEvent.layerY, 2)
+//           );
+//           var lengthBC = Math.sqrt(
+//             Math.pow(B.x - event.sourceEvent.layerX, 2) +
+//               Math.pow(B.y - event.sourceEvent.layerY, 2)
+//           );
+//           var cosA =
+//             (Math.pow(lengthAB, 2) +
+//               Math.pow(lengthAC, 2) -
+//               Math.pow(lengthBC, 2)) /
+//             (2 * lengthAB * lengthAC);
+//           Angle = Math.acos(cosA);
 
-            // 绘制指针间扇形面积
-            d3.select(".Selec_area")
-              .selectAll("path")
-              .data([{ startAngle: a, endAngle: b, padAngle: 0 }])
-              .join("path")
-              .attr("d", arc_brush)
-              .attr("fill", "#7b6888")
-              .attr("class", "Selec_area")
-              .attr("transform", `rotate(${0}, ${0} ${0})`)
-              .attr("opacity", "0.2");
+//           if (event.sourceEvent.layerX < width) Angle = 2 * Math.PI - Angle;
 
-            // 根据指针角度 筛选数据
-            var selectData = new Array();
-            var selectData_rev = new Array();
-            data.forEach(function (item, i) {
-              var data_rotate = x(item.State) + x.bandwidth() / 2;
-              if (a < 0) {
-                if (data_rotate < b && data_rotate > 0) selectData.push(item);
-                if (data_rotate < 2 * Math.PI && data_rotate > a + 2 * Math.PI)
-                  selectData_rev.push(item);
-              }
-              if (a > 0)
-                if (data_rotate < b && data_rotate > a) selectData.push(item);
-            });
-            // 绘制所选区域数据
-            let c = selectData_rev.concat(selectData);
-            DrawSelectData(c, width, height);
-          }
-        }
-        function endDragging(event, d) {}
+//           d3.select(this)
+//             .attr("transform", `rotate(${(Angle * 180) / Math.PI}, ${0} ${0})`)
+//             .attr("text", Angle);
 
-        return d3
-          .drag()
-          .on("start", dragstarted)
-          .on("drag", dragCircle)
-          .on("end", endDragging);
-      };
+//           if (d3.select(this).attr("class") == "Selec_cri") {
+//             var a =
+//               parseFloat(
+//                 d3.selectAll(".Selec_cri")._groups[0][0].attributes.text.value
+//               ) - 0.0001;
+//             var b =
+//               parseFloat(
+//                 d3.selectAll(".Selec_cri")._groups[0][1].attributes.text.value
+//               ) + 0.01;
+//             if (a > b) a = -2 * Math.PI + a;
 
-      function DrawSelectData(testdata, width, height) {
-        const x = d3
-          .scaleBand()
-          .domain(testdata.map((d) => d.State))
-          .range([-width, width])
-          .padding(0.1);
-        const y = d3
-          .scaleLinear()
-          .domain([0, d3.max(testdata, (d) => d.total)])
-          .rangeRound([width, width - 90]);
+//             // 绘制指针间扇形面积
+//             d3.select(".Selec_area")
+//               .selectAll("path")
+//               .data([{ startAngle: a, endAngle: b, padAngle: 0 }])
+//               .join("path")
+//               .attr("d", arc_brush)
+//               .attr("fill", "#7b6888")
+//               .attr("class", "Selec_area")
+//               .attr("transform", `rotate(${0}, ${0} ${0})`)
+//               .attr("opacity", "0.2");
 
-        testdata.columns = Object.keys(testdata[0]).slice(0, 3);
+//             // 根据指针角度 筛选数据
+//             var selectData = new Array();
+//             var selectData_rev = new Array();
+//             data.forEach(function (item, i) {
+//               var data_rotate = x(item.State) + x.bandwidth() / 2;
+//               if (a < 0) {
+//                 if (data_rotate < b && data_rotate > 0) selectData.push(item);
+//                 if (data_rotate < 2 * Math.PI && data_rotate > a + 2 * Math.PI)
+//                   selectData_rev.push(item);
+//               }
+//               if (a > 0)
+//                 if (data_rotate < b && data_rotate > a) selectData.push(item);
+//             });
+//             // 绘制所选区域数据
+//             let c = selectData_rev.concat(selectData);
+//             DrawSelectData(c, width, height);
+//           }
+//         }
+//         function endDragging(event, d) {}
 
-        scaleMap_g
-          .selectAll("g")
-          .data(d3.stack().keys(testdata.columns.slice(1))(testdata))
-          .join("g")
-          .attr("fill", (d) => color(d.key))
-          .selectAll("rect")
-          .data((d) => d)
-          .join("rect")
-          .attr("x", (d, i) => x(d.data.State))
-          .attr("y", function (d) {
-            return y(d[1]);
-          })
-          .on("click", (event, d) => {
-            //小矩形的id  例，u217
-            store.commit("global/SET_USER_ID", d.data.State);
-          })
-          .attr("id", (d) => "rect_" + d.data.State)
-          .attr("transform", `translate(0, 0)`)
-          .attr("height", (d) => y(d[0]) - y(d[1]))
-          .attr("width", x.bandwidth());
-      }
-      // 交互的容器
-      const interMap_g = SVG.append("g")
-        .attr("class", "interMap_g")
-        .attr("width", config.width)
-        .attr("height", config.height);
+//         return d3
+//           .drag()
+//           .on("start", dragstarted)
+//           .on("drag", dragCircle)
+//           .on("end", endDragging);
+//       };
 
-      // 交互区域构建
-      var arc_brush = d3
-        .arc()
-        .outerRadius(config.outerRadius)
-        .innerRadius(config.innerRadius);
+//       function DrawSelectData(testdata, width, height) {
+//         const x = d3
+//           .scaleBand()
+//           .domain(testdata.map((d) => d.State))
+//           .range([-width, width])
+//           .padding(0.1);
+//         const y = d3
+//           .scaleLinear()
+//           .domain([0, d3.max(testdata, (d) => d.total)])
+//           .rangeRound([width, width - 90]);
 
-      interMap_g
-        .selectAll("path")
-        .data([{ startAngle: 0, endAngle: 2 * Math.PI, padAngle: 0 }])
-        .join("path")
-        .attr("d", arc_brush)
-        .attr("fill", "#7b6888")
-        .attr("opacity", "0");
+//         testdata.columns = Object.keys(testdata[0]).slice(0, 3);
 
-      //选择器
-      const inter = interMap_g.append("g");
+//         scaleMap_g
+//           .selectAll("g")
+//           .data(d3.stack().keys(testdata.columns.slice(1))(testdata))
+//           .join("g")
+//           .attr("fill", (d) => color(d.key))
+//           .selectAll("rect")
+//           .data((d) => d)
+//           .join("rect")
+//           .attr("x", (d, i) => x(d.data.State))
+//           .attr("y", function (d) {
+//             return y(d[1]);
+//           })
+//           .on("click", (event, d) => {
+//             //小矩形的id  例，u217
+//             store.commit("global/SET_USER_ID", d.data.State);
+//           })
+//           .attr("id", (d) => "rect_" + d.data.State)
+//           .attr("transform", `translate(0, 0)`)
+//           .attr("height", (d) => y(d[0]) - y(d[1]))
+//           .attr("width", x.bandwidth());
+//       }
+//       // 交互的容器
+//       const interMap_g = SVG.append("g")
+//         .attr("class", "interMap_g")
+//         .attr("width", config.width)
+//         .attr("height", config.height);
 
-      inter
-        .selectAll("path")
-        .data([
-          { startAngle: -0.04, endAngle: 0, padAngle: 0 },
-          { startAngle: 0.01, endAngle: 0.05, padAngle: 0 },
-        ])
-        .join("path")
-        .attr("d", arc_brush)
-        .attr("fill", "#7b6888")
-        .call(
-          drag_x(data, config.width / 2, config.height / 2)
-        )
-        .attr("class", "Selec_cri")
-        .attr("text", 0)
-        .attr("z-index", 99)
-        .attr("transform", `rotate(${0}, ${0} ${0})`)
-        .attr("opacity", "0.7");
+//       // 交互区域构建
+//       var arc_brush = d3
+//         .arc()
+//         .outerRadius(config.outerRadius)
+//         .innerRadius(config.innerRadius);
 
-      inter.append("g").attr("class", "Selec_area");
+//       interMap_g
+//         .selectAll("path")
+//         .data([{ startAngle: 0, endAngle: 2 * Math.PI, padAngle: 0 }])
+//         .join("path")
+//         .attr("d", arc_brush)
+//         .attr("fill", "#7b6888")
+//         .attr("opacity", "0");
 
-      const scaleMap_g = SVG.append("g").attr("class", "scaleMap_g");
-    },
+//       //选择器
+//       const inter = interMap_g.append("g");
+
+//       inter
+//         .selectAll("path")
+//         .data([
+//           { startAngle: -0.04, endAngle: 0, padAngle: 0 },
+//           { startAngle: 0.01, endAngle: 0.05, padAngle: 0 },
+//         ])
+//         .join("path")
+//         .attr("d", arc_brush)
+//         .attr("fill", "#7b6888")
+//         .call(drag_x(data, config.width / 2, config.height / 2))
+//         .attr("class", "Selec_cri")
+//         .attr("text", 0)
+//         .attr("z-index", 99)
+//         .attr("transform", `rotate(${0}, ${0} ${0})`)
+//         .attr("opacity", "0.7");
+
+//       inter.append("g").attr("class", "Selec_area");
+
+//       const scaleMap_g = SVG.append("g").attr("class", "scaleMap_g");
+//     },
+//     drawRadialAreaChart(map) {
+//       let testData = [
+//     [
+//         {
+//             "date": "2000-01-01T00:00:00.000Z",
+//             "avg": 23.23076923076923,
+//             "min": 16.238095238095237,
+//             "max": 32.095238095238095
+//         },
+//         {
+//             "date": "2000-01-02T00:00:00.000Z",
+//             "avg": 27.5,
+//             "min": 17.25,
+//             "max": 32.3
+//         },
+//         {
+//             "date": "2000-01-03T00:00:00.000Z",
+//             "avg": 25.166666666666668,
+//             "min": 18,
+//             "max": 32
+//         },
+//         {
+//             "date": "2000-01-04T00:00:00.000Z",
+//             "avg": 22.75,
+//             "min": 18.263157894736842,
+//             "max": 31.35
+//         },
+//         {
+//             "date": "2000-01-05T00:00:00.000Z",
+//             "avg": 18.5,
+//             "min": 15,
+//             "max": 30.05
+//         },
+//         {
+//             "date": "2000-01-06T00:00:00.000Z",
+//             "avg": 15.583333333333334,
+//             "min": 15.68421052631579,
+//             "max": 28.55
+//         },
+//         {
+//             "date": "2000-01-07T00:00:00.000Z",
+//             "avg": 16.75,
+//             "min": 15.947368421052632,
+//             "max": 30.15
+//         },
+//         {
+//             "date": "2000-01-08T00:00:00.000Z",
+//             "avg": 23.416666666666668,
+//             "min": 18.95,
+//             "max": 33.75
+//         },
+//         {
+//             "date": "2000-01-09T00:00:00.000Z",
+//             "avg": 25.166666666666668,
+//             "min": 19.94736842105263,
+//             "max": 33.6
+//         },
+//         {
+//             "date": "2000-01-10T00:00:00.000Z",
+//             "avg": 26.333333333333332,
+//             "min": 20,
+//             "max": 35.85
+//         },
+//         {
+//             "date": "2000-01-11T00:00:00.000Z",
+//             "avg": 28.583333333333332,
+//             "min": 23.05,
+//             "max": 36.35
+//         },
+//         {
+//             "date": "2000-01-12T00:00:00.000Z",
+//             "avg": 28.25,
+//             "min": 21.5,
+//             "max": 36.95
+//         },
+//         {
+//             "date": "2000-01-13T00:00:00.000Z",
+//             "avg": 24.583333333333332,
+//             "min": 17.35,
+//             "max": 31.85
+//         },
+//         {
+//             "date": "2000-01-14T00:00:00.000Z",
+//             "avg": 22.583333333333332,
+//             "min": 16.5,
+//             "max": 28.35
+//         },
+//         {
+//             "date": "2000-01-15T00:00:00.000Z",
+//             "avg": 24.25,
+//             "min": 15.95,
+//             "max": 29.25
+//         },
+//         {
+//             "date": "2000-01-16T00:00:00.000Z",
+//             "avg": 25.5,
+//             "min": 17.3,
+//             "max": 30.75
+//         },
+//         {
+//             "date": "2000-01-17T00:00:00.000Z",
+//             "avg": 21.416666666666668,
+//             "min": 15.2,
+//             "max": 28.5
+//         },
+//         {
+//             "date": "2000-01-18T00:00:00.000Z",
+//             "avg": 20.75,
+//             "min": 14.55,
+//             "max": 28.6
+//         },
+//         {
+//             "date": "2000-01-19T00:00:00.000Z",
+//             "avg": 22.583333333333332,
+//             "min": 16.210526315789473,
+//             "max": 31.15
+//         },
+//         {
+//             "date": "2000-01-20T00:00:00.000Z",
+//             "avg": 25.583333333333332,
+//             "min": 16.526315789473685,
+//             "max": 29.15
+//         },
+//         {
+//             "date": "2000-01-21T00:00:00.000Z",
+//             "avg": 24.583333333333332,
+//             "min": 16.94736842105263,
+//             "max": 28.65
+//         },
+//         {
+//             "date": "2000-01-22T00:00:00.000Z",
+//             "avg": 27.181818181818183,
+//             "min": 18.36842105263158,
+//             "max": 31.05
+//         },
+//         {
+//             "date": "2000-01-23T00:00:00.000Z",
+//             "avg": 24.583333333333332,
+//             "min": 17.55,
+//             "max": 30.3
+//         },
+//         {
+//             "date": "2000-01-24T00:00:00.000Z",
+//             "avg": 24.454545454545453,
+//             "min": 16.75,
+//             "max": 29.15
+//         },
+//         {
+//             "date": "2000-01-25T00:00:00.000Z",
+//             "avg": 27.666666666666668,
+//             "min": 17.55,
+//             "max": 32.05
+//         },
+//         {
+//             "date": "2000-01-26T00:00:00.000Z",
+//             "avg": 26.416666666666668,
+//             "min": 17.8,
+//             "max": 32.7
+//         },
+//         {
+//             "date": "2000-01-27T00:00:00.000Z",
+//             "avg": 26.90909090909091,
+//             "min": 17.55,
+//             "max": 32.3
+//         },
+//         {
+//             "date": "2000-01-28T00:00:00.000Z",
+//             "avg": 23.5,
+//             "min": 18.1,
+//             "max": 30.95
+//         },
+//         {
+//             "date": "2000-01-29T00:00:00.000Z",
+//             "avg": 25.25,
+//             "min": 18.8,
+//             "max": 33.35
+//         },
+//         {
+//             "date": "2000-01-30T00:00:00.000Z",
+//             "avg": 26.916666666666668,
+//             "min": 18.7,
+//             "max": 31.55
+//         },
+//         {
+//             "date": "2000-01-31T00:00:00.000Z",
+//             "avg": 29.083333333333332,
+//             "min": 20.85,
+//             "max": 33.4
+//         },
+//         {
+//             "date": "2000-02-01T00:00:00.000Z",
+//             "avg": 28.75,
+//             "min": 20.842105263157894,
+//             "max": 33.55
+//         },
+//         {
+//             "date": "2000-02-02T00:00:00.000Z",
+//             "avg": 24.818181818181817,
+//             "min": 15.7,
+//             "max": 29.05
+//         },
+//         {
+//             "date": "2000-02-03T00:00:00.000Z",
+//             "avg": 26.083333333333332,
+//             "min": 16,
+//             "max": 31.85
+//         },
+//         {
+//             "date": "2000-02-04T00:00:00.000Z",
+//             "avg": 23.75,
+//             "min": 15,
+//             "max": 30.5
+//         },
+//         {
+//             "date": "2000-02-05T00:00:00.000Z",
+//             "avg": 24.083333333333332,
+//             "min": 14.95,
+//             "max": 30.45
+//         },
+//         {
+//             "date": "2000-02-06T00:00:00.000Z",
+//             "avg": 26.25,
+//             "min": 18.25,
+//             "max": 33.85
+//         },
+//         {
+//             "date": "2000-02-07T00:00:00.000Z",
+//             "avg": 26.583333333333332,
+//             "min": 20,
+//             "max": 33.35
+//         },
+//         {
+//             "date": "2000-02-08T00:00:00.000Z",
+//             "avg": 27.083333333333332,
+//             "min": 17.5,
+//             "max": 32.4
+//         },
+//         {
+//             "date": "2000-02-09T00:00:00.000Z",
+//             "avg": 27.416666666666668,
+//             "min": 17.85,
+//             "max": 33.05
+//         },
+//         {
+//             "date": "2000-02-10T00:00:00.000Z",
+//             "avg": 23.916666666666668,
+//             "min": 15.2,
+//             "max": 31.7
+//         },
+//         {
+//             "date": "2000-02-11T00:00:00.000Z",
+//             "avg": 25.416666666666668,
+//             "min": 14.75,
+//             "max": 33.25
+//         },
+//         {
+//             "date": "2000-02-12T00:00:00.000Z",
+//             "avg": 23.75,
+//             "min": 16.65,
+//             "max": 31.95
+//         },
+//         {
+//             "date": "2000-02-13T00:00:00.000Z",
+//             "avg": 24.166666666666668,
+//             "min": 16.8,
+//             "max": 33.45
+//         },
+//         {
+//             "date": "2000-02-14T00:00:00.000Z",
+//             "avg": 29.166666666666668,
+//             "min": 20.4,
+//             "max": 36.6
+//         },
+//         {
+//             "date": "2000-02-15T00:00:00.000Z",
+//             "avg": 27.833333333333332,
+//             "min": 19.75,
+//             "max": 33.35
+//         },
+//         {
+//             "date": "2000-02-16T00:00:00.000Z",
+//             "avg": 27,
+//             "min": 19.45,
+//             "max": 33.6
+//         },
+//         {
+//             "date": "2000-02-17T00:00:00.000Z",
+//             "avg": 25.833333333333332,
+//             "min": 20.3,
+//             "max": 35.4
+//         },
+//         {
+//             "date": "2000-02-18T00:00:00.000Z",
+//             "avg": 28.916666666666668,
+//             "min": 17.9,
+//             "max": 37
+//         },
+//         {
+//             "date": "2000-02-19T00:00:00.000Z",
+//             "avg": 34.333333333333336,
+//             "min": 21.6,
+//             "max": 38.1
+//         },
+//         {
+//             "date": "2000-02-20T00:00:00.000Z",
+//             "avg": 36.25,
+//             "min": 23.55,
+//             "max": 40.6
+//         },
+//         {
+//             "date": "2000-02-21T00:00:00.000Z",
+//             "avg": 33.583333333333336,
+//             "min": 24.6,
+//             "max": 37.55
+//         },
+//         {
+//             "date": "2000-02-22T00:00:00.000Z",
+//             "avg": 32.833333333333336,
+//             "min": 24.1,
+//             "max": 38.05
+//         },
+//         {
+//             "date": "2000-02-23T00:00:00.000Z",
+//             "avg": 32.666666666666664,
+//             "min": 23.2,
+//             "max": 37.25
+//         },
+//         {
+//             "date": "2000-02-24T00:00:00.000Z",
+//             "avg": 32.25,
+//             "min": 23.8,
+//             "max": 38.9
+//         },
+//         {
+//             "date": "2000-02-25T00:00:00.000Z",
+//             "avg": 32.166666666666664,
+//             "min": 24,
+//             "max": 39.05
+//         },
+//         {
+//             "date": "2000-02-26T00:00:00.000Z",
+//             "avg": 29.833333333333332,
+//             "min": 22.63157894736842,
+//             "max": 38.3
+//         },
+//         {
+//             "date": "2000-02-27T00:00:00.000Z",
+//             "avg": 30.333333333333332,
+//             "min": 23.45,
+//             "max": 37.85
+//         },
+//         {
+//             "date": "2000-02-28T00:00:00.000Z",
+//             "avg": 32.75,
+//             "min": 22.8,
+//             "max": 39.8
+//         },
+//         {
+//             "date": "2000-02-29T00:00:00.000Z",
+//             "avg": 47.333333333333336,
+//             "min": 32.4,
+//             "max": 54.8
+//         },
+//         {
+//             "date": "2000-03-01T00:00:00.000Z",
+//             "avg": 33.75,
+//             "min": 25.2,
+//             "max": 38.95
+//         },
+//         {
+//             "date": "2000-03-02T00:00:00.000Z",
+//             "avg": 28.416666666666668,
+//             "min": 22.05,
+//             "max": 35.9
+//         },
+//         {
+//             "date": "2000-03-03T00:00:00.000Z",
+//             "avg": 27.5,
+//             "min": 21.42105263157895,
+//             "max": 36.45
+//         },
+//         {
+//             "date": "2000-03-04T00:00:00.000Z",
+//             "avg": 29.25,
+//             "min": 21.3,
+//             "max": 38.45
+//         },
+//         {
+//             "date": "2000-03-05T00:00:00.000Z",
+//             "avg": 32.25,
+//             "min": 25.25,
+//             "max": 39.25
+//         },
+//         {
+//             "date": "2000-03-06T00:00:00.000Z",
+//             "avg": 34.416666666666664,
+//             "min": 27.526315789473685,
+//             "max": 43.5
+//         },
+//         {
+//             "date": "2000-03-07T00:00:00.000Z",
+//             "avg": 38.75,
+//             "min": 29.05,
+//             "max": 45.35
+//         },
+//         {
+//             "date": "2000-03-08T00:00:00.000Z",
+//             "avg": 38.583333333333336,
+//             "min": 29.45,
+//             "max": 45.35
+//         },
+//         {
+//             "date": "2000-03-09T00:00:00.000Z",
+//             "avg": 34.083333333333336,
+//             "min": 26.8,
+//             "max": 44.3
+//         },
+//         {
+//             "date": "2000-03-10T00:00:00.000Z",
+//             "avg": 32.416666666666664,
+//             "min": 27.85,
+//             "max": 44.75
+//         },
+//         {
+//             "date": "2000-03-11T00:00:00.000Z",
+//             "avg": 33.583333333333336,
+//             "min": 27.7,
+//             "max": 46.4
+//         },
+//         {
+//             "date": "2000-03-12T00:00:00.000Z",
+//             "avg": 33.833333333333336,
+//             "min": 27.15,
+//             "max": 45.8
+//         },
+//         {
+//             "date": "2000-03-13T00:00:00.000Z",
+//             "avg": 34.45454545454545,
+//             "min": 29.1,
+//             "max": 46.8
+//         },
+//         {
+//             "date": "2000-03-14T00:00:00.000Z",
+//             "avg": 39,
+//             "min": 30.25,
+//             "max": 50.45
+//         },
+//         {
+//             "date": "2000-03-15T00:00:00.000Z",
+//             "avg": 39.083333333333336,
+//             "min": 30.2,
+//             "max": 48.7
+//         },
+//         {
+//             "date": "2000-03-16T00:00:00.000Z",
+//             "avg": 38.75,
+//             "min": 31.9,
+//             "max": 48.3
+//         },
+//         {
+//             "date": "2000-03-17T00:00:00.000Z",
+//             "avg": 38.833333333333336,
+//             "min": 33.1,
+//             "max": 49.65
+//         },
+//         {
+//             "date": "2000-03-18T00:00:00.000Z",
+//             "avg": 38.166666666666664,
+//             "min": 31.3,
+//             "max": 48.9
+//         },
+//         {
+//             "date": "2000-03-19T00:00:00.000Z",
+//             "avg": 40.166666666666664,
+//             "min": 32.65,
+//             "max": 49.8
+//         },
+//         {
+//             "date": "2000-03-20T00:00:00.000Z",
+//             "avg": 41.583333333333336,
+//             "min": 32.3,
+//             "max": 49.05
+//         },
+//         {
+//             "date": "2000-03-21T00:00:00.000Z",
+//             "avg": 38,
+//             "min": 31.55,
+//             "max": 48.7
+//         },
+//         {
+//             "date": "2000-03-22T00:00:00.000Z",
+//             "avg": 38,
+//             "min": 31.3,
+//             "max": 48.9
+//         },
+//         {
+//             "date": "2000-03-23T00:00:00.000Z",
+//             "avg": 39.333333333333336,
+//             "min": 31.65,
+//             "max": 48.65
+//         },
+//         {
+//             "date": "2000-03-24T00:00:00.000Z",
+//             "avg": 40.833333333333336,
+//             "min": 33.5,
+//             "max": 50.35
+//         },
+//         {
+//             "date": "2000-03-25T00:00:00.000Z",
+//             "avg": 38,
+//             "min": 33.45,
+//             "max": 47.1
+//         },
+//         {
+//             "date": "2000-03-26T00:00:00.000Z",
+//             "avg": 38.45454545454545,
+//             "min": 31.9,
+//             "max": 50.05
+//         },
+//         {
+//             "date": "2000-03-27T00:00:00.000Z",
+//             "avg": 42.36363636363637,
+//             "min": 32.35,
+//             "max": 52
+//         },
+//         {
+//             "date": "2000-03-28T00:00:00.000Z",
+//             "avg": 43.083333333333336,
+//             "min": 33.05,
+//             "max": 51
+//         },
+//         {
+//             "date": "2000-03-29T00:00:00.000Z",
+//             "avg": 41.916666666666664,
+//             "min": 32.55,
+//             "max": 50.3
+//         },
+//         {
+//             "date": "2000-03-30T00:00:00.000Z",
+//             "avg": 45.63636363636363,
+//             "min": 34.4,
+//             "max": 55.4
+//         },
+//         {
+//             "date": "2000-03-31T00:00:00.000Z",
+//             "avg": 47,
+//             "min": 37.15,
+//             "max": 58.6
+//         },
+//         {
+//             "date": "2000-04-01T00:00:00.000Z",
+//             "avg": 45.15384615384615,
+//             "min": 36.5,
+//             "max": 55.7
+//         },
+//         {
+//             "date": "2000-04-02T00:00:00.000Z",
+//             "avg": 45.38461538461539,
+//             "min": 37.25,
+//             "max": 56.85
+//         },
+//         {
+//             "date": "2000-04-03T00:00:00.000Z",
+//             "avg": 44.30769230769231,
+//             "min": 36.45,
+//             "max": 56.1
+//         },
+//         {
+//             "date": "2000-04-04T00:00:00.000Z",
+//             "avg": 41,
+//             "min": 33.45,
+//             "max": 52.2
+//         },
+//         {
+//             "date": "2000-04-05T00:00:00.000Z",
+//             "avg": 42.46153846153846,
+//             "min": 33.2,
+//             "max": 52.95
+//         },
+//         {
+//             "date": "2000-04-06T00:00:00.000Z",
+//             "avg": 46.30769230769231,
+//             "min": 36.3,
+//             "max": 56.65
+//         },
+//         {
+//             "date": "2000-04-07T00:00:00.000Z",
+//             "avg": 44.84615384615385,
+//             "min": 34.7,
+//             "max": 52.8
+//         },
+//         {
+//             "date": "2000-04-08T00:00:00.000Z",
+//             "avg": 45.23076923076923,
+//             "min": 35.7,
+//             "max": 51.95
+//         },
+//         {
+//             "date": "2000-04-09T00:00:00.000Z",
+//             "avg": 45.38461538461539,
+//             "min": 35.45,
+//             "max": 56.1
+//         },
+//         {
+//             "date": "2000-04-10T00:00:00.000Z",
+//             "avg": 47.69230769230769,
+//             "min": 36.7,
+//             "max": 58.6
+//         },
+//         {
+//             "date": "2000-04-11T00:00:00.000Z",
+//             "avg": 49.76923076923077,
+//             "min": 39.3,
+//             "max": 59.65
+//         },
+//         {
+//             "date": "2000-04-12T00:00:00.000Z",
+//             "avg": 48.30769230769231,
+//             "min": 38.2,
+//             "max": 57.65
+//         },
+//         {
+//             "date": "2000-04-13T00:00:00.000Z",
+//             "avg": 48.38461538461539,
+//             "min": 38.3,
+//             "max": 58.5
+//         },
+//         {
+//             "date": "2000-04-14T00:00:00.000Z",
+//             "avg": 51.53846153846154,
+//             "min": 39.85,
+//             "max": 64.15
+//         },
+//         {
+//             "date": "2000-04-15T00:00:00.000Z",
+//             "avg": 55.07692307692308,
+//             "min": 44,
+//             "max": 64.9
+//         },
+//         {
+//             "date": "2000-04-16T00:00:00.000Z",
+//             "avg": 52.15384615384615,
+//             "min": 40.9,
+//             "max": 62.6
+//         },
+//         {
+//             "date": "2000-04-17T00:00:00.000Z",
+//             "avg": 52,
+//             "min": 41,
+//             "max": 61.65
+//         },
+//         {
+//             "date": "2000-04-18T00:00:00.000Z",
+//             "avg": 53.69230769230769,
+//             "min": 41.15,
+//             "max": 63.2
+//         },
+//         {
+//             "date": "2000-04-19T00:00:00.000Z",
+//             "avg": 53.30769230769231,
+//             "min": 42.05,
+//             "max": 62.35
+//         },
+//         {
+//             "date": "2000-04-20T00:00:00.000Z",
+//             "avg": 52.53846153846154,
+//             "min": 41.6,
+//             "max": 62.6
+//         },
+//         {
+//             "date": "2000-04-21T00:00:00.000Z",
+//             "avg": 51.46153846153846,
+//             "min": 41.8,
+//             "max": 60.05
+//         },
+//         {
+//             "date": "2000-04-22T00:00:00.000Z",
+//             "avg": 48.69230769230769,
+//             "min": 40.4,
+//             "max": 59.4
+//         },
+//         {
+//             "date": "2000-04-23T00:00:00.000Z",
+//             "avg": 47.46153846153846,
+//             "min": 39.3,
+//             "max": 61.15
+//         },
+//         {
+//             "date": "2000-04-24T00:00:00.000Z",
+//             "avg": 49.53846153846154,
+//             "min": 41.05,
+//             "max": 64.15
+//         },
+//         {
+//             "date": "2000-04-25T00:00:00.000Z",
+//             "avg": 52.07692307692308,
+//             "min": 42.2,
+//             "max": 61.9
+//         },
+//         {
+//             "date": "2000-04-26T00:00:00.000Z",
+//             "avg": 51.92307692307692,
+//             "min": 40.7,
+//             "max": 63.1
+//         },
+//         {
+//             "date": "2000-04-27T00:00:00.000Z",
+//             "avg": 50.53846153846154,
+//             "min": 40.25,
+//             "max": 59.1
+//         },
+//         {
+//             "date": "2000-04-28T00:00:00.000Z",
+//             "avg": 51.92307692307692,
+//             "min": 40.85,
+//             "max": 60
+//         },
+//         {
+//             "date": "2000-04-29T00:00:00.000Z",
+//             "avg": 51.92307692307692,
+//             "min": 42.6,
+//             "max": 61.9
+//         },
+//         {
+//             "date": "2000-04-30T00:00:00.000Z",
+//             "avg": 53.23076923076923,
+//             "min": 45.5,
+//             "max": 64.45
+//         },
+//         {
+//             "date": "2000-05-01T00:00:00.000Z",
+//             "avg": 54.84615384615385,
+//             "min": 47.45,
+//             "max": 65.1
+//         },
+//         {
+//             "date": "2000-05-02T00:00:00.000Z",
+//             "avg": 53.84615384615385,
+//             "min": 46.15,
+//             "max": 64.25
+//         },
+//         {
+//             "date": "2000-05-03T00:00:00.000Z",
+//             "avg": 55,
+//             "min": 44.75,
+//             "max": 65.8
+//         },
+//         {
+//             "date": "2000-05-04T00:00:00.000Z",
+//             "avg": 56.61538461538461,
+//             "min": 46.4,
+//             "max": 67.4
+//         },
+//         {
+//             "date": "2000-05-05T00:00:00.000Z",
+//             "avg": 58.15384615384615,
+//             "min": 48.5,
+//             "max": 67.6
+//         },
+//         {
+//             "date": "2000-05-06T00:00:00.000Z",
+//             "avg": 61.15384615384615,
+//             "min": 49.05,
+//             "max": 71.6
+//         },
+//         {
+//             "date": "2000-05-07T00:00:00.000Z",
+//             "avg": 58.38461538461539,
+//             "min": 47.85,
+//             "max": 68.3
+//         },
+//         {
+//             "date": "2000-05-08T00:00:00.000Z",
+//             "avg": 62.07692307692308,
+//             "min": 48.65,
+//             "max": 72.55
+//         },
+//         {
+//             "date": "2000-05-09T00:00:00.000Z",
+//             "avg": 62.53846153846154,
+//             "min": 49.55,
+//             "max": 69.85
+//         },
+//         {
+//             "date": "2000-05-10T00:00:00.000Z",
+//             "avg": 59.84615384615385,
+//             "min": 49.05,
+//             "max": 70.35
+//         },
+//         {
+//             "date": "2000-05-11T00:00:00.000Z",
+//             "avg": 58.38461538461539,
+//             "min": 47.9,
+//             "max": 67.6
+//         },
+//         {
+//             "date": "2000-05-12T00:00:00.000Z",
+//             "avg": 57.76923076923077,
+//             "min": 47.8,
+//             "max": 65.15
+//         },
+//         {
+//             "date": "2000-05-13T00:00:00.000Z",
+//             "avg": 56.46153846153846,
+//             "min": 46.15,
+//             "max": 67.15
+//         },
+//         {
+//             "date": "2000-05-14T00:00:00.000Z",
+//             "avg": 55.46153846153846,
+//             "min": 46.15,
+//             "max": 67
+//         },
+//         {
+//             "date": "2000-05-15T00:00:00.000Z",
+//             "avg": 57.76923076923077,
+//             "min": 47.35,
+//             "max": 67.35
+//         },
+//         {
+//             "date": "2000-05-16T00:00:00.000Z",
+//             "avg": 61.15384615384615,
+//             "min": 47.55,
+//             "max": 69.7
+//         },
+//         {
+//             "date": "2000-05-17T00:00:00.000Z",
+//             "avg": 62.30769230769231,
+//             "min": 50.05,
+//             "max": 68.9
+//         },
+//         {
+//             "date": "2000-05-18T00:00:00.000Z",
+//             "avg": 60.61538461538461,
+//             "min": 47.7,
+//             "max": 68.55
+//         },
+//         {
+//             "date": "2000-05-19T00:00:00.000Z",
+//             "avg": 57.23076923076923,
+//             "min": 47.7,
+//             "max": 69.2
+//         },
+//         {
+//             "date": "2000-05-20T00:00:00.000Z",
+//             "avg": 59.07692307692308,
+//             "min": 49.4,
+//             "max": 71.4
+//         },
+//         {
+//             "date": "2000-05-21T00:00:00.000Z",
+//             "avg": 59.84615384615385,
+//             "min": 49.45,
+//             "max": 71.35
+//         },
+//         {
+//             "date": "2000-05-22T00:00:00.000Z",
+//             "avg": 61.46153846153846,
+//             "min": 50.15,
+//             "max": 71.5
+//         },
+//         {
+//             "date": "2000-05-23T00:00:00.000Z",
+//             "avg": 61.23076923076923,
+//             "min": 50.4,
+//             "max": 73.95
+//         },
+//         {
+//             "date": "2000-05-24T00:00:00.000Z",
+//             "avg": 59.07692307692308,
+//             "min": 51.6,
+//             "max": 72.5
+//         },
+//         {
+//             "date": "2000-05-25T00:00:00.000Z",
+//             "avg": 61,
+//             "min": 53.05,
+//             "max": 72.8
+//         },
+//         {
+//             "date": "2000-05-26T00:00:00.000Z",
+//             "avg": 62.69230769230769,
+//             "min": 52.7,
+//             "max": 74.15
+//         },
+//         {
+//             "date": "2000-05-27T00:00:00.000Z",
+//             "avg": 65.15384615384616,
+//             "min": 54.25,
+//             "max": 75.15
+//         },
+//         {
+//             "date": "2000-05-28T00:00:00.000Z",
+//             "avg": 65.38461538461539,
+//             "min": 56.8,
+//             "max": 75.2
+//         },
+//         {
+//             "date": "2000-05-29T00:00:00.000Z",
+//             "avg": 65.6923076923077,
+//             "min": 55.5,
+//             "max": 77.3
+//         },
+//         {
+//             "date": "2000-05-30T00:00:00.000Z",
+//             "avg": 66.53846153846153,
+//             "min": 55.8,
+//             "max": 79.45
+//         },
+//         {
+//             "date": "2000-05-31T00:00:00.000Z",
+//             "avg": 64.76923076923077,
+//             "min": 56.7,
+//             "max": 74.7
+//         },
+//         {
+//             "date": "2000-06-01T00:00:00.000Z",
+//             "avg": 65.61538461538461,
+//             "min": 54.95,
+//             "max": 77.25
+//         },
+//         {
+//             "date": "2000-06-02T00:00:00.000Z",
+//             "avg": 62.15384615384615,
+//             "min": 52.75,
+//             "max": 73
+//         },
+//         {
+//             "date": "2000-06-03T00:00:00.000Z",
+//             "avg": 62.38461538461539,
+//             "min": 53.5,
+//             "max": 72.5
+//         },
+//         {
+//             "date": "2000-06-04T00:00:00.000Z",
+//             "avg": 64.15384615384616,
+//             "min": 54.3,
+//             "max": 75.05
+//         },
+//         {
+//             "date": "2000-06-05T00:00:00.000Z",
+//             "avg": 64.23076923076923,
+//             "min": 53.4,
+//             "max": 75.35
+//         },
+//         {
+//             "date": "2000-06-06T00:00:00.000Z",
+//             "avg": 65.23076923076923,
+//             "min": 54.75,
+//             "max": 76.85
+//         },
+//         {
+//             "date": "2000-06-07T00:00:00.000Z",
+//             "avg": 67.76923076923077,
+//             "min": 58.2,
+//             "max": 80.25
+//         },
+//         {
+//             "date": "2000-06-08T00:00:00.000Z",
+//             "avg": 69.76923076923077,
+//             "min": 58.85,
+//             "max": 81.05
+//         },
+//         {
+//             "date": "2000-06-09T00:00:00.000Z",
+//             "avg": 70.15384615384616,
+//             "min": 58.5,
+//             "max": 80.45
+//         },
+//         {
+//             "date": "2000-06-10T00:00:00.000Z",
+//             "avg": 72.92307692307692,
+//             "min": 60.85,
+//             "max": 80
+//         },
+//         {
+//             "date": "2000-06-11T00:00:00.000Z",
+//             "avg": 72.38461538461539,
+//             "min": 61.75,
+//             "max": 79.8
+//         },
+//         {
+//             "date": "2000-06-12T00:00:00.000Z",
+//             "avg": 69.84615384615384,
+//             "min": 60.1,
+//             "max": 77.35
+//         },
+//         {
+//             "date": "2000-06-13T00:00:00.000Z",
+//             "avg": 69.53846153846153,
+//             "min": 58.9,
+//             "max": 78.25
+//         },
+//         {
+//             "date": "2000-06-14T00:00:00.000Z",
+//             "avg": 70.76923076923077,
+//             "min": 59.8,
+//             "max": 80.75
+//         },
+//         {
+//             "date": "2000-06-15T00:00:00.000Z",
+//             "avg": 69.84615384615384,
+//             "min": 60.45,
+//             "max": 80.9
+//         },
+//         {
+//             "date": "2000-06-16T00:00:00.000Z",
+//             "avg": 71.07692307692308,
+//             "min": 61.6,
+//             "max": 81.45
+//         },
+//         {
+//             "date": "2000-06-17T00:00:00.000Z",
+//             "avg": 70,
+//             "min": 61.6,
+//             "max": 81.25
+//         },
+//         {
+//             "date": "2000-06-18T00:00:00.000Z",
+//             "avg": 71.3076923076923,
+//             "min": 60.45,
+//             "max": 82.35
+//         },
+//         {
+//             "date": "2000-06-19T00:00:00.000Z",
+//             "avg": 67.23076923076923,
+//             "min": 59.75,
+//             "max": 80.1
+//         },
+//         {
+//             "date": "2000-06-20T00:00:00.000Z",
+//             "avg": 69.92307692307692,
+//             "min": 61.1,
+//             "max": 82.25
+//         },
+//         {
+//             "date": "2000-06-21T00:00:00.000Z",
+//             "avg": 70.61538461538461,
+//             "min": 63.05,
+//             "max": 81.2
+//         },
+//         {
+//             "date": "2000-06-22T00:00:00.000Z",
+//             "avg": 71,
+//             "min": 62.45,
+//             "max": 80.95
+//         },
+//         {
+//             "date": "2000-06-23T00:00:00.000Z",
+//             "avg": 73.07692307692308,
+//             "min": 62.45,
+//             "max": 82.2
+//         },
+//         {
+//             "date": "2000-06-24T00:00:00.000Z",
+//             "avg": 73.46153846153847,
+//             "min": 62.8,
+//             "max": 83.3
+//         },
+//         {
+//             "date": "2000-06-25T00:00:00.000Z",
+//             "avg": 73,
+//             "min": 63.05,
+//             "max": 82.95
+//         },
+//         {
+//             "date": "2000-06-26T00:00:00.000Z",
+//             "avg": 71.76923076923077,
+//             "min": 63.4,
+//             "max": 82.25
+//         },
+//         {
+//             "date": "2000-06-27T00:00:00.000Z",
+//             "avg": 72.53846153846153,
+//             "min": 62.8,
+//             "max": 84.75
+//         },
+//         {
+//             "date": "2000-06-28T00:00:00.000Z",
+//             "avg": 72.61538461538461,
+//             "min": 63,
+//             "max": 82.35
+//         },
+//         {
+//             "date": "2000-06-29T00:00:00.000Z",
+//             "avg": 72.61538461538461,
+//             "min": 62.3,
+//             "max": 80.7
+//         },
+//         {
+//             "date": "2000-06-30T00:00:00.000Z",
+//             "avg": 74.15384615384616,
+//             "min": 61.65,
+//             "max": 83.1
+//         },
+//         {
+//             "date": "2000-07-01T00:00:00.000Z",
+//             "avg": 72,
+//             "min": 61.95,
+//             "max": 81.2
+//         },
+//         {
+//             "date": "2000-07-02T00:00:00.000Z",
+//             "avg": 70.53846153846153,
+//             "min": 61.35,
+//             "max": 81.95
+//         },
+//         {
+//             "date": "2000-07-03T00:00:00.000Z",
+//             "avg": 72.3076923076923,
+//             "min": 63.2,
+//             "max": 82.6
+//         },
+//         {
+//             "date": "2000-07-04T00:00:00.000Z",
+//             "avg": 75.6923076923077,
+//             "min": 65.9,
+//             "max": 85.1
+//         },
+//         {
+//             "date": "2000-07-05T00:00:00.000Z",
+//             "avg": 74.6923076923077,
+//             "min": 65.65,
+//             "max": 85.35
+//         },
+//         {
+//             "date": "2000-07-06T00:00:00.000Z",
+//             "avg": 74.6923076923077,
+//             "min": 65.2,
+//             "max": 85.6
+//         },
+//         {
+//             "date": "2000-07-07T00:00:00.000Z",
+//             "avg": 74.23076923076923,
+//             "min": 64.45,
+//             "max": 84.25
+//         },
+//         {
+//             "date": "2000-07-08T00:00:00.000Z",
+//             "avg": 73.23076923076923,
+//             "min": 64.75,
+//             "max": 83.3
+//         },
+//         {
+//             "date": "2000-07-09T00:00:00.000Z",
+//             "avg": 73.84615384615384,
+//             "min": 65.25,
+//             "max": 84.8
+//         },
+//         {
+//             "date": "2000-07-10T00:00:00.000Z",
+//             "avg": 74.23076923076923,
+//             "min": 64.8,
+//             "max": 83.55
+//         },
+//         {
+//             "date": "2000-07-11T00:00:00.000Z",
+//             "avg": 72.07692307692308,
+//             "min": 63.5,
+//             "max": 82.5
+//         },
+//         {
+//             "date": "2000-07-12T00:00:00.000Z",
+//             "avg": 73.84615384615384,
+//             "min": 64.8,
+//             "max": 83.1
+//         },
+//         {
+//             "date": "2000-07-13T00:00:00.000Z",
+//             "avg": 75,
+//             "min": 64.5,
+//             "max": 83.95
+//         },
+//         {
+//             "date": "2000-07-14T00:00:00.000Z",
+//             "avg": 74.53846153846153,
+//             "min": 63.95,
+//             "max": 84.65
+//         },
+//         {
+//             "date": "2000-07-15T00:00:00.000Z",
+//             "avg": 73.76923076923077,
+//             "min": 64.85,
+//             "max": 85.65
+//         },
+//         {
+//             "date": "2000-07-16T00:00:00.000Z",
+//             "avg": 74.3076923076923,
+//             "min": 65.65,
+//             "max": 86
+//         },
+//         {
+//             "date": "2000-07-17T00:00:00.000Z",
+//             "avg": 75.46153846153847,
+//             "min": 67.1,
+//             "max": 86.65
+//         },
+//         {
+//             "date": "2000-07-18T00:00:00.000Z",
+//             "avg": 75.53846153846153,
+//             "min": 67.9,
+//             "max": 85.15
+//         },
+//         {
+//             "date": "2000-07-19T00:00:00.000Z",
+//             "avg": 75.46153846153847,
+//             "min": 65.25,
+//             "max": 84.5
+//         },
+//         {
+//             "date": "2000-07-20T00:00:00.000Z",
+//             "avg": 76.46153846153847,
+//             "min": 65.95,
+//             "max": 85.1
+//         },
+//         {
+//             "date": "2000-07-21T00:00:00.000Z",
+//             "avg": 77.76923076923077,
+//             "min": 68.1,
+//             "max": 85.85
+//         },
+//         {
+//             "date": "2000-07-22T00:00:00.000Z",
+//             "avg": 76,
+//             "min": 66.45,
+//             "max": 84.95
+//         },
+//         {
+//             "date": "2000-07-23T00:00:00.000Z",
+//             "avg": 74.07692307692308,
+//             "min": 64.55,
+//             "max": 83.65
+//         },
+//         {
+//             "date": "2000-07-24T00:00:00.000Z",
+//             "avg": 72.92307692307692,
+//             "min": 64.3,
+//             "max": 83.7
+//         },
+//         {
+//             "date": "2000-07-25T00:00:00.000Z",
+//             "avg": 73.84615384615384,
+//             "min": 65.7,
+//             "max": 84.55
+//         },
+//         {
+//             "date": "2000-07-26T00:00:00.000Z",
+//             "avg": 74.84615384615384,
+//             "min": 66.3,
+//             "max": 82.9
+//         },
+//         {
+//             "date": "2000-07-27T00:00:00.000Z",
+//             "avg": 73.84615384615384,
+//             "min": 65.25,
+//             "max": 83.55
+//         },
+//         {
+//             "date": "2000-07-28T00:00:00.000Z",
+//             "avg": 72.15384615384616,
+//             "min": 64.8,
+//             "max": 82.7
+//         },
+//         {
+//             "date": "2000-07-29T00:00:00.000Z",
+//             "avg": 73.46153846153847,
+//             "min": 64.7,
+//             "max": 84.25
+//         },
+//         {
+//             "date": "2000-07-30T00:00:00.000Z",
+//             "avg": 73.84615384615384,
+//             "min": 65.4,
+//             "max": 84.65
+//         },
+//         {
+//             "date": "2000-07-31T00:00:00.000Z",
+//             "avg": 75.76923076923077,
+//             "min": 66.8,
+//             "max": 85.9
+//         },
+//         {
+//             "date": "2000-08-01T00:00:00.000Z",
+//             "avg": 75.91666666666667,
+//             "min": 67.1,
+//             "max": 87.4
+//         },
+//         {
+//             "date": "2000-08-02T00:00:00.000Z",
+//             "avg": 75.25,
+//             "min": 66.05,
+//             "max": 86.65
+//         },
+//         {
+//             "date": "2000-08-03T00:00:00.000Z",
+//             "avg": 74.16666666666667,
+//             "min": 65.2,
+//             "max": 85.6
+//         },
+//         {
+//             "date": "2000-08-04T00:00:00.000Z",
+//             "avg": 73.5,
+//             "min": 66.3,
+//             "max": 84
+//         },
+//         {
+//             "date": "2000-08-05T00:00:00.000Z",
+//             "avg": 72.5,
+//             "min": 64.35,
+//             "max": 82.65
+//         },
+//         {
+//             "date": "2000-08-06T00:00:00.000Z",
+//             "avg": 73.66666666666667,
+//             "min": 65.1,
+//             "max": 83.1
+//         },
+//         {
+//             "date": "2000-08-07T00:00:00.000Z",
+//             "avg": 73.41666666666667,
+//             "min": 64.55,
+//             "max": 83.3
+//         },
+//         {
+//             "date": "2000-08-08T00:00:00.000Z",
+//             "avg": 73.16666666666667,
+//             "min": 66.5,
+//             "max": 82.75
+//         },
+//         {
+//             "date": "2000-08-09T00:00:00.000Z",
+//             "avg": 74.25,
+//             "min": 65.6,
+//             "max": 84.3
+//         },
+//         {
+//             "date": "2000-08-10T00:00:00.000Z",
+//             "avg": 73.83333333333333,
+//             "min": 65.45,
+//             "max": 82.5
+//         },
+//         {
+//             "date": "2000-08-11T00:00:00.000Z",
+//             "avg": 72.33333333333333,
+//             "min": 63.95,
+//             "max": 81.2
+//         },
+//         {
+//             "date": "2000-08-12T00:00:00.000Z",
+//             "avg": 70.81818181818181,
+//             "min": 63.4,
+//             "max": 80.6
+//         },
+//         {
+//             "date": "2000-08-13T00:00:00.000Z",
+//             "avg": 71.25,
+//             "min": 62.8,
+//             "max": 80.65
+//         },
+//         {
+//             "date": "2000-08-14T00:00:00.000Z",
+//             "avg": 70.83333333333333,
+//             "min": 62,
+//             "max": 80.9
+//         },
+//         {
+//             "date": "2000-08-15T00:00:00.000Z",
+//             "avg": 72.08333333333333,
+//             "min": 62.5,
+//             "max": 82.7
+//         },
+//         {
+//             "date": "2000-08-16T00:00:00.000Z",
+//             "avg": 73.25,
+//             "min": 63.65,
+//             "max": 82.85
+//         },
+//         {
+//             "date": "2000-08-17T00:00:00.000Z",
+//             "avg": 74,
+//             "min": 63.75,
+//             "max": 82.05
+//         },
+//         {
+//             "date": "2000-08-18T00:00:00.000Z",
+//             "avg": 70.91666666666667,
+//             "min": 63.3,
+//             "max": 80.1
+//         },
+//         {
+//             "date": "2000-08-19T00:00:00.000Z",
+//             "avg": 70.58333333333333,
+//             "min": 62.3,
+//             "max": 80.3
+//         },
+//         {
+//             "date": "2000-08-20T00:00:00.000Z",
+//             "avg": 71.08333333333333,
+//             "min": 62.6,
+//             "max": 80.7
+//         },
+//         {
+//             "date": "2000-08-21T00:00:00.000Z",
+//             "avg": 72.08333333333333,
+//             "min": 62.5,
+//             "max": 81.85
+//         },
+//         {
+//             "date": "2000-08-22T00:00:00.000Z",
+//             "avg": 72.25,
+//             "min": 62.45,
+//             "max": 81.15
+//         },
+//         {
+//             "date": "2000-08-23T00:00:00.000Z",
+//             "avg": 72.16666666666667,
+//             "min": 63.3,
+//             "max": 80.6
+//         },
+//         {
+//             "date": "2000-08-24T00:00:00.000Z",
+//             "avg": 71.58333333333333,
+//             "min": 63.15,
+//             "max": 81.6
+//         },
+//         {
+//             "date": "2000-08-25T00:00:00.000Z",
+//             "avg": 72.75,
+//             "min": 64,
+//             "max": 82.1
+//         },
+//         {
+//             "date": "2000-08-26T00:00:00.000Z",
+//             "avg": 74.08333333333333,
+//             "min": 64.6,
+//             "max": 81.35
+//         },
+//         {
+//             "date": "2000-08-27T00:00:00.000Z",
+//             "avg": 74.5,
+//             "min": 65.15,
+//             "max": 82.65
+//         },
+//         {
+//             "date": "2000-08-28T00:00:00.000Z",
+//             "avg": 73.75,
+//             "min": 63.9,
+//             "max": 81.8
+//         },
+//         {
+//             "date": "2000-08-29T00:00:00.000Z",
+//             "avg": 71.58333333333333,
+//             "min": 63.8,
+//             "max": 80.2
+//         },
+//         {
+//             "date": "2000-08-30T00:00:00.000Z",
+//             "avg": 71.66666666666667,
+//             "min": 62.35,
+//             "max": 80.2
+//         },
+//         {
+//             "date": "2000-08-31T00:00:00.000Z",
+//             "avg": 70.91666666666667,
+//             "min": 62.3,
+//             "max": 81.05
+//         },
+//         {
+//             "date": "2000-09-01T00:00:00.000Z",
+//             "avg": 71.08333333333333,
+//             "min": 62.5,
+//             "max": 80.7
+//         },
+//         {
+//             "date": "2000-09-02T00:00:00.000Z",
+//             "avg": 72.25,
+//             "min": 62.5,
+//             "max": 82.95
+//         },
+//         {
+//             "date": "2000-09-03T00:00:00.000Z",
+//             "avg": 73.08333333333333,
+//             "min": 62.3,
+//             "max": 82.55
+//         },
+//         {
+//             "date": "2000-09-04T00:00:00.000Z",
+//             "avg": 71.58333333333333,
+//             "min": 60.8,
+//             "max": 80.05
+//         },
+//         {
+//             "date": "2000-09-05T00:00:00.000Z",
+//             "avg": 71.75,
+//             "min": 59.15,
+//             "max": 80.35
+//         },
+//         {
+//             "date": "2000-09-06T00:00:00.000Z",
+//             "avg": 69.16666666666667,
+//             "min": 59.5,
+//             "max": 79.9
+//         },
+//         {
+//             "date": "2000-09-07T00:00:00.000Z",
+//             "avg": 72,
+//             "min": 60.7,
+//             "max": 80.95
+//         },
+//         {
+//             "date": "2000-09-08T00:00:00.000Z",
+//             "avg": 71.25,
+//             "min": 60.7,
+//             "max": 77.6
+//         },
+//         {
+//             "date": "2000-09-09T00:00:00.000Z",
+//             "avg": 69.58333333333333,
+//             "min": 59.4,
+//             "max": 76.95
+//         },
+//         {
+//             "date": "2000-09-10T00:00:00.000Z",
+//             "avg": 69.66666666666667,
+//             "min": 57.75,
+//             "max": 78.1
+//         },
+//         {
+//             "date": "2000-09-11T00:00:00.000Z",
+//             "avg": 67,
+//             "min": 56.5,
+//             "max": 78
+//         },
+//         {
+//             "date": "2000-09-12T00:00:00.000Z",
+//             "avg": 66.16666666666667,
+//             "min": 57.1,
+//             "max": 77.75
+//         },
+//         {
+//             "date": "2000-09-13T00:00:00.000Z",
+//             "avg": 64.08333333333333,
+//             "min": 56.5,
+//             "max": 75.55
+//         },
+//         {
+//             "date": "2000-09-14T00:00:00.000Z",
+//             "avg": 65,
+//             "min": 54.4,
+//             "max": 74.6
+//         },
+//         {
+//             "date": "2000-09-15T00:00:00.000Z",
+//             "avg": 64.58333333333333,
+//             "min": 54.2,
+//             "max": 72.35
+//         },
+//         {
+//             "date": "2000-09-16T00:00:00.000Z",
+//             "avg": 65,
+//             "min": 52.8,
+//             "max": 73.9
+//         },
+//         {
+//             "date": "2000-09-17T00:00:00.000Z",
+//             "avg": 66.75,
+//             "min": 54.3,
+//             "max": 77.2
+//         },
+//         {
+//             "date": "2000-09-18T00:00:00.000Z",
+//             "avg": 67.25,
+//             "min": 55.7,
+//             "max": 75.65
+//         },
+//         {
+//             "date": "2000-09-19T00:00:00.000Z",
+//             "avg": 67.83333333333333,
+//             "min": 56.95,
+//             "max": 76.05
+//         },
+//         {
+//             "date": "2000-09-20T00:00:00.000Z",
+//             "avg": 66.08333333333333,
+//             "min": 55.1,
+//             "max": 75.8
+//         },
+//         {
+//             "date": "2000-09-21T00:00:00.000Z",
+//             "avg": 65.33333333333333,
+//             "min": 54.6,
+//             "max": 75
+//         },
+//         {
+//             "date": "2000-09-22T00:00:00.000Z",
+//             "avg": 62.833333333333336,
+//             "min": 53.7,
+//             "max": 73.5
+//         },
+//         {
+//             "date": "2000-09-23T00:00:00.000Z",
+//             "avg": 64.25,
+//             "min": 54.1,
+//             "max": 74.5
+//         },
+//         {
+//             "date": "2000-09-24T00:00:00.000Z",
+//             "avg": 62.5,
+//             "min": 54.55,
+//             "max": 72.4
+//         },
+//         {
+//             "date": "2000-09-25T00:00:00.000Z",
+//             "avg": 62.5,
+//             "min": 53.75,
+//             "max": 72.95
+//         },
+//         {
+//             "date": "2000-09-26T00:00:00.000Z",
+//             "avg": 64,
+//             "min": 52.45,
+//             "max": 71.95
+//         },
+//         {
+//             "date": "2000-09-27T00:00:00.000Z",
+//             "avg": 61.833333333333336,
+//             "min": 50.75,
+//             "max": 70.9
+//         },
+//         {
+//             "date": "2000-09-28T00:00:00.000Z",
+//             "avg": 59.916666666666664,
+//             "min": 50.9,
+//             "max": 67.45
+//         },
+//         {
+//             "date": "2000-09-29T00:00:00.000Z",
+//             "avg": 60.333333333333336,
+//             "min": 49.05,
+//             "max": 68.55
+//         },
+//         {
+//             "date": "2000-09-30T00:00:00.000Z",
+//             "avg": 59,
+//             "min": 49.35,
+//             "max": 67.9
+//         },
+//         {
+//             "date": "2000-10-01T00:00:00.000Z",
+//             "avg": 60.75,
+//             "min": 50.25,
+//             "max": 69.15
+//         },
+//         {
+//             "date": "2000-10-02T00:00:00.000Z",
+//             "avg": 59.833333333333336,
+//             "min": 50.8,
+//             "max": 68.45
+//         },
+//         {
+//             "date": "2000-10-03T00:00:00.000Z",
+//             "avg": 59.666666666666664,
+//             "min": 51.2,
+//             "max": 68
+//         },
+//         {
+//             "date": "2000-10-04T00:00:00.000Z",
+//             "avg": 56.833333333333336,
+//             "min": 48.8,
+//             "max": 67.5
+//         },
+//         {
+//             "date": "2000-10-05T00:00:00.000Z",
+//             "avg": 54.916666666666664,
+//             "min": 47.2,
+//             "max": 66
+//         },
+//         {
+//             "date": "2000-10-06T00:00:00.000Z",
+//             "avg": 55.5,
+//             "min": 47.2,
+//             "max": 66.2
+//         },
+//         {
+//             "date": "2000-10-07T00:00:00.000Z",
+//             "avg": 55.916666666666664,
+//             "min": 46.4,
+//             "max": 67.2
+//         },
+//         {
+//             "date": "2000-10-08T00:00:00.000Z",
+//             "avg": 58,
+//             "min": 47.3,
+//             "max": 69.3
+//         },
+//         {
+//             "date": "2000-10-09T00:00:00.000Z",
+//             "avg": 59.666666666666664,
+//             "min": 48,
+//             "max": 69.35
+//         },
+//         {
+//             "date": "2000-10-10T00:00:00.000Z",
+//             "avg": 59,
+//             "min": 46.5,
+//             "max": 66.5
+//         },
+//         {
+//             "date": "2000-10-11T00:00:00.000Z",
+//             "avg": 57.583333333333336,
+//             "min": 46.35,
+//             "max": 66.5
+//         },
+//         {
+//             "date": "2000-10-12T00:00:00.000Z",
+//             "avg": 56.666666666666664,
+//             "min": 45.95,
+//             "max": 64.5
+//         },
+//         {
+//             "date": "2000-10-13T00:00:00.000Z",
+//             "avg": 54.916666666666664,
+//             "min": 45.55,
+//             "max": 63.8
+//         },
+//         {
+//             "date": "2000-10-14T00:00:00.000Z",
+//             "avg": 53.833333333333336,
+//             "min": 45.35,
+//             "max": 62.2
+//         },
+//         {
+//             "date": "2000-10-15T00:00:00.000Z",
+//             "avg": 53.5,
+//             "min": 44.4,
+//             "max": 61.45
+//         },
+//         {
+//             "date": "2000-10-16T00:00:00.000Z",
+//             "avg": 50.166666666666664,
+//             "min": 43.1,
+//             "max": 59.1
+//         },
+//         {
+//             "date": "2000-10-17T00:00:00.000Z",
+//             "avg": 49.166666666666664,
+//             "min": 42.1,
+//             "max": 59.95
+//         },
+//         {
+//             "date": "2000-10-18T00:00:00.000Z",
+//             "avg": 51.416666666666664,
+//             "min": 40.85,
+//             "max": 61.6
+//         },
+//         {
+//             "date": "2000-10-19T00:00:00.000Z",
+//             "avg": 52.416666666666664,
+//             "min": 43.9,
+//             "max": 59.7
+//         },
+//         {
+//             "date": "2000-10-20T00:00:00.000Z",
+//             "avg": 54.5,
+//             "min": 43.3,
+//             "max": 62.35
+//         },
+//         {
+//             "date": "2000-10-21T00:00:00.000Z",
+//             "avg": 53.083333333333336,
+//             "min": 43.9,
+//             "max": 62.2
+//         },
+//         {
+//             "date": "2000-10-22T00:00:00.000Z",
+//             "avg": 51.416666666666664,
+//             "min": 41,
+//             "max": 59.4
+//         },
+//         {
+//             "date": "2000-10-23T00:00:00.000Z",
+//             "avg": 51.666666666666664,
+//             "min": 43.7,
+//             "max": 58.95
+//         },
+//         {
+//             "date": "2000-10-24T00:00:00.000Z",
+//             "avg": 50.25,
+//             "min": 42.2,
+//             "max": 58.1
+//         },
+//         {
+//             "date": "2000-10-25T00:00:00.000Z",
+//             "avg": 49.083333333333336,
+//             "min": 41.15,
+//             "max": 59.6
+//         },
+//         {
+//             "date": "2000-10-26T00:00:00.000Z",
+//             "avg": 51.083333333333336,
+//             "min": 43.15,
+//             "max": 56.1
+//         },
+//         {
+//             "date": "2000-10-27T00:00:00.000Z",
+//             "avg": 48.5,
+//             "min": 39.7,
+//             "max": 54.55
+//         },
+//         {
+//             "date": "2000-10-28T00:00:00.000Z",
+//             "avg": 49.666666666666664,
+//             "min": 39.05,
+//             "max": 55.1
+//         },
+//         {
+//             "date": "2000-10-29T00:00:00.000Z",
+//             "avg": 50.416666666666664,
+//             "min": 39.5,
+//             "max": 56.6
+//         },
+//         {
+//             "date": "2000-10-30T00:00:00.000Z",
+//             "avg": 51.333333333333336,
+//             "min": 40.85,
+//             "max": 60.95
+//         },
+//         {
+//             "date": "2000-10-31T00:00:00.000Z",
+//             "avg": 51.166666666666664,
+//             "min": 41.3,
+//             "max": 57.8
+//         },
+//         {
+//             "date": "2000-11-01T00:00:00.000Z",
+//             "avg": 50.583333333333336,
+//             "min": 40.5,
+//             "max": 55.4
+//         },
+//         {
+//             "date": "2000-11-02T00:00:00.000Z",
+//             "avg": 48.416666666666664,
+//             "min": 39.6,
+//             "max": 55.7
+//         },
+//         {
+//             "date": "2000-11-03T00:00:00.000Z",
+//             "avg": 46.916666666666664,
+//             "min": 38.3,
+//             "max": 55.2
+//         },
+//         {
+//             "date": "2000-11-04T00:00:00.000Z",
+//             "avg": 49.416666666666664,
+//             "min": 39.5,
+//             "max": 57.35
+//         },
+//         {
+//             "date": "2000-11-05T00:00:00.000Z",
+//             "avg": 48.75,
+//             "min": 38.65,
+//             "max": 56
+//         },
+//         {
+//             "date": "2000-11-06T00:00:00.000Z",
+//             "avg": 47.833333333333336,
+//             "min": 36.95,
+//             "max": 54.7
+//         },
+//         {
+//             "date": "2000-11-07T00:00:00.000Z",
+//             "avg": 43.916666666666664,
+//             "min": 36.4,
+//             "max": 53.55
+//         },
+//         {
+//             "date": "2000-11-08T00:00:00.000Z",
+//             "avg": 41.833333333333336,
+//             "min": 36.65,
+//             "max": 53.35
+//         },
+//         {
+//             "date": "2000-11-09T00:00:00.000Z",
+//             "avg": 44.583333333333336,
+//             "min": 36.4,
+//             "max": 55.15
+//         },
+//         {
+//             "date": "2000-11-10T00:00:00.000Z",
+//             "avg": 43.583333333333336,
+//             "min": 35,
+//             "max": 52.7
+//         },
+//         {
+//             "date": "2000-11-11T00:00:00.000Z",
+//             "avg": 42.333333333333336,
+//             "min": 34.15,
+//             "max": 51.3
+//         },
+//         {
+//             "date": "2000-11-12T00:00:00.000Z",
+//             "avg": 39.833333333333336,
+//             "min": 34.15,
+//             "max": 49.85
+//         },
+//         {
+//             "date": "2000-11-13T00:00:00.000Z",
+//             "avg": 38.416666666666664,
+//             "min": 32.35,
+//             "max": 50.05
+//         },
+//         {
+//             "date": "2000-11-14T00:00:00.000Z",
+//             "avg": 39.166666666666664,
+//             "min": 32.6,
+//             "max": 50
+//         },
+//         {
+//             "date": "2000-11-15T00:00:00.000Z",
+//             "avg": 41.416666666666664,
+//             "min": 34.45,
+//             "max": 48.9
+//         },
+//         {
+//             "date": "2000-11-16T00:00:00.000Z",
+//             "avg": 41.5,
+//             "min": 33.35,
+//             "max": 46.55
+//         },
+//         {
+//             "date": "2000-11-17T00:00:00.000Z",
+//             "avg": 42.75,
+//             "min": 32.9,
+//             "max": 47.2
+//         },
+//         {
+//             "date": "2000-11-18T00:00:00.000Z",
+//             "avg": 44.666666666666664,
+//             "min": 32.65,
+//             "max": 48.1
+//         },
+//         {
+//             "date": "2000-11-19T00:00:00.000Z",
+//             "avg": 39.083333333333336,
+//             "min": 32.25,
+//             "max": 48.3
+//         },
+//         {
+//             "date": "2000-11-20T00:00:00.000Z",
+//             "avg": 36.166666666666664,
+//             "min": 31.35,
+//             "max": 45.5
+//         },
+//         {
+//             "date": "2000-11-21T00:00:00.000Z",
+//             "avg": 35.75,
+//             "min": 29.7,
+//             "max": 44.7
+//         },
+//         {
+//             "date": "2000-11-22T00:00:00.000Z",
+//             "avg": 36.833333333333336,
+//             "min": 29.9,
+//             "max": 46.2
+//         },
+//         {
+//             "date": "2000-11-23T00:00:00.000Z",
+//             "avg": 40.333333333333336,
+//             "min": 31.3,
+//             "max": 46.8
+//         },
+//         {
+//             "date": "2000-11-24T00:00:00.000Z",
+//             "avg": 37,
+//             "min": 28.75,
+//             "max": 44.1
+//         },
+//         {
+//             "date": "2000-11-25T00:00:00.000Z",
+//             "avg": 34.833333333333336,
+//             "min": 28,
+//             "max": 42.15
+//         },
+//         {
+//             "date": "2000-11-26T00:00:00.000Z",
+//             "avg": 36,
+//             "min": 29.05,
+//             "max": 43.35
+//         },
+//         {
+//             "date": "2000-11-27T00:00:00.000Z",
+//             "avg": 35.083333333333336,
+//             "min": 28.5,
+//             "max": 42.4
+//         },
+//         {
+//             "date": "2000-11-28T00:00:00.000Z",
+//             "avg": 33.916666666666664,
+//             "min": 29.1,
+//             "max": 44.25
+//         },
+//         {
+//             "date": "2000-11-29T00:00:00.000Z",
+//             "avg": 36.083333333333336,
+//             "min": 29.6,
+//             "max": 43.85
+//         },
+//         {
+//             "date": "2000-11-30T00:00:00.000Z",
+//             "avg": 38.583333333333336,
+//             "min": 29.3,
+//             "max": 43.45
+//         },
+//         {
+//             "date": "2000-12-01T00:00:00.000Z",
+//             "avg": 34.416666666666664,
+//             "min": 26.15,
+//             "max": 39.7
+//         },
+//         {
+//             "date": "2000-12-02T00:00:00.000Z",
+//             "avg": 35.5,
+//             "min": 27.35,
+//             "max": 41.25
+//         },
+//         {
+//             "date": "2000-12-03T00:00:00.000Z",
+//             "avg": 35.5,
+//             "min": 27.35,
+//             "max": 39.85
+//         },
+//         {
+//             "date": "2000-12-04T00:00:00.000Z",
+//             "avg": 38.583333333333336,
+//             "min": 28.1,
+//             "max": 40.5
+//         },
+//         {
+//             "date": "2000-12-05T00:00:00.000Z",
+//             "avg": 34.666666666666664,
+//             "min": 22.35,
+//             "max": 36.8
+//         },
+//         {
+//             "date": "2000-12-06T00:00:00.000Z",
+//             "avg": 31.166666666666668,
+//             "min": 21.68421052631579,
+//             "max": 34.4
+//         },
+//         {
+//             "date": "2000-12-07T00:00:00.000Z",
+//             "avg": 30.416666666666668,
+//             "min": 22.736842105263158,
+//             "max": 31.95
+//         },
+//         {
+//             "date": "2000-12-08T00:00:00.000Z",
+//             "avg": 29.833333333333332,
+//             "min": 20.8,
+//             "max": 34.65
+//         },
+//         {
+//             "date": "2000-12-09T00:00:00.000Z",
+//             "avg": 31.583333333333332,
+//             "min": 21.894736842105264,
+//             "max": 36.35
+//         },
+//         {
+//             "date": "2000-12-10T00:00:00.000Z",
+//             "avg": 31.083333333333332,
+//             "min": 22.94736842105263,
+//             "max": 35.75
+//         },
+//         {
+//             "date": "2000-12-11T00:00:00.000Z",
+//             "avg": 29.666666666666668,
+//             "min": 21.45,
+//             "max": 36.3
+//         },
+//         {
+//             "date": "2000-12-12T00:00:00.000Z",
+//             "avg": 30.363636363636363,
+//             "min": 20.3,
+//             "max": 36.1
+//         },
+//         {
+//             "date": "2000-12-13T00:00:00.000Z",
+//             "avg": 31.272727272727273,
+//             "min": 23.35,
+//             "max": 37.7
+//         },
+//         {
+//             "date": "2000-12-14T00:00:00.000Z",
+//             "avg": 31.666666666666668,
+//             "min": 25.9,
+//             "max": 37.8
+//         },
+//         {
+//             "date": "2000-12-15T00:00:00.000Z",
+//             "avg": 29.666666666666668,
+//             "min": 21.9,
+//             "max": 36.6
+//         },
+//         {
+//             "date": "2000-12-16T00:00:00.000Z",
+//             "avg": 31.583333333333332,
+//             "min": 22.45,
+//             "max": 36.45
+//         },
+//         {
+//             "date": "2000-12-17T00:00:00.000Z",
+//             "avg": 29.181818181818183,
+//             "min": 20.95,
+//             "max": 31.85
+//         },
+//         {
+//             "date": "2000-12-18T00:00:00.000Z",
+//             "avg": 28.90909090909091,
+//             "min": 18.75,
+//             "max": 33.65
+//         },
+//         {
+//             "date": "2000-12-19T00:00:00.000Z",
+//             "avg": 27.583333333333332,
+//             "min": 21,
+//             "max": 34.35
+//         },
+//         {
+//             "date": "2000-12-20T00:00:00.000Z",
+//             "avg": 27.416666666666668,
+//             "min": 20.35,
+//             "max": 34.65
+//         },
+//         {
+//             "date": "2000-12-21T00:00:00.000Z",
+//             "avg": 28.75,
+//             "min": 22.1,
+//             "max": 34.3
+//         },
+//         {
+//             "date": "2000-12-22T00:00:00.000Z",
+//             "avg": 28.416666666666668,
+//             "min": 22.2,
+//             "max": 33.9
+//         },
+//         {
+//             "date": "2000-12-23T00:00:00.000Z",
+//             "avg": 28.636363636363637,
+//             "min": 20.45,
+//             "max": 34.75
+//         },
+//         {
+//             "date": "2000-12-24T00:00:00.000Z",
+//             "avg": 23.181818181818183,
+//             "min": 19.75,
+//             "max": 29.9
+//         },
+//         {
+//             "date": "2000-12-25T00:00:00.000Z",
+//             "avg": 25.636363636363637,
+//             "min": 20.36842105263158,
+//             "max": 33.15
+//         },
+//         {
+//             "date": "2000-12-26T00:00:00.000Z",
+//             "avg": 25.75,
+//             "min": 20.8,
+//             "max": 35.25
+//         },
+//         {
+//             "date": "2000-12-27T00:00:00.000Z",
+//             "avg": 26.833333333333332,
+//             "min": 21.65,
+//             "max": 34.8
+//         },
+//         {
+//             "date": "2000-12-28T00:00:00.000Z",
+//             "avg": 28.666666666666668,
+//             "min": 24.105263157894736,
+//             "max": 35.6
+//         },
+//         {
+//             "date": "2000-12-29T00:00:00.000Z",
+//             "avg": 28.75,
+//             "min": 21.8,
+//             "max": 35.3
+//         },
+//         {
+//             "date": "2000-12-30T00:00:00.000Z",
+//             "avg": 26.75,
+//             "min": 21.85,
+//             "max": 35.9
+//         },
+//         {
+//             "date": "2000-12-31T00:00:00.000Z",
+//             "avg": 24.333333333333332,
+//             "min": 20.5,
+//             "max": 34.3
+//         }
+//     ],
+//     [
+//         {
+//             "date": "2000-01-01T00:00:00.000Z",
+//             "avg": 50.23076923076923,
+//             "min": 43.61904761904762,
+//             "max": 55.666666666666664
+//         },
+//         {
+//             "date": "2000-01-02T00:00:00.000Z",
+//             "avg": 49.333333333333336,
+//             "min": 43.85,
+//             "max": 55.2
+//         },
+//         {
+//             "date": "2000-01-03T00:00:00.000Z",
+//             "avg": 50.5,
+//             "min": 43.95,
+//             "max": 56.65
+//         },
+//         {
+//             "date": "2000-01-04T00:00:00.000Z",
+//             "avg": 50.75,
+//             "min": 43.5,
+//             "max": 56.5
+//         },
+//         {
+//             "date": "2000-01-05T00:00:00.000Z",
+//             "avg": 51.833333333333336,
+//             "min": 43.8,
+//             "max": 56.55
+//         },
+//         {
+//             "date": "2000-01-06T00:00:00.000Z",
+//             "avg": 50.166666666666664,
+//             "min": 43.6,
+//             "max": 55.2
+//         },
+//         {
+//             "date": "2000-01-07T00:00:00.000Z",
+//             "avg": 51.083333333333336,
+//             "min": 44.65,
+//             "max": 56.5
+//         },
+//         {
+//             "date": "2000-01-08T00:00:00.000Z",
+//             "avg": 52.75,
+//             "min": 46.4,
+//             "max": 57.15
+//         },
+//         {
+//             "date": "2000-01-09T00:00:00.000Z",
+//             "avg": 52.75,
+//             "min": 46.05,
+//             "max": 56.3
+//         },
+//         {
+//             "date": "2000-01-10T00:00:00.000Z",
+//             "avg": 53.25,
+//             "min": 46.5,
+//             "max": 56.7
+//         },
+//         {
+//             "date": "2000-01-11T00:00:00.000Z",
+//             "avg": 51.666666666666664,
+//             "min": 45.45,
+//             "max": 55.85
+//         },
+//         {
+//             "date": "2000-01-12T00:00:00.000Z",
+//             "avg": 50.833333333333336,
+//             "min": 45.4,
+//             "max": 56.5
+//         },
+//         {
+//             "date": "2000-01-13T00:00:00.000Z",
+//             "avg": 51.75,
+//             "min": 44.35,
+//             "max": 58.25
+//         },
+//         {
+//             "date": "2000-01-14T00:00:00.000Z",
+//             "avg": 50.666666666666664,
+//             "min": 43.7,
+//             "max": 56.4
+//         },
+//         {
+//             "date": "2000-01-15T00:00:00.000Z",
+//             "avg": 52.083333333333336,
+//             "min": 44.2,
+//             "max": 57.65
+//         },
+//         {
+//             "date": "2000-01-16T00:00:00.000Z",
+//             "avg": 52.416666666666664,
+//             "min": 44.4,
+//             "max": 57.2
+//         },
+//         {
+//             "date": "2000-01-17T00:00:00.000Z",
+//             "avg": 52.333333333333336,
+//             "min": 44.75,
+//             "max": 56.75
+//         },
+//         {
+//             "date": "2000-01-18T00:00:00.000Z",
+//             "avg": 52.25,
+//             "min": 45.05,
+//             "max": 58.5
+//         },
+//         {
+//             "date": "2000-01-19T00:00:00.000Z",
+//             "avg": 53.166666666666664,
+//             "min": 45.7,
+//             "max": 58
+//         },
+//         {
+//             "date": "2000-01-20T00:00:00.000Z",
+//             "avg": 51.5,
+//             "min": 44.5,
+//             "max": 57.55
+//         },
+//         {
+//             "date": "2000-01-21T00:00:00.000Z",
+//             "avg": 51.583333333333336,
+//             "min": 45.2,
+//             "max": 57.25
+//         },
+//         {
+//             "date": "2000-01-22T00:00:00.000Z",
+//             "avg": 52.583333333333336,
+//             "min": 45.3,
+//             "max": 57.35
+//         },
+//         {
+//             "date": "2000-01-23T00:00:00.000Z",
+//             "avg": 51.75,
+//             "min": 45.75,
+//             "max": 57.7
+//         },
+//         {
+//             "date": "2000-01-24T00:00:00.000Z",
+//             "avg": 51.083333333333336,
+//             "min": 45.05,
+//             "max": 56.75
+//         },
+//         {
+//             "date": "2000-01-25T00:00:00.000Z",
+//             "avg": 51.583333333333336,
+//             "min": 45.8,
+//             "max": 58
+//         },
+//         {
+//             "date": "2000-01-26T00:00:00.000Z",
+//             "avg": 51.5,
+//             "min": 45.85,
+//             "max": 56.6
+//         },
+//         {
+//             "date": "2000-01-27T00:00:00.000Z",
+//             "avg": 52,
+//             "min": 44.9,
+//             "max": 58.25
+//         },
+//         {
+//             "date": "2000-01-28T00:00:00.000Z",
+//             "avg": 51.333333333333336,
+//             "min": 44.2,
+//             "max": 57.5
+//         },
+//         {
+//             "date": "2000-01-29T00:00:00.000Z",
+//             "avg": 52.166666666666664,
+//             "min": 45.4,
+//             "max": 58.25
+//         },
+//         {
+//             "date": "2000-01-30T00:00:00.000Z",
+//             "avg": 52,
+//             "min": 45.2,
+//             "max": 58.3
+//         },
+//         {
+//             "date": "2000-01-31T00:00:00.000Z",
+//             "avg": 51.666666666666664,
+//             "min": 44.1,
+//             "max": 58.2
+//         },
+//         {
+//             "date": "2000-02-01T00:00:00.000Z",
+//             "avg": 52,
+//             "min": 44.95,
+//             "max": 59.1
+//         },
+//         {
+//             "date": "2000-02-02T00:00:00.000Z",
+//             "avg": 52.583333333333336,
+//             "min": 45.85,
+//             "max": 60
+//         },
+//         {
+//             "date": "2000-02-03T00:00:00.000Z",
+//             "avg": 53.666666666666664,
+//             "min": 45.7,
+//             "max": 60.3
+//         },
+//         {
+//             "date": "2000-02-04T00:00:00.000Z",
+//             "avg": 54.333333333333336,
+//             "min": 45.95,
+//             "max": 60.7
+//         },
+//         {
+//             "date": "2000-02-05T00:00:00.000Z",
+//             "avg": 53.166666666666664,
+//             "min": 46,
+//             "max": 60.65
+//         },
+//         {
+//             "date": "2000-02-06T00:00:00.000Z",
+//             "avg": 53.5,
+//             "min": 47.2,
+//             "max": 59.55
+//         },
+//         {
+//             "date": "2000-02-07T00:00:00.000Z",
+//             "avg": 55,
+//             "min": 48.45,
+//             "max": 60.5
+//         },
+//         {
+//             "date": "2000-02-08T00:00:00.000Z",
+//             "avg": 54.333333333333336,
+//             "min": 47.25,
+//             "max": 60.65
+//         },
+//         {
+//             "date": "2000-02-09T00:00:00.000Z",
+//             "avg": 54.583333333333336,
+//             "min": 46.25,
+//             "max": 61.35
+//         },
+//         {
+//             "date": "2000-02-10T00:00:00.000Z",
+//             "avg": 53.666666666666664,
+//             "min": 45.65,
+//             "max": 60.7
+//         },
+//         {
+//             "date": "2000-02-11T00:00:00.000Z",
+//             "avg": 52.416666666666664,
+//             "min": 45.5,
+//             "max": 59.5
+//         },
+//         {
+//             "date": "2000-02-12T00:00:00.000Z",
+//             "avg": 52.583333333333336,
+//             "min": 45.5,
+//             "max": 60.3
+//         },
+//         {
+//             "date": "2000-02-13T00:00:00.000Z",
+//             "avg": 53.75,
+//             "min": 47.05,
+//             "max": 60.1
+//         },
+//         {
+//             "date": "2000-02-14T00:00:00.000Z",
+//             "avg": 54.833333333333336,
+//             "min": 47.7,
+//             "max": 60.45
+//         },
+//         {
+//             "date": "2000-02-15T00:00:00.000Z",
+//             "avg": 54.583333333333336,
+//             "min": 47.3,
+//             "max": 60.65
+//         },
+//         {
+//             "date": "2000-02-16T00:00:00.000Z",
+//             "avg": 55.416666666666664,
+//             "min": 47,
+//             "max": 61.35
+//         },
+//         {
+//             "date": "2000-02-17T00:00:00.000Z",
+//             "avg": 55.333333333333336,
+//             "min": 47.8,
+//             "max": 59.65
+//         },
+//         {
+//             "date": "2000-02-18T00:00:00.000Z",
+//             "avg": 54,
+//             "min": 47,
+//             "max": 57.2
+//         },
+//         {
+//             "date": "2000-02-19T00:00:00.000Z",
+//             "avg": 53.333333333333336,
+//             "min": 46.5,
+//             "max": 56.95
+//         },
+//         {
+//             "date": "2000-02-20T00:00:00.000Z",
+//             "avg": 53.666666666666664,
+//             "min": 46.55,
+//             "max": 58.45
+//         },
+//         {
+//             "date": "2000-02-21T00:00:00.000Z",
+//             "avg": 54.333333333333336,
+//             "min": 46.9,
+//             "max": 59.95
+//         },
+//         {
+//             "date": "2000-02-22T00:00:00.000Z",
+//             "avg": 54.083333333333336,
+//             "min": 46.35,
+//             "max": 60.55
+//         },
+//         {
+//             "date": "2000-02-23T00:00:00.000Z",
+//             "avg": 52.583333333333336,
+//             "min": 46,
+//             "max": 58.35
+//         },
+//         {
+//             "date": "2000-02-24T00:00:00.000Z",
+//             "avg": 52.25,
+//             "min": 45.85,
+//             "max": 59.95
+//         },
+//         {
+//             "date": "2000-02-25T00:00:00.000Z",
+//             "avg": 53.666666666666664,
+//             "min": 46.75,
+//             "max": 59.25
+//         },
+//         {
+//             "date": "2000-02-26T00:00:00.000Z",
+//             "avg": 54.166666666666664,
+//             "min": 46.55,
+//             "max": 59.25
+//         },
+//         {
+//             "date": "2000-02-27T00:00:00.000Z",
+//             "avg": 54.666666666666664,
+//             "min": 46.6,
+//             "max": 60.3
+//         },
+//         {
+//             "date": "2000-02-28T00:00:00.000Z",
+//             "avg": 54.5,
+//             "min": 46.55,
+//             "max": 60.15
+//         },
+//         {
+//             "date": "2000-02-29T00:00:00.000Z",
+//             "avg": 53.666666666666664,
+//             "min": 48,
+//             "max": 59
+//         },
+//         {
+//             "date": "2000-03-01T00:00:00.000Z",
+//             "avg": 54.166666666666664,
+//             "min": 46.95,
+//             "max": 60.6
+//         },
+//         {
+//             "date": "2000-03-02T00:00:00.000Z",
+//             "avg": 54.083333333333336,
+//             "min": 46.95,
+//             "max": 61.15
+//         },
+//         {
+//             "date": "2000-03-03T00:00:00.000Z",
+//             "avg": 53.333333333333336,
+//             "min": 46.1,
+//             "max": 60.55
+//         },
+//         {
+//             "date": "2000-03-04T00:00:00.000Z",
+//             "avg": 53.833333333333336,
+//             "min": 46.55,
+//             "max": 60.3
+//         },
+//         {
+//             "date": "2000-03-05T00:00:00.000Z",
+//             "avg": 54.083333333333336,
+//             "min": 46.6,
+//             "max": 60.75
+//         },
+//         {
+//             "date": "2000-03-06T00:00:00.000Z",
+//             "avg": 55.083333333333336,
+//             "min": 47.5,
+//             "max": 61.05
+//         },
+//         {
+//             "date": "2000-03-07T00:00:00.000Z",
+//             "avg": 54.25,
+//             "min": 47.05,
+//             "max": 60.9
+//         },
+//         {
+//             "date": "2000-03-08T00:00:00.000Z",
+//             "avg": 54.333333333333336,
+//             "min": 46.25,
+//             "max": 60.55
+//         },
+//         {
+//             "date": "2000-03-09T00:00:00.000Z",
+//             "avg": 55.083333333333336,
+//             "min": 46.8,
+//             "max": 62.5
+//         },
+//         {
+//             "date": "2000-03-10T00:00:00.000Z",
+//             "avg": 56.916666666666664,
+//             "min": 47.55,
+//             "max": 62.3
+//         },
+//         {
+//             "date": "2000-03-11T00:00:00.000Z",
+//             "avg": 57.833333333333336,
+//             "min": 48.35,
+//             "max": 64.15
+//         },
+//         {
+//             "date": "2000-03-12T00:00:00.000Z",
+//             "avg": 56.833333333333336,
+//             "min": 48.4,
+//             "max": 63.9
+//         },
+//         {
+//             "date": "2000-03-13T00:00:00.000Z",
+//             "avg": 57.166666666666664,
+//             "min": 49.05,
+//             "max": 63.55
+//         },
+//         {
+//             "date": "2000-03-14T00:00:00.000Z",
+//             "avg": 58.083333333333336,
+//             "min": 49.65,
+//             "max": 63.65
+//         },
+//         {
+//             "date": "2000-03-15T00:00:00.000Z",
+//             "avg": 57.416666666666664,
+//             "min": 48.55,
+//             "max": 64.3
+//         },
+//         {
+//             "date": "2000-03-16T00:00:00.000Z",
+//             "avg": 56.833333333333336,
+//             "min": 49.3,
+//             "max": 63.75
+//         },
+//         {
+//             "date": "2000-03-17T00:00:00.000Z",
+//             "avg": 56.09090909090909,
+//             "min": 48.4,
+//             "max": 62.75
+//         },
+//         {
+//             "date": "2000-03-18T00:00:00.000Z",
+//             "avg": 56.833333333333336,
+//             "min": 47.9,
+//             "max": 63.6
+//         },
+//         {
+//             "date": "2000-03-19T00:00:00.000Z",
+//             "avg": 56.75,
+//             "min": 48.85,
+//             "max": 64.15
+//         },
+//         {
+//             "date": "2000-03-20T00:00:00.000Z",
+//             "avg": 58.416666666666664,
+//             "min": 50,
+//             "max": 62.95
+//         },
+//         {
+//             "date": "2000-03-21T00:00:00.000Z",
+//             "avg": 57.916666666666664,
+//             "min": 50,
+//             "max": 62.9
+//         },
+//         {
+//             "date": "2000-03-22T00:00:00.000Z",
+//             "avg": 56.416666666666664,
+//             "min": 48.4,
+//             "max": 61.6
+//         },
+//         {
+//             "date": "2000-03-23T00:00:00.000Z",
+//             "avg": 54.833333333333336,
+//             "min": 47.7,
+//             "max": 61.9
+//         },
+//         {
+//             "date": "2000-03-24T00:00:00.000Z",
+//             "avg": 55.583333333333336,
+//             "min": 48.25,
+//             "max": 61.3
+//         },
+//         {
+//             "date": "2000-03-25T00:00:00.000Z",
+//             "avg": 55.5,
+//             "min": 48.4,
+//             "max": 60.85
+//         },
+//         {
+//             "date": "2000-03-26T00:00:00.000Z",
+//             "avg": 55.333333333333336,
+//             "min": 48.3,
+//             "max": 62.3
+//         },
+//         {
+//             "date": "2000-03-27T00:00:00.000Z",
+//             "avg": 56.166666666666664,
+//             "min": 48.2,
+//             "max": 62.7
+//         },
+//         {
+//             "date": "2000-03-28T00:00:00.000Z",
+//             "avg": 57.25,
+//             "min": 49.25,
+//             "max": 65.35
+//         },
+//         {
+//             "date": "2000-03-29T00:00:00.000Z",
+//             "avg": 57.5,
+//             "min": 49.25,
+//             "max": 64.65
+//         },
+//         {
+//             "date": "2000-03-30T00:00:00.000Z",
+//             "avg": 57.416666666666664,
+//             "min": 49.1,
+//             "max": 65.1
+//         },
+//         {
+//             "date": "2000-03-31T00:00:00.000Z",
+//             "avg": 56.18181818181818,
+//             "min": 49.05,
+//             "max": 64.3
+//         },
+//         {
+//             "date": "2000-04-01T00:00:00.000Z",
+//             "avg": 56.30769230769231,
+//             "min": 48.8,
+//             "max": 63.95
+//         },
+//         {
+//             "date": "2000-04-02T00:00:00.000Z",
+//             "avg": 56.61538461538461,
+//             "min": 48.9,
+//             "max": 63.7
+//         },
+//         {
+//             "date": "2000-04-03T00:00:00.000Z",
+//             "avg": 54.69230769230769,
+//             "min": 47.55,
+//             "max": 62.15
+//         },
+//         {
+//             "date": "2000-04-04T00:00:00.000Z",
+//             "avg": 54.61538461538461,
+//             "min": 48.35,
+//             "max": 61.55
+//         },
+//         {
+//             "date": "2000-04-05T00:00:00.000Z",
+//             "avg": 55.23076923076923,
+//             "min": 48.05,
+//             "max": 62.35
+//         },
+//         {
+//             "date": "2000-04-06T00:00:00.000Z",
+//             "avg": 56.76923076923077,
+//             "min": 48.7,
+//             "max": 63.3
+//         },
+//         {
+//             "date": "2000-04-07T00:00:00.000Z",
+//             "avg": 57.69230769230769,
+//             "min": 49,
+//             "max": 63.1
+//         },
+//         {
+//             "date": "2000-04-08T00:00:00.000Z",
+//             "avg": 55.76923076923077,
+//             "min": 48.65,
+//             "max": 61.8
+//         },
+//         {
+//             "date": "2000-04-09T00:00:00.000Z",
+//             "avg": 55.92307692307692,
+//             "min": 48.55,
+//             "max": 63.05
+//         },
+//         {
+//             "date": "2000-04-10T00:00:00.000Z",
+//             "avg": 56.84615384615385,
+//             "min": 49.15,
+//             "max": 63.35
+//         },
+//         {
+//             "date": "2000-04-11T00:00:00.000Z",
+//             "avg": 56.23076923076923,
+//             "min": 49.7,
+//             "max": 63.15
+//         },
+//         {
+//             "date": "2000-04-12T00:00:00.000Z",
+//             "avg": 56.69230769230769,
+//             "min": 49.75,
+//             "max": 63.8
+//         },
+//         {
+//             "date": "2000-04-13T00:00:00.000Z",
+//             "avg": 56.30769230769231,
+//             "min": 49.15,
+//             "max": 63.75
+//         },
+//         {
+//             "date": "2000-04-14T00:00:00.000Z",
+//             "avg": 56.30769230769231,
+//             "min": 48.75,
+//             "max": 62.55
+//         },
+//         {
+//             "date": "2000-04-15T00:00:00.000Z",
+//             "avg": 56,
+//             "min": 47.95,
+//             "max": 63.3
+//         },
+//         {
+//             "date": "2000-04-16T00:00:00.000Z",
+//             "avg": 57.38461538461539,
+//             "min": 49.6,
+//             "max": 65.55
+//         },
+//         {
+//             "date": "2000-04-17T00:00:00.000Z",
+//             "avg": 57.84615384615385,
+//             "min": 50,
+//             "max": 65.1
+//         },
+//         {
+//             "date": "2000-04-18T00:00:00.000Z",
+//             "avg": 56.53846153846154,
+//             "min": 49.1,
+//             "max": 65.15
+//         },
+//         {
+//             "date": "2000-04-19T00:00:00.000Z",
+//             "avg": 57.23076923076923,
+//             "min": 49.55,
+//             "max": 66.15
+//         },
+//         {
+//             "date": "2000-04-20T00:00:00.000Z",
+//             "avg": 57.23076923076923,
+//             "min": 50.75,
+//             "max": 66.35
+//         },
+//         {
+//             "date": "2000-04-21T00:00:00.000Z",
+//             "avg": 57.07692307692308,
+//             "min": 50.7,
+//             "max": 65.95
+//         },
+//         {
+//             "date": "2000-04-22T00:00:00.000Z",
+//             "avg": 59.15384615384615,
+//             "min": 50.3,
+//             "max": 66.3
+//         },
+//         {
+//             "date": "2000-04-23T00:00:00.000Z",
+//             "avg": 59.69230769230769,
+//             "min": 50.75,
+//             "max": 67.2
+//         },
+//         {
+//             "date": "2000-04-24T00:00:00.000Z",
+//             "avg": 58.61538461538461,
+//             "min": 51.05,
+//             "max": 65.25
+//         },
+//         {
+//             "date": "2000-04-25T00:00:00.000Z",
+//             "avg": 57.92307692307692,
+//             "min": 50.8,
+//             "max": 64.75
+//         },
+//         {
+//             "date": "2000-04-26T00:00:00.000Z",
+//             "avg": 57.46153846153846,
+//             "min": 50.15,
+//             "max": 65.15
+//         },
+//         {
+//             "date": "2000-04-27T00:00:00.000Z",
+//             "avg": 57.46153846153846,
+//             "min": 50.4,
+//             "max": 65.75
+//         },
+//         {
+//             "date": "2000-04-28T00:00:00.000Z",
+//             "avg": 56.15384615384615,
+//             "min": 49.85,
+//             "max": 64.2
+//         },
+//         {
+//             "date": "2000-04-29T00:00:00.000Z",
+//             "avg": 58.61538461538461,
+//             "min": 49.9,
+//             "max": 66.5
+//         },
+//         {
+//             "date": "2000-04-30T00:00:00.000Z",
+//             "avg": 58.76923076923077,
+//             "min": 50,
+//             "max": 68.65
+//         },
+//         {
+//             "date": "2000-05-01T00:00:00.000Z",
+//             "avg": 62.166666666666664,
+//             "min": 51.1,
+//             "max": 69.55
+//         },
+//         {
+//             "date": "2000-05-02T00:00:00.000Z",
+//             "avg": 60.75,
+//             "min": 51.95,
+//             "max": 67.95
+//         },
+//         {
+//             "date": "2000-05-03T00:00:00.000Z",
+//             "avg": 59.92307692307692,
+//             "min": 51.9,
+//             "max": 67.2
+//         },
+//         {
+//             "date": "2000-05-04T00:00:00.000Z",
+//             "avg": 58.84615384615385,
+//             "min": 51.7,
+//             "max": 67.25
+//         },
+//         {
+//             "date": "2000-05-05T00:00:00.000Z",
+//             "avg": 58.69230769230769,
+//             "min": 51.25,
+//             "max": 66.5
+//         },
+//         {
+//             "date": "2000-05-06T00:00:00.000Z",
+//             "avg": 58,
+//             "min": 51.6,
+//             "max": 66.5
+//         },
+//         {
+//             "date": "2000-05-07T00:00:00.000Z",
+//             "avg": 59.23076923076923,
+//             "min": 52.1,
+//             "max": 68.4
+//         },
+//         {
+//             "date": "2000-05-08T00:00:00.000Z",
+//             "avg": 59.083333333333336,
+//             "min": 51.45,
+//             "max": 67.65
+//         },
+//         {
+//             "date": "2000-05-09T00:00:00.000Z",
+//             "avg": 57.61538461538461,
+//             "min": 51,
+//             "max": 64.7
+//         },
+//         {
+//             "date": "2000-05-10T00:00:00.000Z",
+//             "avg": 57.23076923076923,
+//             "min": 50.15,
+//             "max": 65.6
+//         },
+//         {
+//             "date": "2000-05-11T00:00:00.000Z",
+//             "avg": 58.38461538461539,
+//             "min": 50.1,
+//             "max": 66.7
+//         },
+//         {
+//             "date": "2000-05-12T00:00:00.000Z",
+//             "avg": 59.07692307692308,
+//             "min": 50.55,
+//             "max": 66.25
+//         },
+//         {
+//             "date": "2000-05-13T00:00:00.000Z",
+//             "avg": 58.69230769230769,
+//             "min": 50.95,
+//             "max": 66.8
+//         },
+//         {
+//             "date": "2000-05-14T00:00:00.000Z",
+//             "avg": 59.38461538461539,
+//             "min": 52.35,
+//             "max": 67.55
+//         },
+//         {
+//             "date": "2000-05-15T00:00:00.000Z",
+//             "avg": 59.69230769230769,
+//             "min": 53.15,
+//             "max": 67
+//         },
+//         {
+//             "date": "2000-05-16T00:00:00.000Z",
+//             "avg": 58,
+//             "min": 52.55,
+//             "max": 66.65
+//         },
+//         {
+//             "date": "2000-05-17T00:00:00.000Z",
+//             "avg": 59,
+//             "min": 52.55,
+//             "max": 67.05
+//         },
+//         {
+//             "date": "2000-05-18T00:00:00.000Z",
+//             "avg": 59.53846153846154,
+//             "min": 52.2,
+//             "max": 66.65
+//         },
+//         {
+//             "date": "2000-05-19T00:00:00.000Z",
+//             "avg": 60.15384615384615,
+//             "min": 52.2,
+//             "max": 67.35
+//         },
+//         {
+//             "date": "2000-05-20T00:00:00.000Z",
+//             "avg": 60.76923076923077,
+//             "min": 52.35,
+//             "max": 69.25
+//         },
+//         {
+//             "date": "2000-05-21T00:00:00.000Z",
+//             "avg": 60.84615384615385,
+//             "min": 52,
+//             "max": 68.1
+//         },
+//         {
+//             "date": "2000-05-22T00:00:00.000Z",
+//             "avg": 59.92307692307692,
+//             "min": 52.05,
+//             "max": 66.8
+//         },
+//         {
+//             "date": "2000-05-23T00:00:00.000Z",
+//             "avg": 60.23076923076923,
+//             "min": 52.45,
+//             "max": 68.15
+//         },
+//         {
+//             "date": "2000-05-24T00:00:00.000Z",
+//             "avg": 59.76923076923077,
+//             "min": 52.15,
+//             "max": 66.15
+//         },
+//         {
+//             "date": "2000-05-25T00:00:00.000Z",
+//             "avg": 59.53846153846154,
+//             "min": 52.45,
+//             "max": 65.4
+//         },
+//         {
+//             "date": "2000-05-26T00:00:00.000Z",
+//             "avg": 59.46153846153846,
+//             "min": 52.55,
+//             "max": 66.2
+//         },
+//         {
+//             "date": "2000-05-27T00:00:00.000Z",
+//             "avg": 60.07692307692308,
+//             "min": 52.95,
+//             "max": 66.25
+//         },
+//         {
+//             "date": "2000-05-28T00:00:00.000Z",
+//             "avg": 60.69230769230769,
+//             "min": 52.75,
+//             "max": 68
+//         },
+//         {
+//             "date": "2000-05-29T00:00:00.000Z",
+//             "avg": 60.30769230769231,
+//             "min": 52.6,
+//             "max": 67.7
+//         },
+//         {
+//             "date": "2000-05-30T00:00:00.000Z",
+//             "avg": 60.30769230769231,
+//             "min": 52.4,
+//             "max": 67.7
+//         },
+//         {
+//             "date": "2000-05-31T00:00:00.000Z",
+//             "avg": 61.53846153846154,
+//             "min": 53.1,
+//             "max": 69.35
+//         },
+//         {
+//             "date": "2000-06-01T00:00:00.000Z",
+//             "avg": 60.23076923076923,
+//             "min": 52.65,
+//             "max": 68.8
+//         },
+//         {
+//             "date": "2000-06-02T00:00:00.000Z",
+//             "avg": 59.76923076923077,
+//             "min": 52.7,
+//             "max": 67.7
+//         },
+//         {
+//             "date": "2000-06-03T00:00:00.000Z",
+//             "avg": 59.61538461538461,
+//             "min": 52.9,
+//             "max": 68.25
+//         },
+//         {
+//             "date": "2000-06-04T00:00:00.000Z",
+//             "avg": 60.23076923076923,
+//             "min": 53.95,
+//             "max": 67.9
+//         },
+//         {
+//             "date": "2000-06-05T00:00:00.000Z",
+//             "avg": 61.15384615384615,
+//             "min": 53.8,
+//             "max": 69.4
+//         },
+//         {
+//             "date": "2000-06-06T00:00:00.000Z",
+//             "avg": 60.07692307692308,
+//             "min": 53.35,
+//             "max": 67.45
+//         },
+//         {
+//             "date": "2000-06-07T00:00:00.000Z",
+//             "avg": 60.15384615384615,
+//             "min": 52.95,
+//             "max": 67.95
+//         },
+//         {
+//             "date": "2000-06-08T00:00:00.000Z",
+//             "avg": 60.61538461538461,
+//             "min": 53.6,
+//             "max": 68.25
+//         },
+//         {
+//             "date": "2000-06-09T00:00:00.000Z",
+//             "avg": 61.53846153846154,
+//             "min": 53.7,
+//             "max": 69.35
+//         },
+//         {
+//             "date": "2000-06-10T00:00:00.000Z",
+//             "avg": 61.38461538461539,
+//             "min": 54.35,
+//             "max": 68.9
+//         },
+//         {
+//             "date": "2000-06-11T00:00:00.000Z",
+//             "avg": 60.53846153846154,
+//             "min": 53.55,
+//             "max": 69.3
+//         },
+//         {
+//             "date": "2000-06-12T00:00:00.000Z",
+//             "avg": 61.07692307692308,
+//             "min": 54,
+//             "max": 71.35
+//         },
+//         {
+//             "date": "2000-06-13T00:00:00.000Z",
+//             "avg": 62.69230769230769,
+//             "min": 53.9,
+//             "max": 72.55
+//         },
+//         {
+//             "date": "2000-06-14T00:00:00.000Z",
+//             "avg": 63.46153846153846,
+//             "min": 54.5,
+//             "max": 73.35
+//         },
+//         {
+//             "date": "2000-06-15T00:00:00.000Z",
+//             "avg": 60.84615384615385,
+//             "min": 53.45,
+//             "max": 68.9
+//         },
+//         {
+//             "date": "2000-06-16T00:00:00.000Z",
+//             "avg": 61.76923076923077,
+//             "min": 53.9,
+//             "max": 70.85
+//         },
+//         {
+//             "date": "2000-06-17T00:00:00.000Z",
+//             "avg": 62.15384615384615,
+//             "min": 54,
+//             "max": 71.1
+//         },
+//         {
+//             "date": "2000-06-18T00:00:00.000Z",
+//             "avg": 63.5,
+//             "min": 54.6,
+//             "max": 72.5
+//         },
+//         {
+//             "date": "2000-06-19T00:00:00.000Z",
+//             "avg": 62.69230769230769,
+//             "min": 54.55,
+//             "max": 72
+//         },
+//         {
+//             "date": "2000-06-20T00:00:00.000Z",
+//             "avg": 61.76923076923077,
+//             "min": 54.65,
+//             "max": 72.55
+//         },
+//         {
+//             "date": "2000-06-21T00:00:00.000Z",
+//             "avg": 61.15384615384615,
+//             "min": 53.9,
+//             "max": 72
+//         },
+//         {
+//             "date": "2000-06-22T00:00:00.000Z",
+//             "avg": 61.69230769230769,
+//             "min": 53.73684210526316,
+//             "max": 71.05263157894737
+//         },
+//         {
+//             "date": "2000-06-23T00:00:00.000Z",
+//             "avg": 61.61538461538461,
+//             "min": 53.78947368421053,
+//             "max": 68.6842105263158
+//         },
+//         {
+//             "date": "2000-06-24T00:00:00.000Z",
+//             "avg": 62.46153846153846,
+//             "min": 53.94736842105263,
+//             "max": 69
+//         },
+//         {
+//             "date": "2000-06-25T00:00:00.000Z",
+//             "avg": 63.76923076923077,
+//             "min": 54.78947368421053,
+//             "max": 71.52631578947368
+//         },
+//         {
+//             "date": "2000-06-26T00:00:00.000Z",
+//             "avg": 65,
+//             "min": 55.36842105263158,
+//             "max": 72.36842105263158
+//         },
+//         {
+//             "date": "2000-06-27T00:00:00.000Z",
+//             "avg": 65.23076923076923,
+//             "min": 55.8421052631579,
+//             "max": 74.05263157894737
+//         },
+//         {
+//             "date": "2000-06-28T00:00:00.000Z",
+//             "avg": 63.61538461538461,
+//             "min": 55.94736842105263,
+//             "max": 71.89473684210526
+//         },
+//         {
+//             "date": "2000-06-29T00:00:00.000Z",
+//             "avg": 64,
+//             "min": 55.78947368421053,
+//             "max": 71.3157894736842
+//         },
+//         {
+//             "date": "2000-06-30T00:00:00.000Z",
+//             "avg": 64.5,
+//             "min": 55.578947368421055,
+//             "max": 71.57894736842105
+//         },
+//         {
+//             "date": "2000-07-01T00:00:00.000Z",
+//             "avg": 63.07692307692308,
+//             "min": 55.10526315789474,
+//             "max": 70.63157894736842
+//         },
+//         {
+//             "date": "2000-07-02T00:00:00.000Z",
+//             "avg": 63.07692307692308,
+//             "min": 54.89473684210526,
+//             "max": 71.3157894736842
+//         },
+//         {
+//             "date": "2000-07-03T00:00:00.000Z",
+//             "avg": 62.84615384615385,
+//             "min": 54.89473684210526,
+//             "max": 72.21052631578948
+//         },
+//         {
+//             "date": "2000-07-04T00:00:00.000Z",
+//             "avg": 63.15384615384615,
+//             "min": 54.89473684210526,
+//             "max": 71.84210526315789
+//         },
+//         {
+//             "date": "2000-07-05T00:00:00.000Z",
+//             "avg": 61.46153846153846,
+//             "min": 54.68421052631579,
+//             "max": 68.78947368421052
+//         },
+//         {
+//             "date": "2000-07-06T00:00:00.000Z",
+//             "avg": 61.84615384615385,
+//             "min": 54.78947368421053,
+//             "max": 69
+//         },
+//         {
+//             "date": "2000-07-07T00:00:00.000Z",
+//             "avg": 63.07692307692308,
+//             "min": 54.8421052631579,
+//             "max": 71.21052631578948
+//         },
+//         {
+//             "date": "2000-07-08T00:00:00.000Z",
+//             "avg": 63.76923076923077,
+//             "min": 55.1578947368421,
+//             "max": 72.89473684210526
+//         },
+//         {
+//             "date": "2000-07-09T00:00:00.000Z",
+//             "avg": 63.92307692307692,
+//             "min": 55.578947368421055,
+//             "max": 71.6842105263158
+//         },
+//         {
+//             "date": "2000-07-10T00:00:00.000Z",
+//             "avg": 63.76923076923077,
+//             "min": 55.473684210526315,
+//             "max": 71.15789473684211
+//         },
+//         {
+//             "date": "2000-07-11T00:00:00.000Z",
+//             "avg": 64.23076923076923,
+//             "min": 55.73684210526316,
+//             "max": 71.84210526315789
+//         },
+//         {
+//             "date": "2000-07-12T00:00:00.000Z",
+//             "avg": 64.38461538461539,
+//             "min": 56.35,
+//             "max": 72.05
+//         },
+//         {
+//             "date": "2000-07-13T00:00:00.000Z",
+//             "avg": 63.15384615384615,
+//             "min": 56.05,
+//             "max": 71.75
+//         },
+//         {
+//             "date": "2000-07-14T00:00:00.000Z",
+//             "avg": 63,
+//             "min": 55.85,
+//             "max": 71.35
+//         },
+//         {
+//             "date": "2000-07-15T00:00:00.000Z",
+//             "avg": 61.92307692307692,
+//             "min": 55.3,
+//             "max": 71.5
+//         },
+//         {
+//             "date": "2000-07-16T00:00:00.000Z",
+//             "avg": 63.15384615384615,
+//             "min": 55.9,
+//             "max": 70.75
+//         },
+//         {
+//             "date": "2000-07-17T00:00:00.000Z",
+//             "avg": 63.69230769230769,
+//             "min": 56.2,
+//             "max": 71.35
+//         },
+//         {
+//             "date": "2000-07-18T00:00:00.000Z",
+//             "avg": 63.07692307692308,
+//             "min": 56.25,
+//             "max": 71.7
+//         },
+//         {
+//             "date": "2000-07-19T00:00:00.000Z",
+//             "avg": 63.23076923076923,
+//             "min": 56.75,
+//             "max": 71.4
+//         },
+//         {
+//             "date": "2000-07-20T00:00:00.000Z",
+//             "avg": 63.84615384615385,
+//             "min": 56.55,
+//             "max": 72.1
+//         },
+//         {
+//             "date": "2000-07-21T00:00:00.000Z",
+//             "avg": 63.53846153846154,
+//             "min": 56.85,
+//             "max": 71.35
+//         },
+//         {
+//             "date": "2000-07-22T00:00:00.000Z",
+//             "avg": 63.69230769230769,
+//             "min": 56.7,
+//             "max": 73
+//         },
+//         {
+//             "date": "2000-07-23T00:00:00.000Z",
+//             "avg": 64.07692307692308,
+//             "min": 56.3,
+//             "max": 72.3
+//         },
+//         {
+//             "date": "2000-07-24T00:00:00.000Z",
+//             "avg": 64.07692307692308,
+//             "min": 56.45,
+//             "max": 72.05
+//         },
+//         {
+//             "date": "2000-07-25T00:00:00.000Z",
+//             "avg": 63.53846153846154,
+//             "min": 56.4,
+//             "max": 71.35
+//         },
+//         {
+//             "date": "2000-07-26T00:00:00.000Z",
+//             "avg": 63.15384615384615,
+//             "min": 55.85,
+//             "max": 72.05
+//         },
+//         {
+//             "date": "2000-07-27T00:00:00.000Z",
+//             "avg": 63.07692307692308,
+//             "min": 55.7,
+//             "max": 71.3
+//         },
+//         {
+//             "date": "2000-07-28T00:00:00.000Z",
+//             "avg": 62.76923076923077,
+//             "min": 55.85,
+//             "max": 70.4
+//         },
+//         {
+//             "date": "2000-07-29T00:00:00.000Z",
+//             "avg": 62.84615384615385,
+//             "min": 56.05,
+//             "max": 70.25
+//         },
+//         {
+//             "date": "2000-07-30T00:00:00.000Z",
+//             "avg": 62.69230769230769,
+//             "min": 56.35,
+//             "max": 70.7
+//         },
+//         {
+//             "date": "2000-07-31T00:00:00.000Z",
+//             "avg": 62.61538461538461,
+//             "min": 55.9,
+//             "max": 70.05
+//         },
+//         {
+//             "date": "2000-08-01T00:00:00.000Z",
+//             "avg": 64.33333333333333,
+//             "min": 56.45,
+//             "max": 71.7
+//         },
+//         {
+//             "date": "2000-08-02T00:00:00.000Z",
+//             "avg": 63.916666666666664,
+//             "min": 56.05,
+//             "max": 71.05
+//         },
+//         {
+//             "date": "2000-08-03T00:00:00.000Z",
+//             "avg": 63.916666666666664,
+//             "min": 56.2,
+//             "max": 71.1
+//         },
+//         {
+//             "date": "2000-08-04T00:00:00.000Z",
+//             "avg": 64,
+//             "min": 56.85,
+//             "max": 69.85
+//         },
+//         {
+//             "date": "2000-08-05T00:00:00.000Z",
+//             "avg": 63.416666666666664,
+//             "min": 56.65,
+//             "max": 70.15
+//         },
+//         {
+//             "date": "2000-08-06T00:00:00.000Z",
+//             "avg": 63.333333333333336,
+//             "min": 56.95,
+//             "max": 70.15
+//         },
+//         {
+//             "date": "2000-08-07T00:00:00.000Z",
+//             "avg": 64.25,
+//             "min": 57,
+//             "max": 70.65
+//         },
+//         {
+//             "date": "2000-08-08T00:00:00.000Z",
+//             "avg": 64.58333333333333,
+//             "min": 57.1,
+//             "max": 71.5
+//         },
+//         {
+//             "date": "2000-08-09T00:00:00.000Z",
+//             "avg": 64.63636363636364,
+//             "min": 57.25,
+//             "max": 73.65
+//         },
+//         {
+//             "date": "2000-08-10T00:00:00.000Z",
+//             "avg": 64.5,
+//             "min": 56.85,
+//             "max": 73.25
+//         },
+//         {
+//             "date": "2000-08-11T00:00:00.000Z",
+//             "avg": 64.08333333333333,
+//             "min": 56.5,
+//             "max": 71.45
+//         },
+//         {
+//             "date": "2000-08-12T00:00:00.000Z",
+//             "avg": 64.5,
+//             "min": 56.3,
+//             "max": 72
+//         },
+//         {
+//             "date": "2000-08-13T00:00:00.000Z",
+//             "avg": 63.90909090909091,
+//             "min": 56.45,
+//             "max": 72.1
+//         },
+//         {
+//             "date": "2000-08-14T00:00:00.000Z",
+//             "avg": 63.083333333333336,
+//             "min": 56.55,
+//             "max": 69.4
+//         },
+//         {
+//             "date": "2000-08-15T00:00:00.000Z",
+//             "avg": 64.08333333333333,
+//             "min": 57,
+//             "max": 72.7
+//         },
+//         {
+//             "date": "2000-08-16T00:00:00.000Z",
+//             "avg": 64.58333333333333,
+//             "min": 56.2,
+//             "max": 72.45
+//         },
+//         {
+//             "date": "2000-08-17T00:00:00.000Z",
+//             "avg": 63.833333333333336,
+//             "min": 56.1,
+//             "max": 70.8
+//         },
+//         {
+//             "date": "2000-08-18T00:00:00.000Z",
+//             "avg": 63.25,
+//             "min": 56.55,
+//             "max": 70.4
+//         },
+//         {
+//             "date": "2000-08-19T00:00:00.000Z",
+//             "avg": 63.166666666666664,
+//             "min": 56.6,
+//             "max": 70.3
+//         },
+//         {
+//             "date": "2000-08-20T00:00:00.000Z",
+//             "avg": 64,
+//             "min": 57.05,
+//             "max": 70.75
+//         },
+//         {
+//             "date": "2000-08-21T00:00:00.000Z",
+//             "avg": 63.916666666666664,
+//             "min": 57.3,
+//             "max": 70.7
+//         },
+//         {
+//             "date": "2000-08-22T00:00:00.000Z",
+//             "avg": 65.5,
+//             "min": 57.65,
+//             "max": 72.4
+//         },
+//         {
+//             "date": "2000-08-23T00:00:00.000Z",
+//             "avg": 63.916666666666664,
+//             "min": 56.85,
+//             "max": 72.7
+//         },
+//         {
+//             "date": "2000-08-24T00:00:00.000Z",
+//             "avg": 63.916666666666664,
+//             "min": 56.75,
+//             "max": 73.15
+//         },
+//         {
+//             "date": "2000-08-25T00:00:00.000Z",
+//             "avg": 64.58333333333333,
+//             "min": 56.95,
+//             "max": 72.95
+//         },
+//         {
+//             "date": "2000-08-26T00:00:00.000Z",
+//             "avg": 64.58333333333333,
+//             "min": 56.15,
+//             "max": 73.3
+//         },
+//         {
+//             "date": "2000-08-27T00:00:00.000Z",
+//             "avg": 66.66666666666667,
+//             "min": 57.15,
+//             "max": 76.35
+//         },
+//         {
+//             "date": "2000-08-28T00:00:00.000Z",
+//             "avg": 65.75,
+//             "min": 57.5,
+//             "max": 75.95
+//         },
+//         {
+//             "date": "2000-08-29T00:00:00.000Z",
+//             "avg": 64,
+//             "min": 57.5,
+//             "max": 73.15
+//         },
+//         {
+//             "date": "2000-08-30T00:00:00.000Z",
+//             "avg": 64.66666666666667,
+//             "min": 57.65,
+//             "max": 72.85
+//         },
+//         {
+//             "date": "2000-08-31T00:00:00.000Z",
+//             "avg": 64.5,
+//             "min": 56.8,
+//             "max": 73.6
+//         },
+//         {
+//             "date": "2000-09-01T00:00:00.000Z",
+//             "avg": 65.41666666666667,
+//             "min": 56.75,
+//             "max": 76.05
+//         },
+//         {
+//             "date": "2000-09-02T00:00:00.000Z",
+//             "avg": 66.5,
+//             "min": 57.9,
+//             "max": 77.15
+//         },
+//         {
+//             "date": "2000-09-03T00:00:00.000Z",
+//             "avg": 65.66666666666667,
+//             "min": 57.2,
+//             "max": 73.3
+//         },
+//         {
+//             "date": "2000-09-04T00:00:00.000Z",
+//             "avg": 65,
+//             "min": 57.25,
+//             "max": 72.05
+//         },
+//         {
+//             "date": "2000-09-05T00:00:00.000Z",
+//             "avg": 65.58333333333333,
+//             "min": 56.15,
+//             "max": 75.65
+//         },
+//         {
+//             "date": "2000-09-06T00:00:00.000Z",
+//             "avg": 65.91666666666667,
+//             "min": 56.6,
+//             "max": 76.9
+//         },
+//         {
+//             "date": "2000-09-07T00:00:00.000Z",
+//             "avg": 66.41666666666667,
+//             "min": 56.15,
+//             "max": 75.7
+//         },
+//         {
+//             "date": "2000-09-08T00:00:00.000Z",
+//             "avg": 65.66666666666667,
+//             "min": 56.6,
+//             "max": 72.4
+//         },
+//         {
+//             "date": "2000-09-09T00:00:00.000Z",
+//             "avg": 65.5,
+//             "min": 56.5,
+//             "max": 72.5
+//         },
+//         {
+//             "date": "2000-09-10T00:00:00.000Z",
+//             "avg": 65,
+//             "min": 55.7,
+//             "max": 76.3
+//         },
+//         {
+//             "date": "2000-09-11T00:00:00.000Z",
+//             "avg": 66,
+//             "min": 57.15,
+//             "max": 74.9
+//         },
+//         {
+//             "date": "2000-09-12T00:00:00.000Z",
+//             "avg": 64.5,
+//             "min": 57.1,
+//             "max": 71.6
+//         },
+//         {
+//             "date": "2000-09-13T00:00:00.000Z",
+//             "avg": 65,
+//             "min": 57.25,
+//             "max": 71.35
+//         },
+//         {
+//             "date": "2000-09-14T00:00:00.000Z",
+//             "avg": 63.583333333333336,
+//             "min": 56.65,
+//             "max": 69.8
+//         },
+//         {
+//             "date": "2000-09-15T00:00:00.000Z",
+//             "avg": 63.166666666666664,
+//             "min": 56.45,
+//             "max": 69.55
+//         },
+//         {
+//             "date": "2000-09-16T00:00:00.000Z",
+//             "avg": 62.416666666666664,
+//             "min": 56,
+//             "max": 69.9
+//         },
+//         {
+//             "date": "2000-09-17T00:00:00.000Z",
+//             "avg": 63.916666666666664,
+//             "min": 56.35,
+//             "max": 72.3
+//         },
+//         {
+//             "date": "2000-09-18T00:00:00.000Z",
+//             "avg": 65.41666666666667,
+//             "min": 56.55,
+//             "max": 76.25
+//         },
+//         {
+//             "date": "2000-09-19T00:00:00.000Z",
+//             "avg": 66.25,
+//             "min": 56.8,
+//             "max": 76.35
+//         },
+//         {
+//             "date": "2000-09-20T00:00:00.000Z",
+//             "avg": 66.66666666666667,
+//             "min": 57,
+//             "max": 76.2
+//         },
+//         {
+//             "date": "2000-09-21T00:00:00.000Z",
+//             "avg": 66.25,
+//             "min": 56.7,
+//             "max": 73.35
+//         },
+//         {
+//             "date": "2000-09-22T00:00:00.000Z",
+//             "avg": 63.666666666666664,
+//             "min": 55.6,
+//             "max": 72.55
+//         },
+//         {
+//             "date": "2000-09-23T00:00:00.000Z",
+//             "avg": 63.75,
+//             "min": 55.1,
+//             "max": 73.7
+//         },
+//         {
+//             "date": "2000-09-24T00:00:00.000Z",
+//             "avg": 64.33333333333333,
+//             "min": 55.15,
+//             "max": 74.95
+//         },
+//         {
+//             "date": "2000-09-25T00:00:00.000Z",
+//             "avg": 64.08333333333333,
+//             "min": 55.3,
+//             "max": 75.3
+//         },
+//         {
+//             "date": "2000-09-26T00:00:00.000Z",
+//             "avg": 65.16666666666667,
+//             "min": 55.95,
+//             "max": 76.6
+//         },
+//         {
+//             "date": "2000-09-27T00:00:00.000Z",
+//             "avg": 64.91666666666667,
+//             "min": 56.6,
+//             "max": 74.6
+//         },
+//         {
+//             "date": "2000-09-28T00:00:00.000Z",
+//             "avg": 63.75,
+//             "min": 56.5,
+//             "max": 73.3
+//         },
+//         {
+//             "date": "2000-09-29T00:00:00.000Z",
+//             "avg": 63.75,
+//             "min": 55.8,
+//             "max": 72
+//         },
+//         {
+//             "date": "2000-09-30T00:00:00.000Z",
+//             "avg": 65,
+//             "min": 56,
+//             "max": 73.9
+//         },
+//         {
+//             "date": "2000-10-01T00:00:00.000Z",
+//             "avg": 63.333333333333336,
+//             "min": 56.55,
+//             "max": 72.55
+//         },
+//         {
+//             "date": "2000-10-02T00:00:00.000Z",
+//             "avg": 62.75,
+//             "min": 55.85,
+//             "max": 72.8
+//         },
+//         {
+//             "date": "2000-10-03T00:00:00.000Z",
+//             "avg": 62.75,
+//             "min": 55.1,
+//             "max": 70.8
+//         },
+//         {
+//             "date": "2000-10-04T00:00:00.000Z",
+//             "avg": 63.75,
+//             "min": 56,
+//             "max": 70.15
+//         },
+//         {
+//             "date": "2000-10-05T00:00:00.000Z",
+//             "avg": 63.833333333333336,
+//             "min": 54.75,
+//             "max": 72
+//         },
+//         {
+//             "date": "2000-10-06T00:00:00.000Z",
+//             "avg": 64,
+//             "min": 54.95,
+//             "max": 73.3
+//         },
+//         {
+//             "date": "2000-10-07T00:00:00.000Z",
+//             "avg": 64.66666666666667,
+//             "min": 54.55,
+//             "max": 73.3
+//         },
+//         {
+//             "date": "2000-10-08T00:00:00.000Z",
+//             "avg": 64.75,
+//             "min": 54.6,
+//             "max": 74.5
+//         },
+//         {
+//             "date": "2000-10-09T00:00:00.000Z",
+//             "avg": 63.833333333333336,
+//             "min": 54.3,
+//             "max": 72.2
+//         },
+//         {
+//             "date": "2000-10-10T00:00:00.000Z",
+//             "avg": 62.583333333333336,
+//             "min": 54.2,
+//             "max": 70.5
+//         },
+//         {
+//             "date": "2000-10-11T00:00:00.000Z",
+//             "avg": 61.666666666666664,
+//             "min": 54.2,
+//             "max": 70.3
+//         },
+//         {
+//             "date": "2000-10-12T00:00:00.000Z",
+//             "avg": 63.166666666666664,
+//             "min": 54.4,
+//             "max": 74.1
+//         },
+//         {
+//             "date": "2000-10-13T00:00:00.000Z",
+//             "avg": 64.91666666666667,
+//             "min": 54.65,
+//             "max": 77.15
+//         },
+//         {
+//             "date": "2000-10-14T00:00:00.000Z",
+//             "avg": 64.25,
+//             "min": 55.85,
+//             "max": 73.7
+//         },
+//         {
+//             "date": "2000-10-15T00:00:00.000Z",
+//             "avg": 63.5,
+//             "min": 55.45,
+//             "max": 72.2
+//         },
+//         {
+//             "date": "2000-10-16T00:00:00.000Z",
+//             "avg": 63.083333333333336,
+//             "min": 54.85,
+//             "max": 72.5
+//         },
+//         {
+//             "date": "2000-10-17T00:00:00.000Z",
+//             "avg": 63.083333333333336,
+//             "min": 54.6,
+//             "max": 73.45
+//         },
+//         {
+//             "date": "2000-10-18T00:00:00.000Z",
+//             "avg": 60.666666666666664,
+//             "min": 54.3,
+//             "max": 69.05
+//         },
+//         {
+//             "date": "2000-10-19T00:00:00.000Z",
+//             "avg": 60.583333333333336,
+//             "min": 54.05,
+//             "max": 69.8
+//         },
+//         {
+//             "date": "2000-10-20T00:00:00.000Z",
+//             "avg": 60.833333333333336,
+//             "min": 53.6,
+//             "max": 68.55
+//         },
+//         {
+//             "date": "2000-10-21T00:00:00.000Z",
+//             "avg": 59.833333333333336,
+//             "min": 53.05,
+//             "max": 69.65
+//         },
+//         {
+//             "date": "2000-10-22T00:00:00.000Z",
+//             "avg": 59.75,
+//             "min": 53.45,
+//             "max": 69.75
+//         },
+//         {
+//             "date": "2000-10-23T00:00:00.000Z",
+//             "avg": 60.166666666666664,
+//             "min": 53.8,
+//             "max": 70.2
+//         },
+//         {
+//             "date": "2000-10-24T00:00:00.000Z",
+//             "avg": 62.27272727272727,
+//             "min": 54.8,
+//             "max": 71.05
+//         },
+//         {
+//             "date": "2000-10-25T00:00:00.000Z",
+//             "avg": 62.916666666666664,
+//             "min": 54.4,
+//             "max": 71.75
+//         },
+//         {
+//             "date": "2000-10-26T00:00:00.000Z",
+//             "avg": 61.166666666666664,
+//             "min": 53.35,
+//             "max": 69.2
+//         },
+//         {
+//             "date": "2000-10-27T00:00:00.000Z",
+//             "avg": 61.25,
+//             "min": 52.95,
+//             "max": 68.55
+//         },
+//         {
+//             "date": "2000-10-28T00:00:00.000Z",
+//             "avg": 60.583333333333336,
+//             "min": 53.4,
+//             "max": 68.95
+//         },
+//         {
+//             "date": "2000-10-29T00:00:00.000Z",
+//             "avg": 60,
+//             "min": 52.8,
+//             "max": 66.8
+//         },
+//         {
+//             "date": "2000-10-30T00:00:00.000Z",
+//             "avg": 59.166666666666664,
+//             "min": 51.8,
+//             "max": 66.35
+//         },
+//         {
+//             "date": "2000-10-31T00:00:00.000Z",
+//             "avg": 58.916666666666664,
+//             "min": 51.6,
+//             "max": 67.55
+//         },
+//         {
+//             "date": "2000-11-01T00:00:00.000Z",
+//             "avg": 58.63636363636363,
+//             "min": 51.55,
+//             "max": 68.5
+//         },
+//         {
+//             "date": "2000-11-02T00:00:00.000Z",
+//             "avg": 58.166666666666664,
+//             "min": 50.85,
+//             "max": 67.55
+//         },
+//         {
+//             "date": "2000-11-03T00:00:00.000Z",
+//             "avg": 58.333333333333336,
+//             "min": 51.45,
+//             "max": 67.4
+//         },
+//         {
+//             "date": "2000-11-04T00:00:00.000Z",
+//             "avg": 57.25,
+//             "min": 50.6,
+//             "max": 65.9
+//         },
+//         {
+//             "date": "2000-11-05T00:00:00.000Z",
+//             "avg": 57.333333333333336,
+//             "min": 49.8,
+//             "max": 66.05
+//         },
+//         {
+//             "date": "2000-11-06T00:00:00.000Z",
+//             "avg": 58.166666666666664,
+//             "min": 52,
+//             "max": 66.25
+//         },
+//         {
+//             "date": "2000-11-07T00:00:00.000Z",
+//             "avg": 59.166666666666664,
+//             "min": 51.45,
+//             "max": 66.6
+//         },
+//         {
+//             "date": "2000-11-08T00:00:00.000Z",
+//             "avg": 58.666666666666664,
+//             "min": 51.1,
+//             "max": 64.8
+//         },
+//         {
+//             "date": "2000-11-09T00:00:00.000Z",
+//             "avg": 58.666666666666664,
+//             "min": 50.3,
+//             "max": 64.3
+//         },
+//         {
+//             "date": "2000-11-10T00:00:00.000Z",
+//             "avg": 57.75,
+//             "min": 50.35,
+//             "max": 63.35
+//         },
+//         {
+//             "date": "2000-11-11T00:00:00.000Z",
+//             "avg": 58.416666666666664,
+//             "min": 50.25,
+//             "max": 63.7
+//         },
+//         {
+//             "date": "2000-11-12T00:00:00.000Z",
+//             "avg": 58,
+//             "min": 49.9,
+//             "max": 64.55
+//         },
+//         {
+//             "date": "2000-11-13T00:00:00.000Z",
+//             "avg": 57.916666666666664,
+//             "min": 50.05,
+//             "max": 65.35
+//         },
+//         {
+//             "date": "2000-11-14T00:00:00.000Z",
+//             "avg": 56.666666666666664,
+//             "min": 50.65,
+//             "max": 65.6
+//         },
+//         {
+//             "date": "2000-11-15T00:00:00.000Z",
+//             "avg": 56.833333333333336,
+//             "min": 51.2,
+//             "max": 64.95
+//         },
+//         {
+//             "date": "2000-11-16T00:00:00.000Z",
+//             "avg": 56,
+//             "min": 50.1,
+//             "max": 63.35
+//         },
+//         {
+//             "date": "2000-11-17T00:00:00.000Z",
+//             "avg": 55.333333333333336,
+//             "min": 49.15,
+//             "max": 63.5
+//         },
+//         {
+//             "date": "2000-11-18T00:00:00.000Z",
+//             "avg": 54.5,
+//             "min": 47.4,
+//             "max": 62.45
+//         },
+//         {
+//             "date": "2000-11-19T00:00:00.000Z",
+//             "avg": 55.75,
+//             "min": 48.75,
+//             "max": 61.65
+//         },
+//         {
+//             "date": "2000-11-20T00:00:00.000Z",
+//             "avg": 56.916666666666664,
+//             "min": 49.7,
+//             "max": 62.25
+//         },
+//         {
+//             "date": "2000-11-21T00:00:00.000Z",
+//             "avg": 56.25,
+//             "min": 49.5,
+//             "max": 61.7
+//         },
+//         {
+//             "date": "2000-11-22T00:00:00.000Z",
+//             "avg": 55.75,
+//             "min": 47.95,
+//             "max": 62.3
+//         },
+//         {
+//             "date": "2000-11-23T00:00:00.000Z",
+//             "avg": 55.583333333333336,
+//             "min": 47.9,
+//             "max": 61.35
+//         },
+//         {
+//             "date": "2000-11-24T00:00:00.000Z",
+//             "avg": 54.916666666666664,
+//             "min": 46.15,
+//             "max": 60.4
+//         },
+//         {
+//             "date": "2000-11-25T00:00:00.000Z",
+//             "avg": 53.833333333333336,
+//             "min": 46.8,
+//             "max": 60.55
+//         },
+//         {
+//             "date": "2000-11-26T00:00:00.000Z",
+//             "avg": 55,
+//             "min": 47.25,
+//             "max": 59.35
+//         },
+//         {
+//             "date": "2000-11-27T00:00:00.000Z",
+//             "avg": 54.916666666666664,
+//             "min": 48.2,
+//             "max": 59.05
+//         },
+//         {
+//             "date": "2000-11-28T00:00:00.000Z",
+//             "avg": 54.25,
+//             "min": 47.9,
+//             "max": 59.6
+//         },
+//         {
+//             "date": "2000-11-29T00:00:00.000Z",
+//             "avg": 54.166666666666664,
+//             "min": 47.25,
+//             "max": 60
+//         },
+//         {
+//             "date": "2000-11-30T00:00:00.000Z",
+//             "avg": 52.416666666666664,
+//             "min": 45.95,
+//             "max": 58.4
+//         },
+//         {
+//             "date": "2000-12-01T00:00:00.000Z",
+//             "avg": 53.333333333333336,
+//             "min": 47.45,
+//             "max": 59.4
+//         },
+//         {
+//             "date": "2000-12-02T00:00:00.000Z",
+//             "avg": 53.416666666666664,
+//             "min": 46.3,
+//             "max": 59.75
+//         },
+//         {
+//             "date": "2000-12-03T00:00:00.000Z",
+//             "avg": 53.5,
+//             "min": 46.8,
+//             "max": 58.8
+//         },
+//         {
+//             "date": "2000-12-04T00:00:00.000Z",
+//             "avg": 51.916666666666664,
+//             "min": 45.85,
+//             "max": 58.05
+//         },
+//         {
+//             "date": "2000-12-05T00:00:00.000Z",
+//             "avg": 53.166666666666664,
+//             "min": 46.65,
+//             "max": 58.95
+//         },
+//         {
+//             "date": "2000-12-06T00:00:00.000Z",
+//             "avg": 53.083333333333336,
+//             "min": 46.25,
+//             "max": 58.3
+//         },
+//         {
+//             "date": "2000-12-07T00:00:00.000Z",
+//             "avg": 53.666666666666664,
+//             "min": 45.5,
+//             "max": 57.2
+//         },
+//         {
+//             "date": "2000-12-08T00:00:00.000Z",
+//             "avg": 52.416666666666664,
+//             "min": 45.35,
+//             "max": 57.95
+//         },
+//         {
+//             "date": "2000-12-09T00:00:00.000Z",
+//             "avg": 53.916666666666664,
+//             "min": 46.95,
+//             "max": 58.8
+//         },
+//         {
+//             "date": "2000-12-10T00:00:00.000Z",
+//             "avg": 53.666666666666664,
+//             "min": 46.45,
+//             "max": 58.75
+//         },
+//         {
+//             "date": "2000-12-11T00:00:00.000Z",
+//             "avg": 52.25,
+//             "min": 45.1,
+//             "max": 57.65
+//         },
+//         {
+//             "date": "2000-12-12T00:00:00.000Z",
+//             "avg": 51.833333333333336,
+//             "min": 46.15,
+//             "max": 57.05
+//         },
+//         {
+//             "date": "2000-12-13T00:00:00.000Z",
+//             "avg": 52.833333333333336,
+//             "min": 46.7,
+//             "max": 57.1
+//         },
+//         {
+//             "date": "2000-12-14T00:00:00.000Z",
+//             "avg": 52.666666666666664,
+//             "min": 45.75,
+//             "max": 58
+//         },
+//         {
+//             "date": "2000-12-15T00:00:00.000Z",
+//             "avg": 52.666666666666664,
+//             "min": 45.1,
+//             "max": 56.8
+//         },
+//         {
+//             "date": "2000-12-16T00:00:00.000Z",
+//             "avg": 52.583333333333336,
+//             "min": 44.1,
+//             "max": 57.25
+//         },
+//         {
+//             "date": "2000-12-17T00:00:00.000Z",
+//             "avg": 51.916666666666664,
+//             "min": 45,
+//             "max": 57.1
+//         },
+//         {
+//             "date": "2000-12-18T00:00:00.000Z",
+//             "avg": 51.333333333333336,
+//             "min": 44.55,
+//             "max": 57.65
+//         },
+//         {
+//             "date": "2000-12-19T00:00:00.000Z",
+//             "avg": 52.083333333333336,
+//             "min": 44.75,
+//             "max": 57.5
+//         },
+//         {
+//             "date": "2000-12-20T00:00:00.000Z",
+//             "avg": 52.416666666666664,
+//             "min": 45,
+//             "max": 56.95
+//         },
+//         {
+//             "date": "2000-12-21T00:00:00.000Z",
+//             "avg": 53.416666666666664,
+//             "min": 46.75,
+//             "max": 58.65
+//         },
+//         {
+//             "date": "2000-12-22T00:00:00.000Z",
+//             "avg": 53.083333333333336,
+//             "min": 45.75,
+//             "max": 57.8
+//         },
+//         {
+//             "date": "2000-12-23T00:00:00.000Z",
+//             "avg": 51.833333333333336,
+//             "min": 44.6,
+//             "max": 56.75
+//         },
+//         {
+//             "date": "2000-12-24T00:00:00.000Z",
+//             "avg": 51.666666666666664,
+//             "min": 44.95,
+//             "max": 57.15
+//         },
+//         {
+//             "date": "2000-12-25T00:00:00.000Z",
+//             "avg": 50,
+//             "min": 43.05,
+//             "max": 55.5
+//         },
+//         {
+//             "date": "2000-12-26T00:00:00.000Z",
+//             "avg": 50.916666666666664,
+//             "min": 44.45,
+//             "max": 56.45
+//         },
+//         {
+//             "date": "2000-12-27T00:00:00.000Z",
+//             "avg": 50,
+//             "min": 43.75,
+//             "max": 55.6
+//         },
+//         {
+//             "date": "2000-12-28T00:00:00.000Z",
+//             "avg": 50,
+//             "min": 43.75,
+//             "max": 55.7
+//         },
+//         {
+//             "date": "2000-12-29T00:00:00.000Z",
+//             "avg": 50.666666666666664,
+//             "min": 43.4,
+//             "max": 56.4
+//         },
+//         {
+//             "date": "2000-12-30T00:00:00.000Z",
+//             "avg": 50.833333333333336,
+//             "min": 44.75,
+//             "max": 55.65
+//         },
+//         {
+//             "date": "2000-12-31T00:00:00.000Z",
+//             "avg": 50.333333333333336,
+//             "min": 43.75,
+//             "max": 54.9
+//         }
+//     ]
+// ]
+//       const svg = d3
+//         .select(map)
+//         .append("svg")
+//         .attr("viewBox", [-500 / 2, -500 / 2, 500, 500])
+//         .attr("stroke-linejoin", "round")
+//         .attr("stroke-linecap", "round");
+
+//       const innerRadius = 500 / 5
+//       const outerRadius = 500 / 2 
+//       const colors = ["tomato", "steelblue"];
+
+//       const airports = svg.selectAll("g").data(testData).enter().append("g");
+
+//       airports
+//         .append("path")
+//         .attr("fill", "none")
+//         .attr("stroke", (d, i) => colors[i])
+//         .attr("stroke-width", 1.5)
+//         .attr("d", line);
+
+//       const line = d3
+//         .lineRadial()
+//         .curve(d3.curveLinearClosed)
+//         .angle((d) => x(d.date))
+//         .radius((d) => y(d.avg));
+      
+//       const x = d3.scaleUtc()
+//     .domain([Date.UTC(2000, 0, 1), Date.UTC(2001, 0, 1) - 1])
+//     .range([0, 2 * Math.PI]);
+
+//     const y = d3.scaleLinear()
+//     .domain([d3.min(d3.merge(testData), d => d.min), d3.max(d3.merge(testData), d => d.max)])
+//     .range([innerRadius, outerRadius])
+//     },
   },
 };
 </script>
@@ -304,6 +4765,5 @@ export default {
 #RadialArea {
   height: 50%;
   width: 100%;
-  border: solid 1px #A6A6A6;
 }
 </style>

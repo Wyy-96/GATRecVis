@@ -7,18 +7,22 @@ class doubanInfo {
     directorInfo = new Array();
     genreInfo = new Array();
     movieInfo = new Array();
+    KGAT_att = new Array(9625);
 
-
+    AttentionInfo = JSON.parse(fs.readFileSync('./data/attention(filter).json'));
     Ainfo_f = fs.readFileSync('./data/演员顺序.csv', 'utf-8').split('\n');
     DInfo_f = fs.readFileSync('./data/导演顺序.csv', 'utf-8').split('\n');
     Ginfo_f = fs.readFileSync('./data/类型顺序.csv', 'utf-8').split('\n');
     movieInfo_f = fs.readFileSync('./data/raw_movieinfo.txt', 'utf-8').split('\n');
+    KGAT_att_f = fs.readFileSync('./data/RecPath.csv', 'utf-8').split('\n');
 
     initialize() {
         this.getQueueInfo(this.Ainfo_f, this.actorInfo)
         this.getQueueInfo(this.DInfo_f, this.directorInfo)
         this.getQueueInfo(this.Ginfo_f, this.genreInfo)
         this.loadMovieInfo(this.movieInfo_f, this.movieInfo)
+        // for (let i = 0; i < 9625; i++) this.KGAT_att[i] ={}
+        // this.loadKGATAtt(this.KGAT_att_f, this.KGAT_att)
     };
     getQueueInfo(data, arr) {
         data.forEach(element => {
@@ -51,9 +55,41 @@ class doubanInfo {
             }
         });
     };
+    loadKGATAtt(data,array){
+        console.log('ok')
+        data.forEach((element)=>{
+            try{
+                if (element == '') {
+                    throw new Error('不能为空！')
+                }
+                let path = element.split(':')[0].split('-')
+                let node = (element.split(':')[1]).split('-').map(Number)
 
+                let p = {}
+                if (Object.keys(array[node[0]]).includes(node[3] + '') == false) {
+                    array[node[0]][node[3]] = []
+                }
+                if (path[2] == 'user') {
+                    p = { 'm': node[1], 'u': node[2] }
+                }
+                else if (path[2] == 'actor') {
+                    p = { 'm': node[1], 'a': node[2] }
+                }
+                else if (path[2] == 'director') {
+                    p = { 'm': node[1], 'd': node[2] }
+                }
+                else if (path[2] == 'genre') {
+                    p = { 'm': node[1], 'g': node[2] }
+                }
+                array[node[0]][node[3]].push(p)
+            }catch(err){
+
+            }
+        })
+        console.log('end')
+    }   
 }
 // let test = new doubanInfo()
 // test.initialize()
-// console.log(test.movieInfo[0])
+// console.log(test.AttentionInfo_f['user'][0][0])
 module.exports = doubanInfo;

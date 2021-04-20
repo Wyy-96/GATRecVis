@@ -5,6 +5,7 @@ const path = require('path');
 const async = require('async');
 const _ = require('lodash');
 const GetInfo = require('../utils/getInfo');
+const { info } = require('console');
 // Asynchronous read
 
 let Info = new GetInfo()
@@ -106,6 +107,79 @@ function GetMovieName(data){
   return temp_array
 }
 
+function KGATRecResult(userId, movieId){
+  let jsonData = new Object()
+  if (Object.keys(Info.KGAT_att[userId]).includes(movieId + '') == true){
+    console.log('存在')
+    let data = Info.KGAT_att[userId][movieId+'']
+    let movieName = Info.movieInfo[movieId].movieName
+    var nodes =[]
+    var tempNodes = []
+    var links =[]
+
+    nodes.push({id: 'user' + userId, group:6})
+    nodes.push({id: movieName, group: 7})
+    tempNodes.push('user' + userId)
+    tempNodes.push(movieName)
+
+    data.forEach((element)=>{
+      let key = Object.keys(element)
+      let name1 =''
+      let name2 =''
+      for(i in key){
+        if (key[i] =='m') {
+          name1 = Info.movieInfo[element[key[i]]].movieName
+          links.push({source:name1,target:'user'+ userId,value:1})
+          if (tempNodes.includes(name1) == false) {
+            nodes.push({ id: name1, group: 2 })
+            tempNodes.push(name1)
+          }
+          
+        }
+        else if (key[i] == 'u') {
+          name2 = 'user' + element[key[i]]
+          links.push({ source: name2, target: name1, value: 1 })
+          links.push({ source: movieName, target: name2, value: 1 })
+          if(tempNodes.includes(name2) == false){
+            nodes.push({ id: name2, group: 1 })
+            tempNodes.push(name2)
+          }
+          
+        }
+        else if (key[i] == 'a') {
+          name2 = Info.actorInfo[element[key[i]]]
+          links.push({ source: name2, target: name1, value: 1 })
+          links.push({ source: movieName, target: name2, value: 1 })
+          if (tempNodes.includes(name2) == false) {
+            nodes.push({ id: name2, group: 3 })
+            tempNodes.push(name2)
+          } 
+        }
+        else if (key[i] == 'd') {
+          name2 = Info.directorInfo[element[key[i]]]
+          links.push({ source: name2, target: name1, value: 1 })
+          links.push({ source: movieName, target: name2, value: 1 })
+          if (tempNodes.includes(name2) == false) {
+            nodes.push({ id: name2, group: 4 })
+            tempNodes.push(name2)
+          }
+        }
+        else if (key[i] == 'g') {
+          name2 = Info.genreInfo[element[key[i]]]
+          links.push({ source: name2, target: name1, value: 1 })
+          links.push({ source: movieName, target: name2, value: 1 })
+          if (tempNodes.includes(name2) == false) {
+            nodes.push({ id: name2, group: 5 })
+            tempNodes.push(name2)
+          }
+        }
+      }
+    })
+  }
+  jsonData['nodes'] =nodes
+  jsonData['links'] =links
+  return jsonData
+}
 var KGATShow = true
 var HetGNNShow = true
 var NIRecShow = false
@@ -119,7 +193,7 @@ router.post('/selectUser', (req, res) => {
 
   let arr1 = []
   let arr2 = []
-  let arr3 = []
+  let arr3 = [210 ,325, 1486 ,1582 ,808, 1578, 1589, 991, 561, 627,502, 580, 1309, 1067,787, 804, 1163, 1163, 1011, 1145 ]
 
   if (KGATShow == true) arr2 = KGAT[userId].rec_result;
   if (HetGNNShow == true) arr1 = HetGNN[userId].rec_result;
@@ -127,6 +201,35 @@ router.post('/selectUser', (req, res) => {
   let Vennresult = GetVennResult(arr1,arr2,arr3)
   Coodinare.push(HetGNN[userId])
   Coodinare.push(KGAT[userId])
+  Coodinare.push({
+    "userId": "user23",
+    "rec_result": [
+      1197,
+      1120,
+      1164,
+      1052,
+      1148,
+      1201,
+      874,
+      924,
+      1182,
+      1071,
+      1068,
+      1104,
+      1044,
+      1113,
+      1112,
+      1238,
+      1122,
+      906,
+      1210,
+      1142
+    ],
+    "recall": 0.0222,
+    "precision": 0.1,
+    "auc": 0.766,
+    "personal": 0.42379999999999995
+  })
 
   jsonData.Coodinare = Coodinare
   jsonData.Vennresult = Vennresult
@@ -138,12 +241,15 @@ router.post('/selectedMovie', (req, res) => {
   let userId = parseInt(req.body.data[0].replace("u", ""))
   let movieId = parseInt(req.body.data[1].split('_')[0])
   let movie_or = req.body.data[1].split('_')[1]
+  var jsonData = new Object()
+
+  console.log(userId, movieId, movie_or)
   switch (movie_or) {
     case 'H':
       x = "今天是星期一"; //调用HetGNN推荐原因
       break;
     case 'K':
-      x = "今天是星期二"; //调用KGAT推荐原因
+      jsonData = KGATRecResult(userId, movieId); //调用KGAT推荐原因
       break;
     case 'HK':
       x = "今天是星期三"; //调用HetGNN 和 KGAT 重合的推荐原因
@@ -152,7 +258,7 @@ router.post('/selectedMovie', (req, res) => {
       x = "今天是星期日";
   }
 
-  var jsonData = new Object()
+  
 
 
   res.json(jsonData)
