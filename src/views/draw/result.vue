@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     Coordinate(map, data) {
-      console.log(data)
       const config = {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
@@ -230,7 +229,6 @@ export default {
     },
     VennResult(map, data) {
       let keys = Object.keys(data);
-      console.log(keys)
       for (var i = 0; i < keys.length; i++) {
         let area = data[keys[i]];
         for (var j = 0; j < area.length; j++) {
