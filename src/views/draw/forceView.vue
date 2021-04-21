@@ -13,7 +13,7 @@ export default {
   },
   created: function () {},
   mounted: function () {
-    this.force();
+    // this.force();
   },
   watch: {
     "$store.getters.movieId"() {
@@ -23,9 +23,11 @@ export default {
           data: [this.$store.getters.userId, this.$store.getters.movieId],
         })
         .then((res) => {
-          //   let svgbox = document.getElementsByClassName("force");
-          //   if (svgbox.length == 1) svgbox[svgbox.length - 1].remove();
-          //   this.force(res.data)
+          console.log(res.data)
+            let svgbox = document.getElementsByClassName("force");
+            if (svgbox.length == 1) svgbox[svgbox.length - 1].remove();
+            this.force(res.data)
+            console.log(res.data['nodes'])
         });
     },
   },
@@ -764,7 +766,7 @@ export default {
           },
         ],
       };
-      //   testdata = data
+      testdata = data
       const links = testdata.links.map((d) => Object.create(d));
       const nodes = testdata.nodes.map((d) => Object.create(d));
       const SVG = d3
@@ -772,7 +774,7 @@ export default {
         .append("svg")
         .attr("class", "force")
         .attr("viewBox", [0, 0, 600, 600]);
-
+      const types = ["targetUser","targetMovie","movie","actor","director","genre","user"]
       const colors = [
         "#797FA1",
         "#708EC4",
@@ -795,7 +797,7 @@ export default {
         )
         .force("x", d3.forceX())
         .force("y", d3.forceY())
-        .force("charge", d3.forceManyBody().strength(-500).distanceMax(500))
+        .force("charge", d3.forceManyBody().strength(-200))
         .force("center", d3.forceCenter(600 / 2, 600 / 2));
 
     
@@ -839,12 +841,9 @@ export default {
         .selectAll("circle")
         .data(nodes)
         .join("circle")
-        .attr("r", (d) => {
-          if (d.group == 6 || d.group == 7) return 50;
-          else return 5;
-        })
+        .attr("r", (d) => d.value)
         .attr('id', (d,i)=> i)
-        .attr("fill", (d) => colors[d.group])
+        .attr("fill", (d) => colors[types.indexOf(d.type)])
         .call(drag(simulation));
 
       node.append("title").text((d) => d.id);

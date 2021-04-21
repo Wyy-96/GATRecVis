@@ -326,6 +326,16 @@ function getKGATatt(userId, movieId) {
   })
   jsonforce['links'] = deteleObject(jsonforce['links'])
   jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
+  let test = {}
+  jsonforce['links'].forEach(element=>{
+    if (element.target.includes('u')){
+      if (Object.keys(test).includes(element.target) == false){
+        test[element.target] =[]
+        
+      }
+      test[element.target].push(element.source)
+    }
+  })
   return jsonforce
 }
 var NIRecShow = false
