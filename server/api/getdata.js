@@ -16,7 +16,7 @@ let KGAT = new Array()
 let HetGNN = new Array()
 const movieInfo = new Array()
 
-var KGAT_f = fs.readFileSync('./data/KGAT_rec_result2.txt', 'utf-8').split('\n');
+var KGAT_f = fs.readFileSync('./data/KGATrec_result.txt', 'utf-8').split('\n');
 var HetGNN_f = fs.readFileSync('./data/HetGNN_rec_result.txt', 'utf-8').split('\n');
 var movieInfo_f = fs.readFileSync('./data/raw_movieinfo.txt', 'utf-8').split('\n');
 
@@ -28,7 +28,7 @@ function loadMovieInfo(data, array) {
   data.forEach(element => {
     try {
       let line = element.split(',')
-      if(line[0] == ''){
+      if (line[0] == '') {
         throw new Error('不能为空！')
       }
       let object = new Object
@@ -46,7 +46,7 @@ function loadMovieInfo(data, array) {
       object.moviePhoto = line[11]
       array.push(object)
     } catch (err) {
-      
+
     }
   });
 }
@@ -67,7 +67,7 @@ function AnalyzeDdata(data, array) {
   }
 }
 
-function GetVennResult(arr1,arr2,arr3){
+function GetVennResult(arr1, arr2, arr3) {
   //数组交集，或得两个数组重复的元素
   let Part12 = arr1.filter(item => arr2.includes(item))
   let Part13 = arr1.filter(item => arr3.includes(item))
@@ -96,7 +96,7 @@ function GetVennResult(arr1,arr2,arr3){
   return ALL_part
 }
 
-function GetMovieName(data){
+function GetMovieName(data) {
   let temp_array = new Array()
   data.forEach((element) => {
     let temp_object = {}
@@ -107,44 +107,44 @@ function GetMovieName(data){
   return temp_array
 }
 
-function KGATRecResult(userId, movieId){
+function KGATRecResult(userId, movieId) {
   let jsonData = new Object()
-  if (Object.keys(Info.KGAT_att[userId]).includes(movieId + '') == true){
+  if (Object.keys(Info.KGAT_att[userId]).includes(movieId + '') == true) {
     console.log('存在')
-    let data = Info.KGAT_att[userId][movieId+'']
+    let data = Info.KGAT_att[userId][movieId + '']
     let movieName = Info.movieInfo[movieId].movieName
-    var nodes =[]
+    var nodes = []
     var tempNodes = []
-    var links =[]
+    var links = []
 
-    nodes.push({id: 'user' + userId, group:6})
-    nodes.push({id: movieName, group: 7})
+    nodes.push({ id: 'user' + userId, group: 6 })
+    nodes.push({ id: movieName, group: 7 })
     tempNodes.push('user' + userId)
     tempNodes.push(movieName)
 
-    data.forEach((element)=>{
+    data.forEach((element) => {
       let key = Object.keys(element)
-      let name1 =''
-      let name2 =''
-      for(i in key){
-        if (key[i] =='m') {
+      let name1 = ''
+      let name2 = ''
+      for (i in key) {
+        if (key[i] == 'm') {
           name1 = Info.movieInfo[element[key[i]]].movieName
-          links.push({source:name1,target:'user'+ userId,value:1})
+          links.push({ source: name1, target: 'user' + userId, value: 1 })
           if (tempNodes.includes(name1) == false) {
             nodes.push({ id: name1, group: 2 })
             tempNodes.push(name1)
           }
-          
+
         }
         else if (key[i] == 'u') {
           name2 = 'user' + element[key[i]]
           links.push({ source: name2, target: name1, value: 1 })
           links.push({ source: movieName, target: name2, value: 1 })
-          if(tempNodes.includes(name2) == false){
+          if (tempNodes.includes(name2) == false) {
             nodes.push({ id: name2, group: 1 })
             tempNodes.push(name2)
           }
-          
+
         }
         else if (key[i] == 'a') {
           name2 = Info.actorInfo[element[key[i]]]
@@ -153,7 +153,7 @@ function KGATRecResult(userId, movieId){
           if (tempNodes.includes(name2) == false) {
             nodes.push({ id: name2, group: 3 })
             tempNodes.push(name2)
-          } 
+          }
         }
         else if (key[i] == 'd') {
           name2 = Info.directorInfo[element[key[i]]]
@@ -176,13 +176,161 @@ function KGATRecResult(userId, movieId){
       }
     })
   }
-  jsonData['nodes'] =nodes
-  jsonData['links'] =links
+  jsonData['nodes'] = nodes
+  jsonData['links'] = links
   return jsonData
 }
+
+var Ainfo_f = fs.readFileSync('./data/att_actor.csv', 'utf-8').split('\n');
+var DInfo_f = fs.readFileSync('./data/att_director.csv', 'utf-8').split('\n');
+var Minfo_f = fs.readFileSync('./data/att_movie.csv', 'utf-8').split('\n');
+var Uinfo_f = fs.readFileSync('./data/att_user.csv', 'utf-8').split('\n');
+
+var UM = ConstructArray(9625)
+var AM = ConstructArray(9598)
+var DM = ConstructArray(6287)
+
+var MU = ConstructArray(12386)
+var MA = ConstructArray(12386)
+var MD = ConstructArray(12386)
+var MG = ConstructArray(12386)
+
+loadMovie(Uinfo_f, UM)
+loadMovie(Ainfo_f, AM)
+loadMovie(DInfo_f, DM)
+loadMovie(Minfo_f, MU)
+
+function loadMovie(data, array) {
+  data.forEach(element => {
+    try {
+      target_id = parseInt(element.split(',')[0])
+      source_id = element.split(',')[1].replace('[', '').replace(']', '').split(' ').map(Number)
+      s_t_att = element.split(',')[2].replace('[', '').replace(']', '').split(' ').map(Number)
+      array[target_id][0] = source_id
+      array[target_id][1] = s_t_att
+
+      if (element.split(',').length > 2) {
+        if (element.split(',')[3].replace('[', '').replace(']', '').split(' ').length > 0) {
+          source_id = element.split(',')[3].replace('[', '').replace(']', '').split(' ').map(Number)
+          s_t_att = element.split(',')[4].replace('[', '').replace(']', '').split(' ').map(Number)
+          MA[target_id][0] = source_id
+          MA[target_id][1] = s_t_att
+        }
+
+        if (element.split(',')[5].replace('[', '').replace(']', '').split(' ') > 0) {
+          source_id = element.split(',')[3].replace('[', '').replace(']', '').split(' ').map(Number)
+          s_t_att = element.split(',')[4].replace('[', '').replace(']', '').split(' ').map(Number)
+          MD[target_id][0] = source_id
+          MD[target_id][1] = s_t_att
+        }
+
+        if (element.split(',')[7].replace('[', '').replace(']', '').split(' ') > 0) {
+          source_id = element.split(',')[3].replace('[', '').replace(']', '').split(' ').map(Number)
+          s_t_att = element.split(',')[4].replace('[', '').replace(']', '').split(' ').map(Number)
+          MG[target_id][0] = source_id
+          MG[target_id][1] = s_t_att
+        }
+      }
+    } catch (err) {
+
+    }
+  });
+}
+
+function ConstructArray(length) {
+  let arr = new Array();
+  for (var i = 0; i < length; i++) {          //一维长度为5
+    arr[i] = new Array(i);    //在声明二维
+    for (var j = 0; j < 2; j++) {      //二维长度为5
+      arr[i][j] = [];
+    }
+  }
+  return arr
+}
+function deteleObject(obj) {
+  var uniques = [];
+  var stringify = {};
+  for (var i = 0; i < obj.length; i++) {
+    var keys = Object.keys(obj[i]);
+    keys.sort(function (a, b) {
+      return (Number(a) - Number(b));
+    });
+    var str = '';
+    for (var j = 0; j < keys.length; j++) {
+      str += JSON.stringify(keys[j]);
+      str += JSON.stringify(obj[i][keys[j]]);
+    }
+    if (!stringify.hasOwnProperty(str)) {
+      uniques.push(obj[i]);
+      stringify[str] = true;
+    }
+  }
+  uniques = uniques;
+  return uniques;
+}
+
+function getKGATatt(userId, movieId) {
+  let path = []
+  let wachtdMovie = []
+  let jsonforce = {}
+  jsonforce['links'] = []
+  jsonforce['nodes'] = []
+  jsonforce['nodes'].push({id:'u'+userId, value:5, type:'targetUser'})
+  jsonforce['nodes'].push({ id: 'm' + movieId, value: 5, type: 'targetMovie' })
+
+  UM[userId][0].forEach(element =>{
+    let att_s = UM[userId][1][UM[userId][0].indexOf(element)]
+    MA[element][0].forEach(el =>{
+      if (AM[el] == undefined) return
+      if (AM[el][0].includes(movieId)) {
+        jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1})
+        jsonforce['nodes'].push({ id: 'm' + element, value: 3, type: 'movie' })
+        jsonforce['links'].push({ source: 'm'+element, target: 'a'+el, value: 1 })
+        jsonforce['links'].push({ source: 'a' +el, target: 'm' + movieId, value: 1 })
+        jsonforce['nodes'].push({ id: 'a' + el, value: 3, type: 'actor' })
+      }
+    })
+    MD[element][0].forEach(el => {
+      if (DM[el] == undefined) return 
+      if (DM[el][0].includes(movieId)) {
+        jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1 })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 3, type: 'movie' })
+        jsonforce['links'].push({ source: 'm' +element, target: 'd' +el, value: 1 })
+        jsonforce['links'].push({ source: 'd' + el, target: 'm' +movieId, value: 1 })
+        jsonforce['nodes'].push({ id: 'd' + el, value: 3, type: 'director' })
+      }
+    })
+
+    MG[element][0].forEach(el => {
+      if (MG[el] == undefined) return
+      if (MG[movieId][0].includes(el)) {
+        jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1})
+        jsonforce['nodes'].push({ id: 'm' + element, value: 3, type: 'movie' })
+        jsonforce['links'].push({ source: 'm' +element, target: 'g' + el, value: 1 })
+        jsonforce['links'].push({ source: 'g' + el, target: 'm' +movieId, value: 1 })
+        jsonforce['nodes'].push({ id: 'g' + el, value: 3, type: 'genre' })
+      }
+    })
+    if (att_s < 0.000001)
+      return 
+    MU[element][0].forEach(el=>{
+      if(UM[el][0].includes(movieId)){  // 要判断的是el 
+        jsonforce['links'].push({ source: 'u' + userId, target: 'm' + element, value: 1 })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 3, type: 'movie' })
+        jsonforce['links'].push({ source: 'm' + element, target: 'u' + el, value: 1 })
+        jsonforce['links'].push({ source: 'u' + el, target: 'm' +movieId, value: 1 })
+        jsonforce['nodes'].push({ id: 'u' + el, value: 3, type: 'user' })
+      }
+    })
+
+  })
+  jsonforce['links'] = deteleObject(jsonforce['links'])
+  jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
+  return jsonforce
+}
+var NIRecShow = false
 var KGATShow = true
 var HetGNNShow = true
-var NIRecShow = false
 // 查询用户
 router.post('/selectUser', (req, res) => {
   let userId = parseInt(req.body.data.replace("u", ""))
@@ -193,12 +341,12 @@ router.post('/selectUser', (req, res) => {
 
   let arr1 = []
   let arr2 = []
-  let arr3 = [210 ,325, 1486 ,1582 ,808, 1578, 1589, 991, 561, 627,502, 580, 1309, 1067,787, 804, 1163, 1163, 1011, 1145 ]
+  let arr3 = [210, 325, 1486, 1582, 808, 1578, 1589, 991, 561, 627, 502, 580, 1309, 1067, 787, 804, 1163, 1163, 1011, 1145]
 
   if (KGATShow == true) arr2 = KGAT[userId].rec_result;
   if (HetGNNShow == true) arr1 = HetGNN[userId].rec_result;
 
-  let Vennresult = GetVennResult(arr1,arr2,arr3)
+  let Vennresult = GetVennResult(arr1, arr2, arr3)
   Coodinare.push(HetGNN[userId])
   Coodinare.push(KGAT[userId])
   Coodinare.push({
@@ -249,7 +397,7 @@ router.post('/selectedMovie', (req, res) => {
       x = "今天是星期一"; //调用HetGNN推荐原因
       break;
     case 'K':
-      jsonData = KGATRecResult(userId, movieId); //调用KGAT推荐原因
+      jsonData = getKGATatt(userId, movieId); //调用KGAT推荐原因
       break;
     case 'HK':
       x = "今天是星期三"; //调用HetGNN 和 KGAT 重合的推荐原因
@@ -258,7 +406,7 @@ router.post('/selectedMovie', (req, res) => {
       x = "今天是星期日";
   }
 
-  
+
 
 
   res.json(jsonData)
