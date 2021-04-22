@@ -3,6 +3,7 @@
     <forceView></forceView>
     <div id="coordinate" class="coordinate" ref="coordinate"></div>
     <div id="venn" class="venn" ref="venn"></div>
+    <div id="Word" class="Word" ref="Word"></div>
   </div>
 </template>
 
@@ -23,6 +24,7 @@ export default {
   mounted: function () {
     this.Venn(this.$refs.venn);
     this.Coordinate(this.$refs.coordinate, []);
+    this.word();
   },
   watch: {
     "$store.getters.userId"() {
@@ -47,12 +49,11 @@ export default {
         height: parseInt(d3.select(map).style("height")),
       };
       var sample_data = data;
-      let keys = ["precision", "recall", "auc", "personal"];
+      let keys = ["pre", "recall", "auc", "personal"];
       let y = new Map(
-        Array.from(keys, (key) => [key, d3.scaleLinear([0, 1], [450, 0])])
+        Array.from(keys, (key) => [key, d3.scaleLinear([0, 1], [450, -30])])
       );
-      //new Map(Array.from(keys, key => [key, d3.scaleLinear(d3.extent(sample_data, d => d[key]), [450, 0])]))
-      let x = d3.scalePoint(keys, [0, 550]);
+      let x = d3.scalePoint(keys, [20, 570]);
 
       let line = d3
         .line()
@@ -65,8 +66,8 @@ export default {
         .append("svg")
         .attr(
           "viewBox",
-          `${-config.width / 6} ${-config.height / 7} ${config.width * 1.8} ${
-            config.height * 1.8
+          `${-config.width / 17} ${-config.height /5} ${config.width * 1.9} ${
+            config.height * 1.9
           }`
         )
         .style("width", "100%")
@@ -83,9 +84,11 @@ export default {
               Coordinate.attr("transform", transform);
             })
         );
+
       const color = ["#98abc5", "#6b486b", "#ff8c00"];
 
       const Coordinate = SVG.append("g");
+
       Coordinate.append("g")
         .attr("fill", "none")
         .attr("stroke-width", 3)
@@ -112,10 +115,10 @@ export default {
           g
             .append("text")
             .attr("x", -30)
-            .attr("y", 470)
+            .attr("y", 480)
             .attr("text-anchor", "start")
             .attr("fill", "currentColor")
-            .attr("font-size", 22)
+            .attr("font-size", 24)
             .text((d) => d)
         )
         .call((g) =>
@@ -198,8 +201,8 @@ export default {
         .append("svg")
         .attr(
           "viewBox",
-          `${-config.width / 6} ${-config.height / 7} ${config.width * 1.8} ${
-            config.height * 1.8
+          `${-config.width / 7} ${-config.height / 5} ${config.width * 1.9} ${
+            config.height * 1.9
           }`
         )
         .style("width", "100%")
@@ -488,26 +491,57 @@ export default {
         .append("title")
         .text((d) => d.movieName);
     },
+    word(){
+      let testdata = {
+        
+      }
+      const config = {
+        width: parseInt(d3.select('#Word').style("width")),
+        height: parseInt(d3.select('#Word').style("height")),
+      };
+
+      const SVG = d3
+        .select('#Word')
+        .append("svg")
+        .attr(
+          "viewBox",
+          `${-config.width / 17} ${-config.height /5} ${config.width * 1.9} ${
+            config.height * 1.9
+          }`
+        )
+        .style("width", "100%")
+        .style("height", "auto")
+      
+
+    }
   },
 };
 </script>
 <style lang="stylus" scoped>
 #result {
-  width: 50%;
+  width: 70%;
   height: 100%;
   border: 1px solid #A6A6A6;
 }
 
 #coordinate {
-  width: 50%;
+  width: 35%;
   height: 30%;
   float: left;
   border-right: 1px solid #A6A6A6;
 }
 
 #venn {
-  width: 49%;
+  width: 32%;
   height: 30%;
   float: left;
+  border-right: 1px solid #A6A6A6;
+}
+
+#Word {
+  width: 32%;
+  height: 30%;
+  float: left;
+  border: 1px solid red;
 }
 </style>

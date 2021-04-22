@@ -59,7 +59,7 @@ function AnalyzeDdata(data, array) {
     object.userId = 'user' + line[0]
     object.rec_result = line[1].replace("[", "").replace("]", "").split(' ').map(Number)
     object.recall = parseFloat(line[2])
-    object.precision = parseFloat(line[3])
+    object.pre = parseFloat(line[3])
     object.auc = parseFloat(line[4])
     object.personal = 1 - parseFloat(line[5])
 
@@ -269,14 +269,25 @@ function deteleObject(obj) {
   return uniques;
 }
 
+function remove(arr,item){
+  console.log(arr)
+  let index = arr.indexOf(item)
+  if( index >-1)
+    arr.splice(index,1)
+  return arr
+}
+
+function counts_num(arr,value){
+  return arr.reduce((a, v) => v === value ? a + 1 : a + 0, 0)
+}
 function getKGATatt(userId, movieId) {
   let path = []
   let wachtdMovie = []
   let jsonforce = {}
   jsonforce['links'] = []
   jsonforce['nodes'] = []
-  jsonforce['nodes'].push({id:'u'+userId, value:5, type:'targetUser'})
-  jsonforce['nodes'].push({ id: 'm' + movieId, value: 5, type: 'targetMovie' })
+  jsonforce['nodes'].push({id:'u'+userId, value:10, type:'targetUser'})
+  jsonforce['nodes'].push({ id: 'm' + movieId, value: 10, type: 'targetMovie' })
 
   UM[userId][0].forEach(element =>{
     let att_s = UM[userId][1][UM[userId][0].indexOf(element)]
@@ -284,31 +295,31 @@ function getKGATatt(userId, movieId) {
       if (AM[el] == undefined) return
       if (AM[el][0].includes(movieId)) {
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1})
-        jsonforce['nodes'].push({ id: 'm' + element, value: 3, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 4, type: 'movie' })
         jsonforce['links'].push({ source: 'm'+element, target: 'a'+el, value: 1 })
         jsonforce['links'].push({ source: 'a' +el, target: 'm' + movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'a' + el, value: 3, type: 'actor' })
+        jsonforce['nodes'].push({ id: 'a' + el, value: 4, type: 'actor' })
       }
     })
     MD[element][0].forEach(el => {
       if (DM[el] == undefined) return 
       if (DM[el][0].includes(movieId)) {
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1 })
-        jsonforce['nodes'].push({ id: 'm' + element, value: 3, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 4, type: 'movie' })
         jsonforce['links'].push({ source: 'm' +element, target: 'd' +el, value: 1 })
         jsonforce['links'].push({ source: 'd' + el, target: 'm' +movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'd' + el, value: 3, type: 'director' })
+        jsonforce['nodes'].push({ id: 'd' + el, value: 4, type: 'director' })
       }
     })
 
     MG[element][0].forEach(el => {
-      if (MG[el] == undefined) return
+      // if (MG[el] == undefined) return
       if (MG[movieId][0].includes(el)) {
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1})
-        jsonforce['nodes'].push({ id: 'm' + element, value: 3, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 4, type: 'movie' })
         jsonforce['links'].push({ source: 'm' +element, target: 'g' + el, value: 1 })
         jsonforce['links'].push({ source: 'g' + el, target: 'm' +movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'g' + el, value: 3, type: 'genre' })
+        jsonforce['nodes'].push({ id: 'g' + el, value: 4, type: 'genre' })
       }
     })
     if (att_s < 0.000001)
@@ -316,26 +327,65 @@ function getKGATatt(userId, movieId) {
     MU[element][0].forEach(el=>{
       if(UM[el][0].includes(movieId)){  // 要判断的是el 
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' + element, value: 1 })
-        jsonforce['nodes'].push({ id: 'm' + element, value: 3, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 4, type: 'movie' })
         jsonforce['links'].push({ source: 'm' + element, target: 'u' + el, value: 1 })
         jsonforce['links'].push({ source: 'u' + el, target: 'm' +movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'u' + el, value: 3, type: 'user' })
+        jsonforce['nodes'].push({ id: 'u' + el, value: 4, type: 'user' })
       }
     })
 
   })
   jsonforce['links'] = deteleObject(jsonforce['links'])
   jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
+
   let test = {}
+  let rev_test = {}
   jsonforce['links'].forEach(element=>{
     if (element.target.includes('u')){
-      if (Object.keys(test).includes(element.target) == false){
-        test[element.target] =[]
+      if (Object.keys(rev_test).includes(element.target) == false) {  // u=[m]
+        rev_test[element.target] = []
+        rev_test[element.target].push(element.source)
+      }else{
+        delete rev_test[element.target]
+      }
+      
+
+      if (Object.keys(test).includes(element.source) == false){  // m = [u]
+        test[element.source] =[]
         
       }
-      test[element.target].push(element.source)
+      test[element.source].push(element.target)
     }
   })
+  let key = Object.keys(rev_test)
+  let k = Object.keys(test)
+  let xiugai = {}
+  for(var i = 0;i<key.length;i++){
+    if(test[ rev_test[key[i]]].length > 1){
+      let index = 'group' + k.indexOf(rev_test[key[i]][0])
+      xiugai[key[i]] = index
+    }
+  }
+
+  jsonforce['nodes'].forEach(element=>{
+    if(Object.keys(xiugai).includes(element.id) == true){
+      element.value = 4 + counts_num(Object.values(xiugai), xiugai[element.id])
+      element.id = xiugai[element.id]
+      
+    }
+  })
+  jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
+
+  jsonforce['links'].forEach(element=>{
+    if (Object.keys(xiugai).includes(element.source)){
+      element.source = xiugai[element.source]
+    }
+    if ( Object.keys(xiugai).includes(element.target)){
+      element.target = xiugai[element.target]
+    }
+  })
+  jsonforce['links'] = deteleObject(jsonforce['links'])
+
   return jsonforce
 }
 var NIRecShow = false
