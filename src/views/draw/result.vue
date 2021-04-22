@@ -804,7 +804,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #result {
-  width: 100rt%;
+  width: 100%;
   height: 100%;
   border: 1px solid #A6A6A6;
 }
