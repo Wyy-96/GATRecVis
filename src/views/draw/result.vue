@@ -66,7 +66,7 @@ export default {
         .append("svg")
         .attr(
           "viewBox",
-          `${-config.width / 17} ${-config.height / 5} ${config.width * 1.9} ${
+          `${-config.width / 8} ${-config.height / 5} ${config.width * 1.9} ${
             config.height * 1.9
           }`
         )
@@ -201,7 +201,7 @@ export default {
         .append("svg")
         .attr(
           "viewBox",
-          `${-config.width / 7} ${-config.height / 5} ${config.width * 1.9} ${
+          `${-config.width / 4} ${-config.height / 5} ${config.width * 1.9} ${
             config.height * 1.9
           }`
         )
@@ -495,7 +495,17 @@ export default {
     },
     word() {
       let data = {
-        values: [],
+        values: [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+                ],
         names: [
           "剧情",
           "犯罪",
@@ -510,7 +520,7 @@ export default {
           "悬疑",
           "惊悚",
           "恐怖",
-          "纪录片",
+          "纪录",
           "历史",
           "战争",
           "奇幻",
@@ -525,31 +535,15 @@ export default {
           "武侠",
           "古装",
           "灾难",
-          "真人秀",
-          "黑色电影",
+          "真人",
+          "黑色",
           "脱口秀",
           "戏曲",
-          "舞台艺术",
+          "舞台",
           "鬼怪",
           "荒诞",
         ],
-        years: [
-          1880,
-          1890,
-          1900,
-          1910,
-          1920,
-          1930,
-          1940,
-          1950,
-          1960,
-          1970,
-          1980,
-          1990,
-          2000,
-          2010,
-          2020,
-        ],
+        years: [1900, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020],
       };
       const config = {
         width: parseInt(d3.select("#Word").style("width")),
@@ -563,59 +557,83 @@ export default {
         left: 10,
       };
 
-      const height = 10;
-      const width = 300;
+      const height = 11.5;
+      const width = 350;
       const innerHeight = height * data.years.length;
       const color = d3.scaleSequentialSqrt([0, 20], d3.interpolateInferno); //d3.max(data.values, d => d3.max(d))
-      const x = d3
-        .scaleLinear()
-        .domain([d3.min(data.years), d3.max(data.years) + 1])
-        .rangeRound([margin.left, width - margin.right]);
       const y = d3
         .scaleBand()
+        .domain(data.years)
+        .rangeRound([-22, 210]);
+
+      const x = d3
+        .scaleBand()
         .domain(data.names)
-        .rangeRound([margin.top, margin.top + data.names.length * height]);
+        .rangeRound([-150, 500]);
 
       const SVG = d3
         .select("#Word")
         .append("svg")
-        .attr("viewBox", [
-          0,
-          0,
-          width,
-          innerHeight + margin.top + margin.bottom + 70,
-        ])
+        .attr(
+          "viewBox",
+          `${-config.width/4 } ${-config.height/5 } ${config.width } ${
+            config.height 
+          }`
+        )
         .style("width", "100%")
-        .style("height", "auto")
-        .style("font", "10px sans-serif");
+        .style("height", "auto");
 
       SVG.append("g")
-        .attr("transform", "translate(10,250)")
+        .attr("transform", "translate(-140,205)")
         .append(() =>
-          legend({ color, title: "Word Frequency per year", width: 260 })
+          legend({ color, width: 260 })
         );
 
       SVG.append("g")
-        .attr("transform", `translate(0,${margin.top})`)
-        .call(d3.axisTop(y).ticks(null, "d"))
+        .attr("class",'axisX')
+        .attr("transform", `translate(0,${-30})`)
+        .attr("font-size", "6")
+        .call(d3.axisTop(x).tickSize(1))
         .call((g) => g.select(".domain").remove());
 
       SVG.append("g")
-        .attr("transform", `translate(${margin.left+10},0)`)
-        .call(d3.axisLeft(x).tickSize(0))
+        .attr("class",'axisY')
+        .attr("transform", `translate(${-140},0)`)
+        .call(d3.axisLeft(y).tickSize(0))
         .call((g) => g.select(".domain").remove());
 
+      const row = SVG
+        .append("g")
+        .selectAll("g")
+        .data(data.values)
+        .join("g")
+        .attr("transform", (d, i) => `translate(0,${y(data.years[i])})`);
+
+      row.selectAll("rect")
+        .data(d => d)
+        .join("rect")
+          .attr("x", (d, i) => x(data.names[i]) + 1)
+          .attr("width", 14)
+          .attr("height", y.bandwidth() - 1)
+          .attr("fill", d => isNaN(d) ? "#eee" : d === 0 ? "#e8e8e8" : color(d))
+
+      SVG.select(".axisX").selectAll("text")
+          .attr("transform",`rotate(${90}, ${1} ${-9})`)
+          .attr("font-size",'12')
+      
+       SVG.select(".axisY").selectAll("text")
+          .attr("font-size",'12')
+          
       function legend({
         color,
-        title,
-        tickSize = 6,
-        width = 320,
-        height = 44 + tickSize,
-        marginTop = 18,
+        tickSize = 0,
+        width = 120,
+        height = 26 + tickSize,
+        marginTop = 9,
         marginRight = 0,
-        marginBottom = 16 + tickSize,
+        marginBottom = 8 + tickSize,
         marginLeft = 0,
-        ticks = width / 64,
+        ticks = width / 32,
         tickFormat,
         tickValues,
       } = {}) {
@@ -630,7 +648,8 @@ export default {
         let tickAdjust = (g) =>
           g
             .selectAll(".tick line")
-            .attr("y1", marginTop + marginBottom - height);
+            .attr("y1", marginTop + marginBottom - height)
+            .attr("y2", 1);
         let x;
 
         // Continuous
@@ -756,6 +775,7 @@ export default {
 
         svg
           .append("g")
+          .attr("class",'asxi_C')
           .attr("transform", `translate(0,${height - marginBottom})`)
           .call(
             d3
@@ -769,21 +789,13 @@ export default {
               )
               .tickSize(tickSize)
               .tickValues(tickValues)
+              .tickPadding(4)
           )
           .call(tickAdjust)
-          .call((g) => g.select(".domain").remove())
-          .call((g) =>
-            g
-              .append("text")
-              .attr("x", marginLeft)
-              .attr("y", marginTop + marginBottom - height - 6)
-              .attr("fill", "currentColor")
-              .attr("text-anchor", "start")
-              .attr("font-weight", "bold")
-              .attr("class", "title")
-              .text(title)
-          );
+          .call((g) => g.select(".domain").remove());
 
+        svg.select('.asxi_C').selectAll('text')
+          .attr("font-size",'9')
         return svg.node();
       }
 
@@ -810,22 +822,22 @@ export default {
 }
 
 #coordinate {
-  width: 33%;
+  width: 25%;
   height: 30%;
   float: left;
   border-right: 1px solid #A6A6A6;
 }
 
 #venn {
-  width: 30%;
+  width: 25%;
   height: 30%;
   float: left;
   border-right: 1px solid #A6A6A6;
 }
 
 #Word {
-  width: 36%;
+  width: 49%;
   height: 30%;
-  float: left;
+  float: right;
 }
 </style>
