@@ -22,11 +22,11 @@ export default {
         },
         {
           source: "m3255",
-          target: "ugroup0",
+          target: "group0",
           value: 1,
         },
         {
-          source: "ugroup0",
+          source: "group0",
           target: "m793",
           value: 1,
         },
@@ -52,11 +52,11 @@ export default {
         },
         {
           source: "m4721",
-          target: "ugroup1",
+          target: "group1",
           value: 1,
         },
         {
-          source: "ugroup1",
+          source: "group1",
           target: "m793",
           value: 1,
         },
@@ -77,11 +77,11 @@ export default {
         },
         {
           source: "m5061",
-          target: "ugroup2",
+          target: "group2",
           value: 1,
         },
         {
-          source: "ugroup2",
+          source: "group2",
           target: "m793",
           value: 1,
         },
@@ -92,11 +92,11 @@ export default {
         },
         {
           source: "m6093",
-          target: "ugroup3",
+          target: "group3",
           value: 1,
         },
         {
-          source: "ugroup3",
+          source: "group3",
           target: "m793",
           value: 1,
         },
@@ -107,11 +107,11 @@ export default {
         },
         {
           source: "m6094",
-          target: "ugroup4",
+          target: "group4",
           value: 1,
         },
         {
-          source: "ugroup4",
+          source: "group4",
           target: "m793",
           value: 1,
         },
@@ -137,11 +137,11 @@ export default {
         },
         {
           source: "m8320",
-          target: "ugroup6",
+          target: "group6",
           value: 1,
         },
         {
-          source: "ugroup6",
+          source: "group6",
           target: "m793",
           value: 1,
         },
@@ -152,11 +152,11 @@ export default {
         },
         {
           source: "m9034",
-          target: "ugroup7",
+          target: "group7",
           value: 1,
         },
         {
-          source: "ugroup7",
+          source: "group7",
           target: "m793",
           value: 1,
         },
@@ -172,11 +172,11 @@ export default {
         },
         {
           source: "m9652",
-          target: "ugroup8",
+          target: "group8",
           value: 1,
         },
         {
-          source: "ugroup8",
+          source: "group8",
           target: "m793",
           value: 1,
         },
@@ -187,11 +187,11 @@ export default {
         },
         {
           source: "m9934",
-          target: "ugroup9",
+          target: "group9",
           value: 1,
         },
         {
-          source: "ugroup9",
+          source: "group9",
           target: "m793",
           value: 1,
         },
@@ -224,12 +224,12 @@ export default {
       nodes: [
         {
           id: "u49",
-          value: 10,
+          value: 20,
           type: "targetUser",
         },
         {
           id: "m793",
-          value: 10,
+          value: 20,
           type: "targetMovie",
         },
         {
@@ -238,7 +238,7 @@ export default {
           type: "movie",
         },
         {
-          id: "ugroup0",
+          id: "group0",
           value: 7,
           type: "user",
         },
@@ -258,7 +258,7 @@ export default {
           type: "movie",
         },
         {
-          id: "ugroup1",
+          id: "group1",
           value: 9,
           type: "user",
         },
@@ -273,7 +273,7 @@ export default {
           type: "user",
         },
         {
-          id: "ugroup2",
+          id: "group2",
           value: 9,
           type: "user",
         },
@@ -283,7 +283,7 @@ export default {
           type: "movie",
         },
         {
-          id: "ugroup3",
+          id: "group3",
           value: 7,
           type: "user",
         },
@@ -293,7 +293,7 @@ export default {
           type: "movie",
         },
         {
-          id: "ugroup4",
+          id: "group4",
           value: 7,
           type: "user",
         },
@@ -313,7 +313,7 @@ export default {
           type: "movie",
         },
         {
-          id: "ugroup6",
+          id: "group6",
           value: 6,
           type: "user",
         },
@@ -323,7 +323,7 @@ export default {
           type: "movie",
         },
         {
-          id: "ugroup7",
+          id: "group7",
           value: 7,
           type: "user",
         },
@@ -333,7 +333,7 @@ export default {
           type: "movie",
         },
         {
-          id: "ugroup8",
+          id: "group8",
           value: 6,
           type: "user",
         },
@@ -343,7 +343,7 @@ export default {
           type: "movie",
         },
         {
-          id: "ugroup9",
+          id: "group9",
           value: 7,
           type: "user",
         },
@@ -383,15 +383,16 @@ export default {
   },
   methods: {
     force(map, data) {
-      var net,
+      var net = {},
         expand = {};
       const config = {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
-      const links = data.links.map((d) => Object.create(d));
-      const nodes = data.nodes.map((d) => Object.create(d));
-      
+      // const links = data.links.map((d) => Object.create(d));
+      // const nodes = data.nodes.map((d) => Object.create(d));
+      // net = {"links":links, "nodes":nodes}
+
       const types = [
         "targetUser",
         "targetMovie",
@@ -414,11 +415,84 @@ export default {
         "#65D5A0",
         "#C2384F",
       ];
-      function getGroup(n) {
-        return n.ugroup;
+      function getType(n) {
+        return n.type;
       }
       function network(data, prev, index, expand) {
         expand = expand || {};
+        let links = data.links.map((d) => Object.create(d));
+        let nodes = data.nodes.map((d) => Object.create(d));
+        
+        let group = {}
+        let groupValue = {}
+        nodes.forEach(element => {
+          let type = index(element)
+          if(Object.keys(group).includes(type) == false){
+            group[type] = []
+            groupValue[type] = 0
+          }
+          group[type].push(element.id)
+          groupValue[type] += element.value
+        });
+        
+        let newnodes = []
+        let key = Object.keys(group)
+        for(var i =0;i<key.length;i++){
+          newnodes.push({"id":key[i], "type":key[i], "value":groupValue[key[i]] >20?20:groupValue[key[i]]})
+        }
+
+        let newlinks = []
+        let linksValue = {}
+        links.forEach(element=>{
+          let source = getElementType(element.source,group)
+          let target = getElementType(element.target,group)
+
+          if(Object.keys(linksValue).includes(source+","+target) == false){
+            linksValue[source+","+target] = 0
+          }
+          linksValue[source+","+target] += 1
+        })
+
+        key = Object.keys(linksValue)
+        for(i =0;i<key.length;i++){
+          let source = key[i].split(",")[0]
+          let target = key[i].split(",")[1]
+          newlinks.push({"source":source, "target":target, "value": linksValue[key[i]]})
+        }
+        console.log(newlinks)
+
+
+        
+
+
+
+        
+        return {"links":newlinks, "nodes":newnodes}
+      }
+
+      function getElementType(id,group){
+        if(id.includes('m')== true){
+            if(group["movie"].includes(id) == true)
+              return 'movie'
+            else
+              return 'targetMovie'
+          }
+          else if(id.includes('a')== true){
+            return 'actor'
+          }
+          else if(id.includes('d')== true){
+            return 'director'
+          }
+
+          else if(id.includes('u')== true){
+            if(group["user"].includes(id) == true)
+              return 'user'
+            else
+              return 'targetUser'
+          }
+          else{
+            return 'genre'
+          }
       }
       // 绘图
       const SVG = d3
@@ -435,17 +509,17 @@ export default {
       init()
 
       function init() {
-        // net = network(data, net, getGroup, expand);
+        net = network(data, net, getType, expand);
 
         const simulation = d3
-          .forceSimulation(nodes)
+          .forceSimulation(net.nodes)
           .force(
             "link",
-            d3.forceLink(links).id((d) => d.id)
+            d3.forceLink(net.links).id((d) => d.id)
           )
           .force("x", d3.forceX())
           .force("y", d3.forceY())
-          .force("charge", d3.forceManyBody().strength(-500))
+          .force("charge", d3.forceManyBody().strength(-3000))
           .force("center", d3.forceCenter(600 / 2, 600 / 2));
 
         const drag = (simulation) => {
@@ -477,25 +551,25 @@ export default {
           .attr("stroke", "#999")
           .attr("stroke-opacity", 0.6)
           .selectAll("line")
-          .data(links)
+          .data(net.links)
           .join("line")
-          .attr("stroke-width", (d) => Math.sqrt(d.value));
+          .attr("stroke-width", (d) => d.value);
 
         const node = SVG.append("g")
           .attr("stroke", "#fff")
           .attr("stroke-width", 1.5)
           .selectAll("circle")
-          .data(nodes)
+          .data(net.nodes)
           .join("circle")
           .attr("r", (d) => d.value)
           .attr("id", (d, i) => i)
           .attr("fill", (d) => colors[types.indexOf(d.type)])
           .on("click", (event, d) => {
                 if(d.type != 'targetUser' || d.type != 'targetMovie') {
-                  console.log("node clink",d , arguments, this, expand[d.id])
+                  // console.log("node clink",d , arguments, this, expand[d.id])
                   expand[d.id] = !expand[d.id];  //取反
-                  console.log(expand)
-                  // init();
+                  
+                  init();
                 }
               })
           .call(drag(simulation));
