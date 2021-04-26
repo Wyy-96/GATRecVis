@@ -71,7 +71,7 @@ export default {
         )
         .force("x", d3.forceX())
         .force("y", d3.forceY())
-        .force("charge", d3.forceManyBody().strength(-300))
+        .force("charge", d3.forceManyBody().strength(-500))
         .force("center", d3.forceCenter(600 / 2, 600 / 2));
 
     

@@ -295,20 +295,20 @@ function getKGATatt(userId, movieId) {
       if (AM[el] == undefined) return
       if (AM[el][0].includes(movieId)) {
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1})
-        jsonforce['nodes'].push({ id: 'm' + element, value: 4, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 6, type: 'movie' })
         jsonforce['links'].push({ source: 'm'+element, target: 'a'+el, value: 1 })
         jsonforce['links'].push({ source: 'a' +el, target: 'm' + movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'a' + el, value: 4, type: 'actor' })
+        jsonforce['nodes'].push({ id: 'a' + el, value: 6, type: 'actor' })
       }
     })
     MD[element][0].forEach(el => {
       if (DM[el] == undefined) return 
       if (DM[el][0].includes(movieId)) {
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1 })
-        jsonforce['nodes'].push({ id: 'm' + element, value: 4, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 6, type: 'movie' })
         jsonforce['links'].push({ source: 'm' +element, target: 'd' +el, value: 1 })
         jsonforce['links'].push({ source: 'd' + el, target: 'm' +movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'd' + el, value: 4, type: 'director' })
+        jsonforce['nodes'].push({ id: 'd' + el, value: 6, type: 'director' })
       }
     })
 
@@ -316,10 +316,10 @@ function getKGATatt(userId, movieId) {
       // if (MG[el] == undefined) return
       if (MG[movieId][0].includes(el)) {
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1})
-        jsonforce['nodes'].push({ id: 'm' + element, value: 4, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 6, type: 'movie' })
         jsonforce['links'].push({ source: 'm' +element, target: 'g' + el, value: 1 })
         jsonforce['links'].push({ source: 'g' + el, target: 'm' +movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'g' + el, value: 4, type: 'genre' })
+        jsonforce['nodes'].push({ id: 'g' + el, value: 6, type: 'genre' })
       }
     })
     if (att_s < 0.000001)
@@ -327,10 +327,10 @@ function getKGATatt(userId, movieId) {
     MU[element][0].forEach(el=>{
       if(UM[el][0].includes(movieId)){  // 要判断的是el 
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' + element, value: 1 })
-        jsonforce['nodes'].push({ id: 'm' + element, value: 4, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 6, type: 'movie' })
         jsonforce['links'].push({ source: 'm' + element, target: 'u' + el, value: 1 })
         jsonforce['links'].push({ source: 'u' + el, target: 'm' +movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'u' + el, value: 4, type: 'user' })
+        jsonforce['nodes'].push({ id: 'u' + el, value: 6, type: 'user' })
       }
     })
 
