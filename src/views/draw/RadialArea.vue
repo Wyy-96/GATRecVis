@@ -7,6 +7,7 @@
 import axios from "axios";
 import * as d3 from "d3";
 import store from "@/store";
+
 export default {
   name: "RadialArea",
   data() {
@@ -31,7 +32,6 @@ export default {
         innerRadius: 0,
         outerRadius: 200,
       };
-      console.log(data)
       this.drawRadialStackedBarChart(this.$refs.RadialArea, config, data);
     });
   },
@@ -46,7 +46,7 @@ export default {
                 config.height
               }`
             )
-            .call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed))
+            // .call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed))
             .style("width", "100%")
             .style("height", "auto")
             .style("font", "10px sans-serif")
