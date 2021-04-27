@@ -384,14 +384,19 @@ export default {
   methods: {
     force(map, data) {
       var net = {},
-        expand = {};
+        expand = {
+          targetUser: true,
+          targetMovie: true,
+          movie: true,
+          actor: false,
+          director: false,
+          genre: false,
+          user: false,
+        };
       const config = {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
-      // const links = data.links.map((d) => Object.create(d));
-      // const nodes = data.nodes.map((d) => Object.create(d));
-      // net = {"links":links, "nodes":nodes}
 
       const types = [
         "targetUser",
@@ -422,77 +427,119 @@ export default {
         expand = expand || {};
         let links = data.links.map((d) => Object.create(d));
         let nodes = data.nodes.map((d) => Object.create(d));
+
+        let newnodes = [];
+        let newlinks = [];
+        let linksValue = {};
+
+        //拆分expand
+        let expandTure = [];
+        let expandFlase = [];
+        let expandKey = Object.keys(expand);
+        for (var i = 0; i < expandKey.length; i++) {
+          if (expand[expandKey[i]] == true) expandTure.push(expandKey[i]);
+          else expandFlase.push(expandKey[i]);
+        }
         
-        let group = {}
-        let groupValue = {}
-        nodes.forEach(element => {
-          let type = index(element)
-          if(Object.keys(group).includes(type) == false){
-            group[type] = []
-            groupValue[type] = 0
+        let group = {};
+        let groupValue = {};
+        nodes.forEach((element) => {
+          let type = index(element);
+          if (expandFlase.includes(type) == false) {
+            //要展开的情况
+            newnodes.push(element);
+          } else {
+            if (Object.keys(group).includes(type) == false) {
+              group[type] = [];
+              groupValue[type] = 0;
+            }
+            group[type].push(element.id);
+            groupValue[type] += element.value;
           }
-          group[type].push(element.id)
-          groupValue[type] += element.value
         });
-        
-        let newnodes = []
-        let key = Object.keys(group)
-        for(var i =0;i<key.length;i++){
-          newnodes.push({"id":key[i], "type":key[i], "value":groupValue[key[i]] >20?20:groupValue[key[i]]})
+
+        let key = Object.keys(group);
+        for (i = 0; i < key.length; i++) {
+          newnodes.push({
+            id: key[i],
+            type: key[i],
+            value: groupValue[key[i]] > 30 ? 30 : groupValue[key[i]],
+          });
         }
 
-        let newlinks = []
-        let linksValue = {}
-        links.forEach(element=>{
-          let source = getElementType(element.source,group)
-          let target = getElementType(element.target,group)
-
-          if(Object.keys(linksValue).includes(source+","+target) == false){
-            linksValue[source+","+target] = 0
+        let ids = getObjectValues(newnodes);
+        links.forEach((element) => {
+          if (ids.includes(element.source) == true) {
+            if (ids.includes(element.target) == true) newlinks.push(element);
+            else {
+              let target = getElementType(element.target, group);
+              newlinks.push({
+                source: element.source,
+                target: target,
+                value: 1,
+              })
+            }
+          } else {
+            if (ids.includes(element.target) == true) {
+              let source = getElementType(element.source, group);
+              newlinks.push({
+                source: source,
+                target: element.target,
+                value: 1,
+              });
+            } else {
+              let source = getElementType(element.source, group);
+              let target = getElementType(element.target, group);
+              newlinks.push({
+                source: source,
+                target: target,
+                value: 1,
+              });
+            }
           }
-          linksValue[source+","+target] += 1
-        })
+          //   let source = getElementType(element.source, group);
+          //   let target = getElementType(element.target, group);
 
-        key = Object.keys(linksValue)
-        for(i =0;i<key.length;i++){
-          let source = key[i].split(",")[0]
-          let target = key[i].split(",")[1]
-          newlinks.push({"source":source, "target":target, "value": linksValue[key[i]]})
-        }
-        console.log(newlinks)
+          //   if (
+          //     Object.keys(linksValue).includes(source + "," + target) == false
+          //   ) {
+          //     linksValue[source + "," + target] = 0;
+          //   }
+          //   linksValue[source + "," + target] += 1;
+        });
 
+        // key = Object.keys(linksValue);
+        // for (i = 0; i < key.length; i++) {
+        //   let source = key[i].split(",")[0];
+        //   let target = key[i].split(",")[1];
+        //   newlinks.push({
+        //     source: source,
+        //     target: target,
+        //     value: linksValue[key[i]],
+        //   });
+        // }
 
-        
-
-
-
-        
-        return {"links":newlinks, "nodes":newnodes}
+        return { links: newlinks, nodes: newnodes };
       }
-
-      function getElementType(id,group){
-        if(id.includes('m')== true){
-            if(group["movie"].includes(id) == true)
-              return 'movie'
-            else
-              return 'targetMovie'
-          }
-          else if(id.includes('a')== true){
-            return 'actor'
-          }
-          else if(id.includes('d')== true){
-            return 'director'
-          }
-
-          else if(id.includes('u')== true){
-            if(group["user"].includes(id) == true)
-              return 'user'
-            else
-              return 'targetUser'
-          }
-          else{
-            return 'genre'
-          }
+      function getObjectValues(object) {
+        var values = [];
+        for (var property in object) values.push(object[property]["id"]);
+        return values;
+      }
+      function getElementType(id, group) {
+        if (id.includes("m") == true) {
+          if (group["movie"].includes(id) == true) return "movie";
+          else return "targetMovie";
+        } else if (id.includes("a") == true) {
+          return "actor";
+        } else if (id.includes("d") == true) {
+          return "director";
+        } else if (id.includes("u") == true) {
+          if (group["user"].includes(id) == true) return "user";
+          else return "targetUser";
+        } else {
+          return "genre";
+        }
       }
       // 绘图
       const SVG = d3
@@ -506,9 +553,11 @@ export default {
           }`
         );
 
-      init()
+      init();
 
       function init() {
+        d3.select(".force").selectAll("g").remove();
+
         net = network(data, net, getType, expand);
 
         const simulation = d3
@@ -565,13 +614,12 @@ export default {
           .attr("id", (d, i) => i)
           .attr("fill", (d) => colors[types.indexOf(d.type)])
           .on("click", (event, d) => {
-                if(d.type != 'targetUser' || d.type != 'targetMovie') {
-                  // console.log("node clink",d , arguments, this, expand[d.id])
-                  expand[d.id] = !expand[d.id];  //取反
-                  
-                  init();
-                }
-              })
+            if (d.type.includes("target") == false) {
+              // console.log("node clink",d , arguments, this, expand[d.id])
+              expand[d.type] = !expand[d.type]; //取反
+              init();
+            }
+          })
           .call(drag(simulation));
 
         node.append("title").text((d) => d.id);
