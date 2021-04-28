@@ -200,6 +200,7 @@ export default {
               d3.select(this)
                 .attr("transform", `rotate(${(Angle * 180) / Math.PI}, ${0} ${0})`)
                 .attr("text", Angle);
+              
 
               if (d3.select(this).attr("class") == "Selec_cri") {
                 var a =

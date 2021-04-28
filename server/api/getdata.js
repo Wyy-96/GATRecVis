@@ -200,16 +200,17 @@ loadMovie(Ainfo_f, AM)
 loadMovie(DInfo_f, DM)
 loadMovie(Minfo_f, MU)
 
+console.log(MG)
 function loadMovie(data, array) {
   data.forEach(element => {
     try {
-      target_id = parseInt(element.split(',')[0])
-      source_id = element.split(',')[1].replace('[', '').replace(']', '').split(' ').map(Number)
-      s_t_att = element.split(',')[2].replace('[', '').replace(']', '').split(' ').map(Number)
+      let target_id = parseInt(element.split(',')[0])
+      let source_id = element.split(',')[1].replace('[', '').replace(']', '').split(' ').map(Number)
+      let s_t_att = element.split(',')[2].replace('[', '').replace(']', '').split(' ').map(Number)
       array[target_id][0] = source_id
       array[target_id][1] = s_t_att
 
-      if (element.split(',').length > 2) {
+      if (element.split(',').length > 3) {
         if (element.split(',')[3].replace('[', '').replace(']', '').split(' ').length > 0) {
           source_id = element.split(',')[3].replace('[', '').replace(']', '').split(' ').map(Number)
           s_t_att = element.split(',')[4].replace('[', '').replace(']', '').split(' ').map(Number)
@@ -217,30 +218,33 @@ function loadMovie(data, array) {
           MA[target_id][1] = s_t_att
         }
 
-        if (element.split(',')[5].replace('[', '').replace(']', '').split(' ') > 0) {
-          source_id = element.split(',')[3].replace('[', '').replace(']', '').split(' ').map(Number)
-          s_t_att = element.split(',')[4].replace('[', '').replace(']', '').split(' ').map(Number)
+        if (element.split(',')[5].replace('[', '').replace(']', '').split(' ').length> 0) {
+          source_id = element.split(',')[5].replace('[', '').replace(']', '').split(' ').map(Number)
+          s_t_att = element.split(',')[6].replace('[', '').replace(']', '').split(' ').map(Number)
           MD[target_id][0] = source_id
           MD[target_id][1] = s_t_att
         }
-
-        if (element.split(',')[7].replace('[', '').replace(']', '').split(' ') > 0) {
-          source_id = element.split(',')[3].replace('[', '').replace(']', '').split(' ').map(Number)
-          s_t_att = element.split(',')[4].replace('[', '').replace(']', '').split(' ').map(Number)
+        
+        if (element.split(',')[7].replace('[', '').replace(']', '').split(' ').length > 0) {
+          source_id = element.split(',')[7].replace('[', '').replace(']', '').split(' ').map(Number)
+          s_t_att = element.split(',')[8].replace('[', '').replace(']', '').split(' ').map(Number)
           MG[target_id][0] = source_id
           MG[target_id][1] = s_t_att
         }
-      }
-    } catch (err) {
 
+      }
+    } catch (e) {
+      
     }
   });
+
+  // console.log(MG)
 }
 
 function ConstructArray(length) {
   let arr = new Array();
   for (var i = 0; i < length; i++) {          //一维长度为5
-    arr[i] = new Array(i);    //在声明二维
+    arr[i] = new Array();    //在声明二维
     for (var j = 0; j < 2; j++) {      //二维长度为5
       arr[i][j] = [];
     }
@@ -281,13 +285,11 @@ function counts_num(arr,value){
   return arr.reduce((a, v) => v === value ? a + 1 : a + 0, 0)
 }
 function getKGATatt(userId, movieId) {
-  let path = []
-  let wachtdMovie = []
   let jsonforce = {}
   jsonforce['links'] = []
   jsonforce['nodes'] = []
-  jsonforce['nodes'].push({id:'u'+userId, value:10, type:'targetUser'})
-  jsonforce['nodes'].push({ id: 'm' + movieId, value: 10, type: 'targetMovie' })
+  jsonforce['nodes'].push({id:'u'+userId, value:20, type:'targetUser'})
+  jsonforce['nodes'].push({ id: 'm' + movieId, value: 20, type: 'targetMovie' })
 
   UM[userId][0].forEach(element =>{
     let att_s = UM[userId][1][UM[userId][0].indexOf(element)]
@@ -305,29 +307,30 @@ function getKGATatt(userId, movieId) {
       if (DM[el] == undefined) return 
       if (DM[el][0].includes(movieId)) {
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1 })
-        jsonforce['nodes'].push({ id: 'm' + element, value: 6, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 10, type: 'movie' })
         jsonforce['links'].push({ source: 'm' +element, target: 'd' +el, value: 1 })
         jsonforce['links'].push({ source: 'd' + el, target: 'm' +movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'd' + el, value: 6, type: 'director' })
+        jsonforce['nodes'].push({ id: 'd' + el, value: 10, type: 'director' })
       }
     })
 
+    if (att_s < 0.000001)
+      return
+
     MG[element][0].forEach(el => {
-      // if (MG[el] == undefined) return
       if (MG[movieId][0].includes(el)) {
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1})
-        jsonforce['nodes'].push({ id: 'm' + element, value: 6, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 10, type: 'movie' })
         jsonforce['links'].push({ source: 'm' +element, target: 'g' + el, value: 1 })
         jsonforce['links'].push({ source: 'g' + el, target: 'm' +movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'g' + el, value: 6, type: 'genre' })
+        jsonforce['nodes'].push({ id: 'g' + el, value: 10, type: 'genre' })
       }
     })
-    if (att_s < 0.000001)
-      return 
+    
     MU[element][0].forEach(el=>{
       if(UM[el][0].includes(movieId)){  // 要判断的是el 
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' + element, value: 1 })
-        jsonforce['nodes'].push({ id: 'm' + element, value: 6, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 10, type: 'movie' })
         jsonforce['links'].push({ source: 'm' + element, target: 'u' + el, value: 1 })
         jsonforce['links'].push({ source: 'u' + el, target: 'm' +movieId, value: 1 })
         jsonforce['nodes'].push({ id: 'u' + el, value: 6, type: 'user' })
@@ -362,7 +365,7 @@ function getKGATatt(userId, movieId) {
   let xiugai = {}
   for(var i = 0;i<key.length;i++){
     if(test[ rev_test[key[i]]].length > 1){
-      let index = 'group' + k.indexOf(rev_test[key[i]][0])
+      let index = 'ugroup' + k.indexOf(rev_test[key[i]][0])
       xiugai[key[i]] = index
     }
   }
@@ -371,9 +374,9 @@ function getKGATatt(userId, movieId) {
     if(Object.keys(xiugai).includes(element.id) == true){
       element.value = 4 + counts_num(Object.values(xiugai), xiugai[element.id])
       element.id = xiugai[element.id]
-      
     }
   })
+
   jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
 
   jsonforce['links'].forEach(element=>{
