@@ -9,20 +9,16 @@ class doubanInfo {
     movieInfo = new Array();
     KGAT_att = new Array(9625);
 
-    // AttentionInfo = JSON.parse(fs.readFileSync('./data/attention(filter).json'));
     Ainfo_f = fs.readFileSync('./data/演员顺序.csv', 'utf-8').split('\n');
     DInfo_f = fs.readFileSync('./data/导演顺序.csv', 'utf-8').split('\n');
     Ginfo_f = fs.readFileSync('./data/类型顺序.csv', 'utf-8').split('\n');
     movieInfo_f = fs.readFileSync('./data/raw_movieinfo.txt', 'utf-8').split('\n');
-    // KGAT_att_f = fs.readFileSync('./data/RecPath.csv', 'utf-8').split('\n');
 
     initialize() {
         this.getQueueInfo(this.Ainfo_f, this.actorInfo)
         this.getQueueInfo(this.DInfo_f, this.directorInfo)
         this.getQueueInfo(this.Ginfo_f, this.genreInfo)
         this.loadMovieInfo(this.movieInfo_f, this.movieInfo)
-        // for (let i = 0; i < 9625; i++) this.KGAT_att[i] ={}
-        // this.loadKGATAtt(this.KGAT_att_f, this.KGAT_att)
     };
     getQueueInfo(data, arr) {
         data.forEach(element => {
