@@ -13,376 +13,1038 @@ export default {
   },
   created: function () {},
   mounted: function () {
-    // let data = {
-    //   links: [
-    //     {
-    //       source: "u49",
-    //       target: "m3255",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m3255",
-    //       target: "group0",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "group0",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m4568",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m4568",
-    //       target: "a46",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "a46",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m4721",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m4721",
-    //       target: "group1",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "group1",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m5061",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m5061",
-    //       target: "u171",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u171",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m5061",
-    //       target: "group2",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "group2",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m6093",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m6093",
-    //       target: "group3",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "group3",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m6094",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m6094",
-    //       target: "group4",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "group4",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m8125",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m8125",
-    //       target: "u1283",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u1283",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m8320",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m8320",
-    //       target: "group6",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "group6",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m9034",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m9034",
-    //       target: "group7",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "group7",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m9652",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m9652",
-    //       target: "u171",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m9652",
-    //       target: "group8",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "group8",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m9934",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m9934",
-    //       target: "group9",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "group9",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m11248",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m11248",
-    //       target: "a46",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "u49",
-    //       target: "m12213",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "m12213",
-    //       target: "a1211",
-    //       value: 1,
-    //     },
-    //     {
-    //       source: "a1211",
-    //       target: "m793",
-    //       value: 1,
-    //     },
-    //   ],
-    //   nodes: [
-    //     {
-    //       id: "u49",
-    //       value: 20,
-    //       type: "targetUser",
-    //     },
-    //     {
-    //       id: "m793",
-    //       value: 20,
-    //       type: "targetMovie",
-    //     },
-    //     {
-    //       id: "m3255",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "group0",
-    //       value: 7,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m4568",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "a46",
-    //       value: 6,
-    //       type: "actor",
-    //     },
-    //     {
-    //       id: "m4721",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "group1",
-    //       value: 9,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m5061",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "u171",
-    //       value: 6,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "group2",
-    //       value: 9,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m6093",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "group3",
-    //       value: 7,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m6094",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "group4",
-    //       value: 7,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m8125",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "u1283",
-    //       value: 6,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m8320",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "group6",
-    //       value: 6,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m9034",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "group7",
-    //       value: 7,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m9652",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "group8",
-    //       value: 6,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m9934",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "group9",
-    //       value: 7,
-    //       type: "user",
-    //     },
-    //     {
-    //       id: "m11248",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "m12213",
-    //       value: 6,
-    //       type: "movie",
-    //     },
-    //     {
-    //       id: "a1211",
-    //       value: 6,
-    //       type: "actor",
-    //     },
-    //   ],
-    // };
-    // this.force(this.$refs.force, data);
+    let data = {
+    "links": [
+        {
+            "source": "u907",
+            "target": "m2246",
+            "value": 1
+        },
+        {
+            "source": "m2246",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "g0",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m2246",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "ugroup23",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m3402",
+            "value": 1
+        },
+        {
+            "source": "m3402",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m3402",
+            "target": "u2176",
+            "value": 1
+        },
+        {
+            "source": "u2176",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m3402",
+            "target": "u5614",
+            "value": 1
+        },
+        {
+            "source": "u5614",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m3402",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "m3402",
+            "target": "u8350",
+            "value": 1
+        },
+        {
+            "source": "u8350",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m3484",
+            "value": 1
+        },
+        {
+            "source": "m3484",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m3484",
+            "target": "ugroup2",
+            "value": 1
+        },
+        {
+            "source": "ugroup2",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m3484",
+            "target": "ugroup21",
+            "value": 1
+        },
+        {
+            "source": "ugroup21",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m3484",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m3677",
+            "value": 1
+        },
+        {
+            "source": "m3677",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m3677",
+            "target": "u853",
+            "value": 1
+        },
+        {
+            "source": "u853",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m3677",
+            "target": "ugroup9",
+            "value": 1
+        },
+        {
+            "source": "ugroup9",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m3677",
+            "target": "u4736",
+            "value": 1
+        },
+        {
+            "source": "u4736",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m3677",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "m3677",
+            "target": "u6749",
+            "value": 1
+        },
+        {
+            "source": "u6749",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m4052",
+            "value": 1
+        },
+        {
+            "source": "m4052",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m4052",
+            "target": "ugroup9",
+            "value": 1
+        },
+        {
+            "source": "m4052",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m4382",
+            "value": 1
+        },
+        {
+            "source": "m4382",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m4382",
+            "target": "u4736",
+            "value": 1
+        },
+        {
+            "source": "m4382",
+            "target": "u8350",
+            "value": 1
+        },
+        {
+            "source": "m4382",
+            "target": "ugroup5",
+            "value": 1
+        },
+        {
+            "source": "ugroup5",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m4514",
+            "value": 1
+        },
+        {
+            "source": "m4514",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m4514",
+            "target": "ugroup6",
+            "value": 1
+        },
+        {
+            "source": "ugroup6",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m4514",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m4715",
+            "value": 1
+        },
+        {
+            "source": "m4715",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m4715",
+            "target": "u853",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m5096",
+            "value": 1
+        },
+        {
+            "source": "m5096",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m5096",
+            "target": "ugroup8",
+            "value": 1
+        },
+        {
+            "source": "ugroup8",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m5096",
+            "target": "u4736",
+            "value": 1
+        },
+        {
+            "source": "m5096",
+            "target": "ugroup22",
+            "value": 1
+        },
+        {
+            "source": "ugroup22",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m5127",
+            "value": 1
+        },
+        {
+            "source": "m5127",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m5127",
+            "target": "ugroup9",
+            "value": 1
+        },
+        {
+            "source": "m5127",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m5221",
+            "value": 1
+        },
+        {
+            "source": "m5221",
+            "target": "d2775",
+            "value": 1
+        },
+        {
+            "source": "d2775",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m5596",
+            "value": 1
+        },
+        {
+            "source": "m5596",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m5596",
+            "target": "u2176",
+            "value": 1
+        },
+        {
+            "source": "m5596",
+            "target": "u4736",
+            "value": 1
+        },
+        {
+            "source": "m5596",
+            "target": "ugroup10",
+            "value": 1
+        },
+        {
+            "source": "ugroup10",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m5596",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m5901",
+            "value": 1
+        },
+        {
+            "source": "m5901",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m6036",
+            "value": 1
+        },
+        {
+            "source": "m6036",
+            "target": "u4361",
+            "value": 1
+        },
+        {
+            "source": "u4361",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m6329",
+            "value": 1
+        },
+        {
+            "source": "m6329",
+            "target": "a5653",
+            "value": 1
+        },
+        {
+            "source": "a5653",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m6329",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m6329",
+            "target": "u443",
+            "value": 1
+        },
+        {
+            "source": "u443",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m6329",
+            "target": "ugroup21",
+            "value": 1
+        },
+        {
+            "source": "m6329",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m7334",
+            "value": 1
+        },
+        {
+            "source": "m7334",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m7334",
+            "target": "ugroup22",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m7354",
+            "value": 1
+        },
+        {
+            "source": "m7354",
+            "target": "u2057",
+            "value": 1
+        },
+        {
+            "source": "u2057",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m7982",
+            "value": 1
+        },
+        {
+            "source": "m7982",
+            "target": "a1493",
+            "value": 1
+        },
+        {
+            "source": "a1493",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m7982",
+            "target": "u853",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m8251",
+            "value": 1
+        },
+        {
+            "source": "m8251",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m8251",
+            "target": "u5614",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m8331",
+            "value": 1
+        },
+        {
+            "source": "m8331",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m8331",
+            "target": "u6749",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m8376",
+            "value": 1
+        },
+        {
+            "source": "m8376",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m8376",
+            "target": "u6749",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m8509",
+            "value": 1
+        },
+        {
+            "source": "m8509",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m8509",
+            "target": "u864",
+            "value": 1
+        },
+        {
+            "source": "u864",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m8509",
+            "target": "ugroup22",
+            "value": 1
+        },
+        {
+            "source": "m8509",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m9390",
+            "value": 1
+        },
+        {
+            "source": "m9390",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m9390",
+            "target": "u3929",
+            "value": 1
+        },
+        {
+            "source": "u3929",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m9415",
+            "value": 1
+        },
+        {
+            "source": "m9415",
+            "target": "ugroup21",
+            "value": 1
+        },
+        {
+            "source": "m9415",
+            "target": "u4673",
+            "value": 1
+        },
+        {
+            "source": "u4673",
+            "target": "m3713",
+            "value": 1
+        },
+        {
+            "source": "m9415",
+            "target": "ugroup22",
+            "value": 1
+        },
+        {
+            "source": "m9415",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "m9415",
+            "target": "u8350",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m10657",
+            "value": 1
+        },
+        {
+            "source": "m10657",
+            "target": "ugroup22",
+            "value": 1
+        },
+        {
+            "source": "m10657",
+            "target": "u4736",
+            "value": 1
+        },
+        {
+            "source": "m10657",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m11022",
+            "value": 1
+        },
+        {
+            "source": "m11022",
+            "target": "g0",
+            "value": 1
+        },
+        {
+            "source": "m11022",
+            "target": "u443",
+            "value": 1
+        },
+        {
+            "source": "m11022",
+            "target": "u864",
+            "value": 1
+        },
+        {
+            "source": "m11022",
+            "target": "u4673",
+            "value": 1
+        },
+        {
+            "source": "m11022",
+            "target": "u4736",
+            "value": 1
+        },
+        {
+            "source": "m11022",
+            "target": "ugroup23",
+            "value": 1
+        },
+        {
+            "source": "m11022",
+            "target": "u8350",
+            "value": 1
+        },
+        {
+            "source": "u907",
+            "target": "m11425",
+            "value": 1
+        },
+        {
+            "source": "m11425",
+            "target": "a1493",
+            "value": 1
+        }
+    ],
+    "nodes": [
+        {
+            "id": "u907",
+            "value": 20,
+            "type": "targetUser",
+            "name": "u907"
+        },
+        {
+            "id": "m3713",
+            "value": 20,
+            "type": "targetMovie",
+            "name": "家族游戏"
+        },
+        {
+            "id": "m2246",
+            "value": 10,
+            "type": "movie",
+            "name": "海女"
+        },
+        {
+            "id": "g0",
+            "value": 10,
+            "type": "genre",
+            "name": "剧情\r"
+        },
+        {
+            "id": "ugroup23",
+            "value": 9,
+            "type": "user",
+            "name": "ugroup23"
+        },
+        {
+            "id": "m3402",
+            "value": 10,
+            "type": "movie",
+            "name": "今天不上班"
+        },
+        {
+            "id": "u2176",
+            "value": 6,
+            "type": "user",
+            "name": "u2176"
+        },
+        {
+            "id": "u5614",
+            "value": 6,
+            "type": "user",
+            "name": "u5614"
+        },
+        {
+            "id": "u8350",
+            "value": 6,
+            "type": "user",
+            "name": "u8350"
+        },
+        {
+            "id": "m3484",
+            "value": 10,
+            "type": "movie",
+            "name": "BORDER"
+        },
+        {
+            "id": "ugroup2",
+            "value": 6,
+            "type": "user",
+            "name": "ugroup2"
+        },
+        {
+            "id": "ugroup21",
+            "value": 5,
+            "type": "user",
+            "name": "ugroup21"
+        },
+        {
+            "id": "m3677",
+            "value": 10,
+            "type": "movie",
+            "name": "监狱的公主大人"
+        },
+        {
+            "id": "u853",
+            "value": 6,
+            "type": "user",
+            "name": "u853"
+        },
+        {
+            "id": "ugroup9",
+            "value": 5,
+            "type": "user",
+            "name": "ugroup9"
+        },
+        {
+            "id": "u4736",
+            "value": 6,
+            "type": "user",
+            "name": "u4736"
+        },
+        {
+            "id": "u6749",
+            "value": 6,
+            "type": "user",
+            "name": "u6749"
+        },
+        {
+            "id": "m4052",
+            "value": 10,
+            "type": "movie",
+            "name": "苍井优X4个谎言"
+        },
+        {
+            "id": "m4382",
+            "value": 10,
+            "type": "movie",
+            "name": "卖房子的女人的逆袭"
+        },
+        {
+            "id": "ugroup5",
+            "value": 5,
+            "type": "user",
+            "name": "ugroup5"
+        },
+        {
+            "id": "m4514",
+            "value": 10,
+            "type": "movie",
+            "name": "掟上今日子的备忘录"
+        },
+        {
+            "id": "ugroup6",
+            "value": 5,
+            "type": "user",
+            "name": "ugroup6"
+        },
+        {
+            "id": "m4715",
+            "value": 10,
+            "type": "movie",
+            "name": "剧场"
+        },
+        {
+            "id": "m5096",
+            "value": 10,
+            "type": "movie",
+            "name": "续倒数第二次恋爱"
+        },
+        {
+            "id": "ugroup8",
+            "value": 5,
+            "type": "user",
+            "name": "ugroup8"
+        },
+        {
+            "id": "ugroup22",
+            "value": 7,
+            "type": "user",
+            "name": "ugroup22"
+        },
+        {
+            "id": "m5127",
+            "value": 10,
+            "type": "movie",
+            "name": "绝叫"
+        },
+        {
+            "id": "m5221",
+            "value": 10,
+            "type": "movie",
+            "name": "世界奇妙物语"
+        },
+        {
+            "id": "d2775",
+            "value": 10,
+            "type": "director",
+            "name": "佐藤祐市\r"
+        },
+        {
+            "id": "m5596",
+            "value": 10,
+            "type": "movie",
+            "name": "敬启，父亲大人"
+        },
+        {
+            "id": "ugroup10",
+            "value": 5,
+            "type": "user",
+            "name": "ugroup10"
+        },
+        {
+            "id": "m5901",
+            "value": 10,
+            "type": "movie",
+            "name": "上野树里与5个包包"
+        },
+        {
+            "id": "m6036",
+            "value": 10,
+            "type": "movie",
+            "name": "世界奇妙物语"
+        },
+        {
+            "id": "u4361",
+            "value": 6,
+            "type": "user",
+            "name": "u4361"
+        },
+        {
+            "id": "m6329",
+            "value": 6,
+            "type": "movie",
+            "name": "不过是先出生的我"
+        },
+        {
+            "id": "a5653",
+            "value": 6,
+            "type": "actor",
+            "name": "樱井翔\r"
+        },
+        {
+            "id": "m6329",
+            "value": 10,
+            "type": "movie",
+            "name": "不过是先出生的我"
+        },
+        {
+            "id": "u443",
+            "value": 6,
+            "type": "user",
+            "name": "u443"
+        },
+        {
+            "id": "m7334",
+            "value": 10,
+            "type": "movie",
+            "name": "黄金神威"
+        },
+        {
+            "id": "m7354",
+            "value": 10,
+            "type": "movie",
+            "name": "世界奇妙物语"
+        },
+        {
+            "id": "u2057",
+            "value": 6,
+            "type": "user",
+            "name": "u2057"
+        },
+        {
+            "id": "m7982",
+            "value": 6,
+            "type": "movie",
+            "name": "刑警弓神"
+        },
+        {
+            "id": "a1493",
+            "value": 6,
+            "type": "actor",
+            "name": "神木隆之介\r"
+        },
+        {
+            "id": "m7982",
+            "value": 10,
+            "type": "movie",
+            "name": "刑警弓神"
+        },
+        {
+            "id": "m8251",
+            "value": 10,
+            "type": "movie",
+            "name": "月之恋人"
+        },
+        {
+            "id": "m8331",
+            "value": 10,
+            "type": "movie",
+            "name": "世界奇妙物语"
+        },
+        {
+            "id": "m8376",
+            "value": 10,
+            "type": "movie",
+            "name": "马赛克日本"
+        },
+        {
+            "id": "m8509",
+            "value": 10,
+            "type": "movie",
+            "name": "暗之伴走者"
+        },
+        {
+            "id": "u864",
+            "value": 6,
+            "type": "user",
+            "name": "u864"
+        },
+        {
+            "id": "m9390",
+            "value": 10,
+            "type": "movie",
+            "name": "BABY"
+        },
+        {
+            "id": "u3929",
+            "value": 6,
+            "type": "user",
+            "name": "u3929"
+        },
+        {
+            "id": "m9415",
+            "value": 10,
+            "type": "movie",
+            "name": "圈套2"
+        },
+        {
+            "id": "u4673",
+            "value": 6,
+            "type": "user",
+            "name": "u4673"
+        },
+        {
+            "id": "m10657",
+            "value": 10,
+            "type": "movie",
+            "name": "宽松世代又如何"
+        },
+        {
+            "id": "m11022",
+            "value": 10,
+            "type": "movie",
+            "name": "民王"
+        },
+        {
+            "id": "m11425",
+            "value": 6,
+            "type": "movie",
+            "name": "听说桐岛要退部"
+        }
+    ]
+}
+    this.force(this.$refs.force, data);
   },
   watch: {
-    "$store.getters.movieId"() {
-      // console.log(this.$store.getters.movieId);
-      axios
-        .post("api/getdata/selectedMovie", {
-          data: [this.$store.getters.userId, this.$store.getters.movieId],
-        })
-        .then((res) => {
-          let svgbox = document.getElementsByClassName("force");
-          if (svgbox.length == 1) svgbox[svgbox.length - 1].remove();
-          console.log(res.data);
-          this.force(this.$refs.force, res.data);
-        });
-    },
+    // "$store.getters.movieId"() {
+    //   // console.log(this.$store.getters.movieId);
+    //   axios
+    //     .post("api/getdata/selectedMovie", {
+    //       data: [this.$store.getters.userId, this.$store.getters.movieId],
+    //     })
+    //     .then((res) => {
+    //       let svgbox = document.getElementsByClassName("force");
+    //       if (svgbox.length == 1) svgbox[svgbox.length - 1].remove();
+    //       console.log(res.data);
+    //       // this.force(this.$refs.force, res.data);
+    //     });
+    // },
   },
   methods: {
     force(map, data) {
+      console.log(parseInt("10u"))
       var net = {},
         expand = {
           targetUser: true,
@@ -464,6 +1126,7 @@ export default {
             id: key[i],
             type: key[i],
             value: groupValue[key[i]] > 30 ? 30 : groupValue[key[i]],
+            name:key[i],
           });
         }
 
@@ -623,7 +1286,7 @@ export default {
           })
           .call(drag(simulation));
 
-        node.append("title").text((d) => d.id);
+        node.append("title").text((d) => d.name);
 
         const text = SVG.append("g")
           .attr("fill","white")
@@ -640,6 +1303,8 @@ export default {
               init();
             }
           })
+
+        text.append("title").text((d) => d.name);
 
         simulation.on("tick", () => {
           link

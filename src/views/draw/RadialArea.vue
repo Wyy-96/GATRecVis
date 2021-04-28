@@ -250,7 +250,7 @@ export default {
               .on("drag", dragCircle)
               .on("end", endDragging);
           };
-
+  
           function DrawSelectData(testdata, width, height) {
             const x = d3
               .scaleBand()

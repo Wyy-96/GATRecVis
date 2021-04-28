@@ -200,7 +200,6 @@ loadMovie(Ainfo_f, AM)
 loadMovie(DInfo_f, DM)
 loadMovie(Minfo_f, MU)
 
-console.log(MG)
 function loadMovie(data, array) {
   data.forEach(element => {
     try {
@@ -378,7 +377,15 @@ function getKGATatt(userId, movieId) {
   })
 
   jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
-
+  jsonforce['nodes'].forEach(element=>{
+    let names = element.id.slice(1);
+    if (element.id[0] == 'u') element.name = element.id;
+    else if (element.id[0] == 'g') element.name = Info.genreInfo[parseInt(names)]
+    else if (element.id[0] == 'a') element.name = Info.actorInfo[parseInt(names)]
+    else if (element.id[0] == 'd') element.name = Info.directorInfo[parseInt(names)]
+    else if (element.id[0] == 'm') element.name = Info.movieInfo[parseInt(names)].movieName
+  })
+  jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
   jsonforce['links'].forEach(element=>{
     if (Object.keys(xiugai).includes(element.source)){
       element.source = xiugai[element.source]
