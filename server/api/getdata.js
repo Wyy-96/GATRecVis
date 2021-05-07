@@ -449,16 +449,25 @@ router.post('/selectedMovie', (req, res) => {
   console.log(userId, movieId, movie_or)
   switch (movie_or) {
     case 'H':
-      x = "今天是星期一"; //调用HetGNN推荐原因
+      jsonData = getKGATatt(userId, movieId); //调用HetGNN推荐原因
       break;
     case 'K':
       jsonData = getKGATatt(userId, movieId); //调用KGAT推荐原因
       break;
+    case 'N':
+      jsonData = getKGATatt(userId, movieId); //调用NIRec推荐原因
+      break;
     case 'HK':
-      x = "今天是星期三"; //调用HetGNN 和 KGAT 重合的推荐原因
+      jsonData = getKGATatt(userId, movieId); //调用HetGNN KGAT推荐原因
+      break;
+    case 'HN':
+      jsonData = getKGATatt(userId, movieId); //调用HetGNN NIRec推荐原因
+      break;
+    case 'KN':
+      jsonData = getKGATatt(userId, movieId); //调用KGAT NIRec推荐原因
       break;
     default:
-      x = "今天是星期日";
+      jsonData = getKGATatt(userId, movieId); //调用HetGNN KGAT NIRec推荐原因
   }
 
 

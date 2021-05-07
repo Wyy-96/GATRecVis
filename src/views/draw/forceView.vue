@@ -1427,9 +1427,9 @@ export default {
         [1200, 1, 5, 30, 7.3],
         [600, 4, 2, 64, 8.3],
       ];
-      const x0 = d3
+      const x0 = d3  //电影被多少用户看过
         .scaleRadial()
-        .domain([0, 1200]) //d3.max(this.data, d => d.total)
+        .domain([0, 2332]) //d3.max(this.data, d => d.total)
         .range([0, 100]);
       const x1 = d3
         .scaleRadial()
@@ -1443,7 +1443,7 @@ export default {
         .scaleRadial()
         .domain([0, 100]) //d3.max(this.data, d => d.total)
         .range([0, 100]);
-      const x4 = d3
+      const x4 = d3  //电影评分
         .scaleRadial()
         .domain([0, 10]) //d3.max(this.data, d => d.total)
         .range([0, 100]);
