@@ -50,7 +50,7 @@ class doubanInfo {
                 object.moviePhoto = line[11]
                 array.push(object)
             } catch (err) {
-                console.log(err)
+                console.log()
             }
         });
     }
@@ -82,7 +82,7 @@ class doubanInfo {
                 }
                 array[node[0]][node[3]].push(p)
             }catch(err){
-                console.log(err)
+                console.log()
             }
         })
         console.log('end')
@@ -95,7 +95,7 @@ class doubanInfo {
                 array[index][0] = line[0]
                 array[index][1] = line[1]
             }catch(err){
-                console.log(err)
+                console.log()
             }
         })
     }

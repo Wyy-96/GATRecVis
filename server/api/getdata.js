@@ -10,46 +10,15 @@ const { info } = require('console');
 
 let Info = new GetInfo()
 Info.initialize()
-console.log("test",Info.userInfo[0][0])
 
 let KGAT = new Array()
 let HetGNN = new Array()
-const movieInfo = new Array()
 
 var KGAT_f = fs.readFileSync('./data/KGATrec_result.txt', 'utf-8').split('\n');
 var HetGNN_f = fs.readFileSync('./data/HetGNN_rec_result.txt', 'utf-8').split('\n');
-var movieInfo_f = fs.readFileSync('./data/raw_movieinfo.txt', 'utf-8').split('\n');
 
 AnalyzeDdata(KGAT_f, KGAT)
 AnalyzeDdata(HetGNN_f, HetGNN)
-loadMovieInfo(movieInfo_f, movieInfo)
-
-function loadMovieInfo(data, array) {
-  data.forEach(element => {
-    try {
-      let line = element.split(',')
-      if (line[0] == '') {
-        throw new Error('不能为空！')
-      }
-      let object = new Object
-      object.movieId = 'movie' + line[0]
-      object.movieName = line[1]
-      object.movieDirector = line[2].split('|')
-      object.movieActor = line[3].split('|')
-      object.movieGenre = line[4].split('|')
-      object.movieTime = line[5]
-      object.movieTags = line[6].split('|')
-      object.movieStar = line[7]
-      object.movieRate = parseFloat(line[8])
-      object.movieSim = line[9].split(' ').map(Number)
-      object.movieDoubanID = line[10]
-      object.moviePhoto = line[11]
-      array.push(object)
-    } catch (err) {
-
-    }
-  });
-}
 
 function AnalyzeDdata(data, array) {
   for (i = 0; i < data.length - 1; i++) {
@@ -399,7 +368,9 @@ function getKGATatt(userId, movieId) {
   return jsonforce
 }
 function getUserInfo(userId){
-
+  let values = Info.userInfo[userId][0].split(";")
+  let rate = Info.userInfo[userId][1].split(";")
+  console.log(values,rate)
 }
 var NIRecShow = false
 var KGATShow = true
@@ -408,7 +379,7 @@ var HetGNNShow = true
 router.post('/selectUser', (req, res) => {
   let userId = parseInt(req.body.data.replace("u", ""))
   var jsonData = new Object()
-
+  getUserInfo(userId)
   var Coodinare = new Array()
   var Venn = new Array()
 
