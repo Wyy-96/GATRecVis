@@ -2,7 +2,8 @@
   <div class="forceView">
     <div id="force" ref="force"></div>
     <div class="movieInfo">
-      <div class="txtInfo"></div>
+      <div class="txtInfo">1,厨师、大盗、他的太太和她的情人,彼得·格林纳威,理查德·波林热|迈克尔·刚本|海伦·米伦|蒂姆·罗斯,剧情|犯罪,1989-10-13(英国),情色|法国|PeterGreenaway|英国|法国电影|格林纳威|欧洲电影|Peter_Greenaway,7.5,1304582,https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2226311926.jpg
+</div>
       <div class="DivergingBar" ref="DivergingBar"></div>
       <div class="snapshot"></div>
     </div>
