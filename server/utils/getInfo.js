@@ -8,23 +8,26 @@ class doubanInfo {
     genreInfo = new Array();
     movieInfo = new Array();
     KGAT_att = new Array(9625);
+    userInfo = new Array(9625);
 
     Ainfo_f = fs.readFileSync('./data/演员顺序.csv', 'utf-8').split('\n');
     DInfo_f = fs.readFileSync('./data/导演顺序.csv', 'utf-8').split('\n');
     Ginfo_f = fs.readFileSync('./data/类型顺序.csv', 'utf-8').split('\n');
     movieInfo_f = fs.readFileSync('./data/raw_movieinfo.txt', 'utf-8').split('\n');
+    userInfo_f = fs.readFileSync('./data/userWacthed.txt', 'utf-8').split('\n');
 
     initialize() {
         this.getQueueInfo(this.Ainfo_f, this.actorInfo)
         this.getQueueInfo(this.DInfo_f, this.directorInfo)
         this.getQueueInfo(this.Ginfo_f, this.genreInfo)
         this.loadMovieInfo(this.movieInfo_f, this.movieInfo)
-    };
+        this.loadUserInfo(this.userInfo_f, this.userInfo)
+    }
     getQueueInfo(data, arr) {
         data.forEach(element => {
             arr.push(element)
         });
-    };
+    }
     loadMovieInfo(data, array) {
         data.forEach(element => {
             try {
@@ -47,10 +50,10 @@ class doubanInfo {
                 object.moviePhoto = line[11]
                 array.push(object)
             } catch (err) {
-
+                console.log(err)
             }
         });
-    };
+    }
     loadKGATAtt(data,array){
         console.log('ok')
         data.forEach((element)=>{
@@ -79,11 +82,23 @@ class doubanInfo {
                 }
                 array[node[0]][node[3]].push(p)
             }catch(err){
-
+                console.log(err)
             }
         })
         console.log('end')
-    }   
+    }
+    loadUserInfo(data,array){
+        data.forEach((element,index)=>{
+            try{
+                let line = element.split('|')
+                array[index] = new Array(2)
+                array[index][0] = line[0]
+                array[index][1] = line[1]
+            }catch(err){
+                console.log(err)
+            }
+        })
+    }
 }
 // let test = new doubanInfo()
 // test.initialize()

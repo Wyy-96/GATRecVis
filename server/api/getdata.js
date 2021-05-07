@@ -10,7 +10,7 @@ const { info } = require('console');
 
 let Info = new GetInfo()
 Info.initialize()
-
+console.log("test",Info.userInfo[0][0])
 
 let KGAT = new Array()
 let HetGNN = new Array()
@@ -397,6 +397,9 @@ function getKGATatt(userId, movieId) {
   jsonforce['links'] = deteleObject(jsonforce['links'])
 
   return jsonforce
+}
+function getUserInfo(userId){
+
 }
 var NIRecShow = false
 var KGATShow = true
