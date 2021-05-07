@@ -6,6 +6,7 @@ const async = require('async');
 const _ = require('lodash');
 const GetInfo = require('../utils/getInfo');
 const { info } = require('console');
+const { json } = require('d3-fetch');
 // Asynchronous read
 
 let Info = new GetInfo()
@@ -370,7 +371,17 @@ function getKGATatt(userId, movieId) {
 function getUserInfo(userId){
   let values = Info.userInfo[userId][0].split(";")
   let rate = Info.userInfo[userId][1].split(";")
-  console.log(values,rate)
+  for(var i =0;i<values.length;i++){
+    values[i] = values[i].split(",").map(Number)
+    rate[i] = rate[i].split(",").map(Number)
+    let n = 35 - values[i].length
+    for(var j =0;j< n;j++){
+      values[i].push(0)
+      rate[i].push(0)
+    }
+    
+  }
+  return {"values":values, "rate":rate}
 }
 var NIRecShow = false
 var KGATShow = true
@@ -379,7 +390,7 @@ var HetGNNShow = true
 router.post('/selectUser', (req, res) => {
   let userId = parseInt(req.body.data.replace("u", ""))
   var jsonData = new Object()
-  getUserInfo(userId)
+  var Word = getUserInfo(userId)
   var Coodinare = new Array()
   var Venn = new Array()
 
@@ -425,7 +436,7 @@ router.post('/selectUser', (req, res) => {
 
   jsonData.Coodinare = Coodinare
   jsonData.Vennresult = Vennresult
-
+  jsonData.Word = Word
   res.json(jsonData)
 });
 

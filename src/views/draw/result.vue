@@ -25,7 +25,7 @@ export default {
   mounted: function () {
     this.Venn(this.$refs.venn);
     this.Coordinate(this.$refs.coordinate, []);
-    this.word();
+    this.word({"values":[],"rate":[]});
   },
   watch: {
     "$store.getters.userId"() {
@@ -39,6 +39,8 @@ export default {
           // 已经存在VennResult散点图  则删除
           if (box.length == 1) box[box.length - 1].remove();
           this.VennResult(this.$refs.venn, res.data.Vennresult);
+          d3.select(".Word").selectAll("svg").remove()
+          this.word(res.data.Word)
         });
     },
   },
@@ -492,7 +494,7 @@ export default {
         .append("title")
         .text((d) => d.movieName);
     },
-    word() {
+    word(data1) {
       let data = {
         values: [
           [
@@ -1277,6 +1279,8 @@ export default {
         ],
         years: [1900, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020],
       };
+      data.values = data1.values
+      data.rate = data1.rate
       const config = {
         width: parseInt(d3.select("#Word").style("width")),
         height: parseInt(d3.select("#Word").style("height")),
