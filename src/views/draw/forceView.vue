@@ -2,8 +2,30 @@
   <div class="forceView">
     <div id="force" ref="force"></div>
     <div class="movieInfo">
-      <div class="txtInfo">1,厨师、大盗、他的太太和她的情人,彼得·格林纳威,理查德·波林热|迈克尔·刚本|海伦·米伦|蒂姆·罗斯,剧情|犯罪,1989-10-13(英国),情色|法国|PeterGreenaway|英国|法国电影|格林纳威|欧洲电影|Peter_Greenaway,7.5,1304582,https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2226311926.jpg
-</div>
+      <div class="txtInfo">
+        <div class="m-name">厨师、大盗、他的太太和她的情人</div>
+        <div class="m-body">
+          <div><img class="m-img" src="http://img9.doubanio.com/view/photo/s_ratio_poster/public/p2226311926.jpg"/></div>
+          <div class="m-text">
+            <div class="m-line"><div class="m-lable">导演 </div><div class="m-value" title="彼得·格林纳">彼得·格林纳威</div></div>
+            <div  class="m-line"><div class="m-lable">演员 </div><div class="m-value">理查德·波林热|迈克尔·刚本|海伦·米伦|蒂姆·罗斯</div></div>
+            <div  class="m-line"><div class="m-lable">类型 </div><div class="m-value">剧情|犯罪</div></div>
+            <div  class="m-line"><div class="m-lable">时间 </div><div class="m-value">1989-10-13(英国)</div></div>
+            <div  class="m-line"><div class="m-lable">评分 </div><div>7.5</div></div>
+            <div  class="m-line"><div class="m-lable">TAG </div><div class="m-value"  style="display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;
+overflow: hidden;white-space: break-spaces;    word-break: break-all;">情色|法国|PeterGreenaway|英国|法国电影|格林纳威|欧洲电影|Peter_Greenaway</div></div>
+            
+          </div>  
+        </div>
+        <!-- 厨师、大盗、他的太太和她的情人,
+        彼得·格林纳威,
+        理查德·波林热|迈克尔·刚本|海伦·米伦|蒂姆·罗斯,
+        剧情|犯罪,
+        1989-10-13(英国),
+        情色|法国|PeterGreenaway|英国|法国电影|格林纳威|欧洲电影|Peter_Greenaway,
+        7.5,
+        https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2226311926.jpg -->
+      </div>
       <div class="DivergingBar" ref="DivergingBar"></div>
       <div class="snapshot"></div>
     </div>
@@ -1514,7 +1536,49 @@ export default {
 
 .txtInfo {
   height: 40%;
-  background: black;
+  // background: black;
+  display flex
+  flex-direction:column
+
+  .m-name{
+    font-size:18px
+    padding-top 15px
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .m-body{
+    flex:1
+    display:flex
+    padding-top:10px;
+
+    .m-img{
+      width:120px;
+    }
+    .m-text{
+      flex:1
+      padding-top:5px
+      padding-left:10px;
+
+      .m-line{
+        display flex
+        line-height:28px;
+        .m-lable{
+          color: #666666;
+          width 40px
+        }
+        .m-value{
+          flex 1
+          width 0
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+      
+    }
+  }
 }
 
 .DivergingBar {
