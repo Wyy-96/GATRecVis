@@ -1587,7 +1587,7 @@ export default {
 
 .snapshot {
   height: 30%;
-  background: yellow;
+  background:#F2F2F2;
 }
 </style>
 

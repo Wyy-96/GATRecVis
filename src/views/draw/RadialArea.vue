@@ -12,13 +12,18 @@
       </el-select>
       <el-checkbox
         v-model="checked"
-        style="left: 42px; top: 5px;"
+        style="left: 42px; top: 5px"
         inactive-color="#D1D1D1"
         >检测</el-checkbox
       >
+      <el-slider
+      v-model="slider"
+      range
+      :step="0.1"
+      :max="1">
+    </el-slider>
     </div>
-    <div id="RadialArea" class="RadialArea" ref="RadialArea">
-    </div>
+    <div id="RadialArea" class="RadialArea" ref="RadialArea"></div>
   </div>
 </template>
 <script>
@@ -50,16 +55,17 @@ export default {
       ],
       value: "precision",
       checked: true,
+      slider: [0.5, 1],
     };
   },
   created: function () {},
   watch: {
-    checked:function(val){
-      console.log("ched",val)
+    checked: function (val) {
+      console.log("ched", val);
     },
-    value:function(label){
-      console.log("va",label)
-    }
+    value: function (label) {
+      console.log("va", label);
+    },
   },
   mounted() {
     // this.drawRadialAreaChart(this.$refs.RadialArea);
@@ -425,7 +431,7 @@ export default {
   height: 20px;
   position: absolute;
   left: 390px;
-  top:5px;
+  top: 5px;
 }
 
 #RadialArea {
