@@ -1,5 +1,12 @@
 <template>
-  <div id="force" ref="force"></div>
+  <div class="forceView">
+    <div id="force" ref="force"></div>
+    <div class="movieInfo">
+      <div class="txtInfo"></div>
+      <div class="DivergingBar" ref="DivergingBar"></div>
+      <div class="snapshot"></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -1026,6 +1033,7 @@ export default {
       ],
     };
     this.force(this.$refs.force, data);
+    this.DivergingBar();
   },
   watch: {
     // "$store.getters.movieId"() {
@@ -1044,7 +1052,6 @@ export default {
   },
   methods: {
     force(map, data) {
-      console.log(parseInt("10u"));
       var net = {},
         expand = {
           targetUser: true,
@@ -1085,7 +1092,7 @@ export default {
       function getType(n) {
         return n.type;
       }
-    
+
       function network(data, prev, index, expand) {
         expand = expand || {};
         let links = data.links.map((d) => Object.create(d));
@@ -1414,15 +1421,108 @@ export default {
         }
       }
     },
+    DivergingBar() {
+      let data = [
+        [1200, 1, 5, 30, 7.3],
+        [600, 4, 2, 64, 8.3],
+      ];
+      const x0 = d3
+        .scaleRadial()
+        .domain([0, 1200]) //d3.max(this.data, d => d.total)
+        .range([0, 100]);
+      const x1 = d3
+        .scaleRadial()
+        .domain([0, 10]) //d3.max(this.data, d => d.total)
+        .range([0, 100]);
+      const x2 = d3
+        .scaleRadial()
+        .domain([0, 10]) //d3.max(this.data, d => d.total)
+        .range([0, 100]);
+      const x3 = d3
+        .scaleRadial()
+        .domain([0, 100]) //d3.max(this.data, d => d.total)
+        .range([0, 100]);
+      const x4 = d3
+        .scaleRadial()
+        .domain([0, 10]) //d3.max(this.data, d => d.total)
+        .range([0, 100]);
+
+      function guiyi(data, index) {
+        if (index == 0) return x0(data);
+        else if (index == 1) return x1(data);
+        else if (index == 2) return x2(data);
+        else if (index == 3) return x3(data);
+        else if (index == 4) return x4(data);
+      }
+      const config = {
+        width: parseInt(d3.select(".DivergingBar").style("width")),
+        height: parseInt(d3.select(".DivergingBar").style("height")),
+      };
+      const SVG = d3
+        .select(".DivergingBar")
+        .append("svg")
+        .attr("class", "Bar")
+        .attr(
+          "viewBox",
+          `${-config.width / 4} ${-config.height / 8} ${config.width} ${
+            config.height
+          }`
+        );
+
+      if (data.length > 0) {
+        SVG.append("g")
+          .attr("fill", "red")
+          .selectAll("rect")
+          .data(data[0])
+          .join("rect")
+          .attr("x", 70)
+          .attr("y", (d, i) => i * 30 + 15)
+          .attr("width", (d, i) => guiyi(d, i))
+          .attr("height", 25);
+      }
+
+      if (data.length > 1) {
+        SVG.append("g")
+          .attr("fill", "yellow")
+          .selectAll("rect")
+          .data(data[1])
+          .join("rect")
+          .attr("x", (d, i) => 67 - guiyi(d, i))
+          .attr("y", (d, i) => i * 30 + 15)
+          .attr("width", (d, i) => guiyi(d, i))
+          .attr("height", 25);
+      }
+    },
   },
 };
 </script>
 <style lang="stylus" scoped>
 #force {
-  width: 100%;
-  height: 70%;
+  width: 80%;
+  height: 699px;
   float: left;
-  border: 1px solid #A6A6A6;
+  border-bottom: 1px solid #A6A6A6;
+}
+
+.movieInfo {
+  width: 20%;
+  height: 699px;
+  float: left;
+  border-bottom: 1px solid #A6A6A6;
+}
+
+.txtInfo {
+  height: 40%;
+  background: black;
+}
+
+.DivergingBar {
+  height: 30%;
+}
+
+.snapshot {
+  height: 30%;
+  background: yellow;
 }
 </style>
 

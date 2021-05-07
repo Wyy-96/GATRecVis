@@ -74,18 +74,18 @@ export default {
         )
         .style("width", "100%")
         .style("height", "auto")
-        .call(
-          d3
-            .zoom()
-            .extent([
-              [0, 0],
-              [config.width, config.height],
-            ])
-            .scaleExtent([1, 8])
-            .on("zoom", function ({ transform }) {
-              Coordinate.attr("transform", transform);
-            })
-        );
+        // .call(
+        //   d3
+        //     .zoom()
+        //     .extent([
+        //       [0, 0],
+        //       [config.width, config.height],
+        //     ])
+        //     .scaleExtent([1, 8])
+        //     .on("zoom", function ({ transform }) {
+        //       Coordinate.attr("transform", transform);
+        //     })
+        // );
 
       const color = ["#98abc5", "#6b486b", "#ff8c00"];
 
