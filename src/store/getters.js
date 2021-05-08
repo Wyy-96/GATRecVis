@@ -9,6 +9,8 @@ const getters = {
     KGATShow: state => state.global.KGATShow,
     NIRecShow: state => state.global.NIRecShow,
 
+    // ===========截图功能=============
+    nowData:state => state.svgData.nowData
    
 }
 export default getters

@@ -12,31 +12,6 @@ const { json } = require('d3-fetch');
 let Info = new GetInfo()
 Info.initialize()
 
-let KGAT = new Array()
-let HetGNN = new Array()
-
-var KGAT_f = fs.readFileSync('./data/KGATrec_result.txt', 'utf-8').split('\n');
-var HetGNN_f = fs.readFileSync('./data/HetGNN_rec_result.txt', 'utf-8').split('\n');
-
-AnalyzeDdata(KGAT_f, KGAT)
-AnalyzeDdata(HetGNN_f, HetGNN)
-
-function AnalyzeDdata(data, array) {
-  for (i = 0; i < data.length - 1; i++) {
-    let line = data[i].split(',')
-    let object = new Object()
-
-    object.userId = 'user' + line[0]
-    object.rec_result = line[1].replace("[", "").replace("]", "").split(' ').map(Number)
-    object.recall = parseFloat(line[2])
-    object.pre = parseFloat(line[3])
-    object.auc = parseFloat(line[4])
-    object.personal = 1 - parseFloat(line[5])
-
-    array.push(object)
-  }
-}
-
 function GetVennResult(arr1, arr2, arr3) {
   //数组交集，或得两个数组重复的元素
   let Part12 = arr1.filter(item => arr2.includes(item))
@@ -96,7 +71,7 @@ function KGATRecResult(userId, movieId) {
       let key = Object.keys(element)
       let name1 = ''
       let name2 = ''
-      for (i in key) {
+      for (let i in key) {
         if (key[i] == 'm') {
           name1 = Info.movieInfo[element[key[i]]].movieName
           links.push({ source: name1, target: 'user' + userId, value: 1 })
@@ -383,7 +358,7 @@ function getUserInfo(userId){
   }
   return {"values":values, "rate":rate}
 }
-var NIRecShow = false
+var NIRecShow = true
 var KGATShow = true
 var HetGNNShow = true
 // 查询用户
@@ -393,46 +368,20 @@ router.post('/selectUser', (req, res) => {
   var Word = getUserInfo(userId)
   var Coodinare = new Array()
   var Venn = new Array()
-
+  console.log(userId)
   let arr1 = []
   let arr2 = []
-  let arr3 = [210, 325, 1486, 1582, 808, 1578, 1589, 991, 561, 627, 502, 580, 1309, 1067, 787, 804, 1163, 1163, 1011, 1145]
+  let arr3 = []
 
-  if (KGATShow == true) arr2 = KGAT[userId].rec_result;
-  if (HetGNNShow == true) arr1 = HetGNN[userId].rec_result;
+  if (HetGNNShow == true) arr1 = Info.HetGNN[userId].rec_result;
+  if (KGATShow == true) arr2 = Info.KGAT[userId].rec_result;
+  if (NIRecShow == true) arr3 = Info.NIRec[userId].rec_result;
 
   let Vennresult = GetVennResult(arr1, arr2, arr3)
-  Coodinare.push(HetGNN[userId])
-  Coodinare.push(KGAT[userId])
-  Coodinare.push({
-    "userId": "user23",
-    "rec_result": [
-      1197,
-      1120,
-      1164,
-      1052,
-      1148,
-      1201,
-      874,
-      924,
-      1182,
-      1071,
-      1068,
-      1104,
-      1044,
-      1113,
-      1112,
-      1238,
-      1122,
-      906,
-      1210,
-      1142
-    ],
-    "recall": 0.0222,
-    "precision": 0.1,
-    "auc": 0.766,
-    "personal": 0.42379999999999995
-  })
+  Coodinare.push(Info.HetGNN[userId])
+  Coodinare.push(Info.KGAT[userId])
+  Coodinare.push(Info.NIRec[userId])
+  console.log(Info.HetGNN[userId],Info.KGAT[userId],Info.NIRec[userId])
 
   jsonData.Coodinare = Coodinare
   jsonData.Vennresult = Vennresult
@@ -445,32 +394,33 @@ router.post('/selectedMovie', (req, res) => {
   let movieId = parseInt(req.body.data[1].split('_')[0])
   let movie_or = req.body.data[1].split('_')[1]
   var jsonData = new Object()
-
+  let forceData;
   console.log(userId, movieId, movie_or)
   switch (movie_or) {
     case 'H':
-      jsonData = getKGATatt(userId, movieId); //调用HetGNN推荐原因
+      forceData = getKGATatt(userId, movieId); //调用HetGNN推荐原因
       break;
     case 'K':
-      jsonData = getKGATatt(userId, movieId); //调用KGAT推荐原因
+      forceData = getKGATatt(userId, movieId); //调用KGAT推荐原因
       break;
     case 'N':
-      jsonData = getKGATatt(userId, movieId); //调用NIRec推荐原因
+      forceData = getKGATatt(userId, movieId); //调用NIRec推荐原因
       break;
     case 'HK':
-      jsonData = getKGATatt(userId, movieId); //调用HetGNN KGAT推荐原因
+      forceData = getKGATatt(userId, movieId); //调用HetGNN KGAT推荐原因
       break;
     case 'HN':
       jsonData = getKGATatt(userId, movieId); //调用HetGNN NIRec推荐原因
       break;
     case 'KN':
-      jsonData = getKGATatt(userId, movieId); //调用KGAT NIRec推荐原因
+      forceData = getKGATatt(userId, movieId); //调用KGAT NIRec推荐原因
       break;
     default:
-      jsonData = getKGATatt(userId, movieId); //调用HetGNN KGAT NIRec推荐原因
+      forceData = getKGATatt(userId, movieId); //调用HetGNN KGAT NIRec推荐原因
   }
 
-
+  jsonData.forceData = forceData
+  jsonData.movieInfo = Info.movieInfo[movieId]
 
 
   res.json(jsonData)

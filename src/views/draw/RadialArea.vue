@@ -16,12 +16,7 @@
         inactive-color="#D1D1D1"
         >检测</el-checkbox
       >
-      <el-slider
-      v-model="slider"
-      range
-      :step="0.1"
-      :max="1">
-    </el-slider>
+      <el-slider v-model="slider" range :step="0.1" :max="1" @change="buildChart()"> </el-slider>
     </div>
     <div id="RadialArea" class="RadialArea" ref="RadialArea"></div>
   </div>
@@ -63,32 +58,18 @@ export default {
     checked: function (val) {
       console.log("ched", val);
     },
-    value: function (label) {
-      console.log("va", label);
-    },
+    value: function () {
+      this.buildChart()
+    }
   },
   mounted() {
-    // this.drawRadialAreaChart(this.$refs.RadialArea);
-    axios.get("/test_data_9625_no0.csv").then((res) => {
-      //test_data_9625_no0
-      var data = d3.csvParse(res.data, (d, _, columns) => {
-        let total = 0;
-        for (let i = 1; i < columns.length; ++i)
-          total += d[columns[i]] = +d[columns[i]];
-        d.total = total;
-        if (Math.abs(d["KGAT"] - d["HetGNN"]) < 0) return;
-        return d;
-      });
-      const config = {
-        width: 500,
-        height: 500,
-        innerRadius: 0,
-        outerRadius: 200,
-      };
-      this.drawRadialStackedBarChart(this.$refs.RadialArea, config, data);
-    });
+    this.getData(this.value,this.slider,store.getters.HetGNNShow,store.getters.KGATShow,store.getters.NIRecShow)
   },
   methods: {
+    buildChart(){
+      d3.select("#RadialArea").selectAll("svg").remove();
+      this.getData(this.value,this.slider,store.getters.HetGNNShow,store.getters.KGATShow,store.getters.NIRecShow)
+    },
     drawRadialStackedBarChart(map, config, data) {
       const SVG = d3
         .select(map)
@@ -99,14 +80,11 @@ export default {
             config.height
           }`
         )
-        // .call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed))
         .style("width", "100%")
         .style("height", "auto")
         .style("font", "10px sans-serif")
         .append("g");
-      function zoomed({ transform }) {
-        SVG.attr("transform", transform);
-      }
+
 
       // 放图的容器
       const relMap_g = SVG.append("g")
@@ -118,7 +96,7 @@ export default {
       const color = d3
         .scaleOrdinal()
         .domain(data.columns.slice(1))
-        .range(["#6b486b", "#98abc5", "#ff8c00"]);
+        .range(["#98abc5", "#6b486b", "#ff8c00"]);
 
       //曲形柱状堆叠图
       const arc = d3
@@ -145,7 +123,7 @@ export default {
 
       const y = d3
         .scaleRadial()
-        .domain([0, 1]) //d3.max(this.data, d => d.total)
+        .domain([0,3]) //d3.max(this.data, d => d.total)
         .range([120, 220]);
 
       const y2 = d3
@@ -155,25 +133,25 @@ export default {
 
       relMap_g
         .append("g")
-        // .selectAll("g")
-        // .data()
-        // .join("g")
-        .attr("fill", "#98abc5")
+        .selectAll("g")
+        .data(d3.stack().keys(data.columns.slice(1))(data))
+        .join("g")
+        .attr("fill", (d,i)=> color(d.key))
         .selectAll("path")
-        .data(d3.stack().keys(data.columns.slice(1))(data)[0])
+        .data((d)=>d)
         .join("path")
         .attr("d", arc);
 
-      relMap_g
-        .append("g")
-        // .selectAll("g")
-        // .data()
-        // .join("g")
-        .attr("fill", "#6b486b")
-        .selectAll("path")
-        .data(d3.stack().keys(data.columns.slice(1))(data)[1])
-        .join("path")
-        .attr("d", arc2);
+      // relMap_g
+      //   .append("g")
+      //   // .selectAll("g")
+      //   // .data()
+      //   // .join("g")
+      //   .attr("fill", "#6b486b")
+      //   .selectAll("path")
+      //   .data(d3.stack().keys(data.columns.slice(1))(data)[1])
+      //   .join("path")
+      //   .attr("d", arc2);
 
       relMap_g
         .append("circle")
@@ -304,6 +282,7 @@ export default {
       };
 
       function DrawSelectData(testdata, width, height) {
+
         const x = d3
           .scaleBand()
           .domain(testdata.map((d) => d.id))
@@ -314,8 +293,8 @@ export default {
           .domain([0, d3.max(testdata, (d) => d.total)])
           .rangeRound([width, width - 90]);
 
-        testdata.columns = Object.keys(testdata[0]).slice(0, 3);
-
+        testdata.columns = Object.keys(testdata[0]).slice(0, 4);
+        
         scaleMap_g
           .selectAll("g")
           .data(d3.stack().keys(testdata.columns.slice(1))(testdata))
@@ -331,11 +310,14 @@ export default {
           .on("click", (event, d) => {
             //小矩形的id  例，u217
             store.commit("global/SET_USER_ID", d.data.id);
+            console.log(d.data)
           })
           .attr("id", (d) => "rect_" + d.data.id)
           .attr("transform", `translate(0, 0)`)
           .attr("height", (d) => y(d[0]) - y(d[1]))
-          .attr("width", x.bandwidth());
+          .attr("width", x.bandwidth())
+          .append("title")
+          .text((d)=> d.data.id);
       }
       // 交互的容器
       const interMap_g = SVG.append("g")
@@ -380,44 +362,38 @@ export default {
 
       const scaleMap_g = SVG.append("g").attr("class", "scaleMap_g");
     },
-    // drawRadialAreaChart(map) {
-    //   const svg = d3
-    //     .select(map)
-    //     .append("svg")
-    //     .attr("viewBox", [-500 / 2, -500 / 2, 500, 500])
-    //     .attr("stroke-linejoin", "round")
-    //     .attr("stroke-linecap", "round");
-
-    //   const innerRadius = 90.8;
-    //   const outerRadius = 190.8;
-    //   const colors = ["tomato", "steelblue"];
-
-    //   const x = d3
-    //     .scaleUtc()
-    //     .domain([1, 24])
-    //     .range([0, 2 * Math.PI]);
-
-    //   const y = d3
-    //     .scaleLinear()
-    //     .domain([10, 40])
-    //     .range([innerRadius, outerRadius]);
-
-    //   const line = d3
-    //     .lineRadial()
-    //     .curve(d3.curveLinearClosed)
-    //     .angle((d) => x(d.date))
-    //     .radius((d) => y(d.avg))
-
-    //   const airports = svg.selectAll("g")
-    //     .data(data)
-    //     .join("g");
-
-    //   airports.append("path")
-    //   .attr("fill", "none")
-    //   .attr("stroke", (d,i) => colors[i])
-    //   .attr("stroke-width", 1.5)
-    //   .attr("d", line);
-    // },
+    getData(value,slider,HetGNN,KGAT,NIRec) {
+      let fileName = "./" +value + ".csv"
+      let select = [HetGNN,KGAT,NIRec]
+      axios.get(fileName).then((res) => {
+        let index = 0
+        var data = d3.csvParse(res.data, (d, _, columns) => {
+          let total = 0;
+          let min = 1
+          let max = 0
+          for (let i = 1; i < columns.length; i++){
+            if(select[i-1] == true){
+              let dfloat = parseFloat(d[columns[i]])
+              total += dfloat
+              if(dfloat < min) min = dfloat
+              if(dfloat > max) max = dfloat
+            }
+          }
+          d.total = total;
+          let diff = max - min
+          if(diff > slider[0] && diff < slider[1]) return d;
+          else return;
+        });
+        const config = {
+          width: 500,
+          height: 500,
+          innerRadius: 0,
+          outerRadius: 200,
+        };
+        console.log(data)
+        this.drawRadialStackedBarChart(this.$refs.RadialArea, config, data);
+      });
+    },
   },
 };
 </script>
@@ -437,5 +413,10 @@ export default {
 #RadialArea {
   height: 50%;
   width: 100%;
+}
+
+>>>.el-slider__button {
+  width: 10px;
+  height: 10px;
 }
 </style>

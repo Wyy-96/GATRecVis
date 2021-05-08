@@ -3,43 +3,55 @@
     <div id="force" ref="force"></div>
     <div class="movieInfo">
       <div class="txtInfo">
-        <div class="m-name">厨师、大盗、他的太太和她的情人</div>
+        <div class="m-name">{{movieInfo.movieName}}</div>
         <div class="m-body">
-          <div><img class="m-img" src="http://img9.doubanio.com/view/photo/s_ratio_poster/public/p2226311926.jpg"/></div>
+          <div><img class="m-img" :src="movieInfo.moviePhoto"/></div>
           <div class="m-text">
-            <div class="m-line"><div class="m-lable">导演 </div><div class="m-value" title="彼得·格林纳">彼得·格林纳威</div></div>
-            <div  class="m-line"><div class="m-lable">演员 </div><div class="m-value">理查德·波林热|迈克尔·刚本|海伦·米伦|蒂姆·罗斯</div></div>
-            <div  class="m-line"><div class="m-lable">类型 </div><div class="m-value">剧情|犯罪</div></div>
-            <div  class="m-line"><div class="m-lable">时间 </div><div class="m-value">1989-10-13(英国)</div></div>
-            <div  class="m-line"><div class="m-lable">评分 </div><div>7.5</div></div>
+            <div class="m-line"><div class="m-lable">导演 </div><div class="m-value" :title="movieInfo.movieId">{{movieInfo.movieDirector}}</div></div>
+            <div  class="m-line"><div class="m-lable">演员 </div><div class="m-value" :title="movieInfo.movieActor">{{movieInfo.movieActor}}</div></div>
+            <div  class="m-line"><div class="m-lable">类型 </div><div class="m-value" :title="movieInfo.movieGenre">{{movieInfo.movieGenre}}</div></div>
+            <div  class="m-line"><div class="m-lable">时间 </div><div class="m-value" :title="movieInfo.movieTime">{{movieInfo.movieTime}}</div></div>
+            <div  class="m-line"><div class="m-lable">评分 </div><div>{{movieInfo.movieRate}}</div></div>
             <div  class="m-line"><div class="m-lable">TAG </div><div class="m-value"  style="display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;
-overflow: hidden;white-space: break-spaces;    word-break: break-all;">情色|法国|PeterGreenaway|英国|法国电影|格林纳威|欧洲电影|Peter_Greenaway</div></div>
-            
+overflow: hidden;white-space: break-spaces;    word-break: break-all; " :title="movieInfo.movieTags">{{movieInfo.movieTags}}</div></div>
           </div>  
         </div>
-        <!-- 厨师、大盗、他的太太和她的情人,
-        彼得·格林纳威,
-        理查德·波林热|迈克尔·刚本|海伦·米伦|蒂姆·罗斯,
-        剧情|犯罪,
-        1989-10-13(英国),
-        情色|法国|PeterGreenaway|英国|法国电影|格林纳威|欧洲电影|Peter_Greenaway,
-        7.5,
-        https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2226311926.jpg -->
       </div>
       <div class="DivergingBar" ref="DivergingBar"></div>
-      <div class="snapshot"></div>
+      <div class="snapshot">
+        <el-button @click="prtSc()" >截图</el-button>
+        <div>
+          <img :src="imgBlob" style="height:150px; width:150px"/>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import commonUtils from "@/utils/commonUtils"
+import html2canvas from "html2canvas"
 import axios from "axios";
 import * as d3 from "d3";
+import store from "@/store";
 export default {
   name: "force",
   components: {},
   data() {
-    return {};
+    return {
+      imgBlob:"",
+      movieInfo:{
+        movieId:'',
+        movieName: "",
+        moviePhoto: "",
+        movieRate: "",
+        movieTags:"",
+        movieTime: "",
+        movieActor: "",
+        movieDirector:"",
+        movieGenre: "",
+      },
+    };
   },
   created: function () {},
   mounted: function () {
@@ -1055,23 +1067,25 @@ export default {
         },
       ],
     };
-    this.force(this.$refs.force, data);
+    // this.force(this.$refs.force, data);
     this.DivergingBar();
   },
   watch: {
-    // "$store.getters.movieId"() {
-    //   // console.log(this.$store.getters.movieId);
-    //   axios
-    //     .post("api/getdata/selectedMovie", {
-    //       data: [this.$store.getters.userId, this.$store.getters.movieId],
-    //     })
-    //     .then((res) => {
-    //       let svgbox = document.getElementsByClassName("force");
-    //       if (svgbox.length == 1) svgbox[svgbox.length - 1].remove();
-    //       console.log(res.data);
-    //       // this.force(this.$refs.force, res.data);
-    //     });
-    // },
+    "$store.getters.movieId"() {
+      axios
+        .post("api/getdata/selectedMovie", {
+          data: [this.$store.getters.userId, this.$store.getters.movieId],
+        })
+        .then((res) => {
+          console.log(res.data.movieInfo)
+          this.movieInfo = res.data.movieInfo
+          let svgbox = d3.select("#force").selectAll("svg")._groups[0]
+          if (svgbox.length == 2) {
+            d3.select("#force").selectAll("svg")._groups[0][0].remove();
+          }
+          this.force(this.$refs.force, res.data.forceData);
+        });
+    },
   },
   methods: {
     force(map, data) {
@@ -1234,23 +1248,26 @@ export default {
       const SVG = d3
         .select(map)
         .append("svg")
+        .attr("width","1123px")
+        .attr("height","700px")
+        .append("svg")
         .attr("class", "force")
         .attr(
           "viewBox",
           `${-config.width / 4} ${-config.height / 8} ${config.width} ${
             config.height
           }`
-        );
-
+        )
       init();
 
       SVG.attr("opacity", 1e-6).transition().duration(1000).attr("opacity", 1);
 
       function init() {
-        d3.select(".force").selectAll("g").remove();
+        
 
         net = network(data, net, getType, expand);
-        console.log(net);
+        store.commit("svgData/SET_NOW_DATA",net)
+        
         const simulation = d3
           .forceSimulation(net.nodes)
           .force(
@@ -1313,6 +1330,7 @@ export default {
             if (d.type.includes("target") == false) {
               // console.log("node clink",d , arguments, this, expand[d.id])
               expand[d.type] = !expand[d.type]; //取反
+              d3.select(".force").selectAll("g").remove();
               init();
             }
           })
@@ -1377,13 +1395,6 @@ export default {
                 dependsLinkAndText = dependsLinkAndText.concat([
                   lkItem.source.index,
                 ]);
-                // links.forEach((nextItem) => {
-                //     if (lkItem.target.index == (nextItem['source']['index'])) {
-                //         this.dependsNode = this.dependsNode.concat([nextItem.target.index]);
-                //     }else if(lkItem.target.index == (nextItem['target']['index'])){
-                //         this.dependsNode = this.dependsNode.concat([nextItem.source.index]);
-                //     }
-                // })
               } else if (objIndex == lkItem["target"]["index"]) {
                 dependsNode = dependsNode.concat([lkItem.source.index]);
                 dependsLinkAndText = dependsLinkAndText.concat([
@@ -1392,13 +1403,6 @@ export default {
                 dependsLinkAndText = dependsLinkAndText.concat([
                   lkItem.target.index,
                 ]);
-                // this.links.forEach((nextItem) => {
-                //     if (lkItem.source.index == (nextItem['source']['index'])) {
-                //         this.dependsNode = this.dependsNode.concat([nextItem.target.index]);
-                //     }else if(lkItem.source.index == (nextItem['target']['index'])){
-                //         this.dependsNode = this.dependsNode.concat([nextItem.target.index]);
-                //     }
-                // })
               }
             });
             // 隐藏节点
@@ -1516,6 +1520,30 @@ export default {
           .attr("height", 25);
       }
     },
+    prtSc(){
+      // html2canvas(this.$refs.force,{
+      //   useCORS: true, //（图片跨域相关）
+      //   allowTaint: false, //允许跨域（图片跨域相关）
+      // }).then(canvas => {
+      //   this.imgBlob = canvas.toDataURL('image/jpeg', 1.0); //将图片转为base64, 0-1 表示清晰度
+      // });
+      let serializer = new XMLSerializer()
+      var toExport = d3.select(".force")._groups[0][0].cloneNode(true); // 克隆
+      var bb = d3.select(".force")._groups[0][0].getBBox(); // getBBox方法返回一个包含svg元素的最小矩形的坐标对象。 包含(x,y)、width、height 需要用来解决svg中的图超出边界时无法全部完整保存问题
+      toExport.setAttribute('viewBox', (bb.x ) + ' ' + (bb.y ) + ' ' + (bb.width) + ' ' + (bb.height)); // 重新设置svg目前的视口
+      toExport.setAttribute('width', bb.width); // 重新设置svg目前的宽度
+      toExport.setAttribute('height', bb.height); // 重新设置svg目前的高度
+
+      let imgBlob = 'data:image/svg+xml;charset=utf-8,' +
+        encodeURIComponent('<?xml version="1.0" standalone="no"?>\r\n' + serializer.serializeToString(toExport))
+      this.imgBlob = imgBlob
+      
+      let svgData={
+        imgData:imgBlob,
+        d3Data:commonUtils.deepCopy(this.$store.getters.nowData)
+
+      }
+    }
   },
 };
 </script>

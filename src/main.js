@@ -11,7 +11,7 @@ Vue.prototype.$d3 = d3 //ds全局挂载
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';// 默认主题
-// import './style/theme/index.css' // 导入自定义主题
+import './style/theme/index.css' // 导入自定义主题
 Vue.use(ElementUI);
 
 new Vue({
