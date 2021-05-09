@@ -3,25 +3,74 @@
     <div id="force" ref="force"></div>
     <div class="movieInfo">
       <div class="txtInfo">
-        <div class="m-name">{{movieInfo.movieName}}</div>
+        <div class="m-name">{{ movieInfo.movieName }}</div>
         <div class="m-body">
-          <div><img class="m-img" :src="movieInfo.moviePhoto"/></div>
+          <div><img class="m-img" :src="movieInfo.moviePhoto" /></div>
           <div class="m-text">
-            <div class="m-line"><div class="m-lable">导演 </div><div class="m-value" :title="movieInfo.movieId">{{movieInfo.movieDirector}}</div></div>
-            <div  class="m-line"><div class="m-lable">演员 </div><div class="m-value" :title="movieInfo.movieActor">{{movieInfo.movieActor}}</div></div>
-            <div  class="m-line"><div class="m-lable">类型 </div><div class="m-value" :title="movieInfo.movieGenre">{{movieInfo.movieGenre}}</div></div>
-            <div  class="m-line"><div class="m-lable">时间 </div><div class="m-value" :title="movieInfo.movieTime">{{movieInfo.movieTime}}</div></div>
-            <div  class="m-line"><div class="m-lable">评分 </div><div>{{movieInfo.movieRate}}</div></div>
-            <div  class="m-line"><div class="m-lable">TAG </div><div class="m-value"  style="display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;
-overflow: hidden;white-space: break-spaces;    word-break: break-all; " :title="movieInfo.movieTags">{{movieInfo.movieTags}}</div></div>
-          </div>  
+            <div class="m-line">
+              <div class="m-lable">导演</div>
+              <div class="m-value" :title="movieInfo.movieId">
+                {{ movieInfo.movieDirector }}
+              </div>
+            </div>
+            <div class="m-line">
+              <div class="m-lable">演员</div>
+              <div class="m-value" :title="movieInfo.movieActor">
+                {{ movieInfo.movieActor }}
+              </div>
+            </div>
+            <div class="m-line">
+              <div class="m-lable">类型</div>
+              <div class="m-value" :title="movieInfo.movieGenre">
+                {{ movieInfo.movieGenre }}
+              </div>
+            </div>
+            <div class="m-line">
+              <div class="m-lable">时间</div>
+              <div class="m-value" :title="movieInfo.movieTime">
+                {{ movieInfo.movieTime }}
+              </div>
+            </div>
+            <div class="m-line">
+              <div class="m-lable">评分</div>
+              <div>{{ movieInfo.movieRate }}</div>
+            </div>
+            <div class="m-line">
+              <div class="m-lable">TAG</div>
+              <div
+                class="m-value"
+                style="
+                  display: -webkit-box;
+                  -webkit-box-orient: vertical;
+                  -webkit-line-clamp: 2;
+                  overflow: hidden;
+                  white-space: break-spaces;
+                  word-break: break-all;
+                "
+                :title="movieInfo.movieTags"
+              >
+                {{ movieInfo.movieTags }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="DivergingBar" ref="DivergingBar"></div>
       <div class="snapshot">
-        <el-button @click="prtSc()" >截图</el-button>
         <div>
-          <img :src="imgBlob" style="height:150px; width:150px"/>
+          <i class="el-icon-camera-solid" @click="prtSc()" style="color:#6b486b;width:50px; margin-top:10px; margin-bottom:10px; margin-left:230px; ">快照</i></div> 
+        <div class ="scrollbar">
+          <div class="snapView"
+            v-for="svgData of $store.getters.d3DataList"
+            :key="svgData.imgBlob"
+          >
+            <img
+              @click="tempconsole(svgData)"
+              :src="svgData.imgBlob"
+              style="height: 150px; width: 150px"
+            />
+            <img :src="svgData.imgHB.moviePhoto" style="height: 150px;width: 100px" />
+          </div>
         </div>
       </div>
     </div>
@@ -29,8 +78,8 @@ overflow: hidden;white-space: break-spaces;    word-break: break-all; " :title="
 </template>
 
 <script>
-import commonUtils from "@/utils/commonUtils"
-import html2canvas from "html2canvas"
+import commonUtils from "@/utils/commonUtils";
+import html2canvas from "html2canvas";
 import axios from "axios";
 import * as d3 from "d3";
 import store from "@/store";
@@ -39,16 +88,15 @@ export default {
   components: {},
   data() {
     return {
-      imgBlob:"",
-      movieInfo:{
-        movieId:'',
+      movieInfo: {
+        movieId: "",
         movieName: "",
         moviePhoto: "",
         movieRate: "",
-        movieTags:"",
+        movieTags: "",
         movieTime: "",
         movieActor: "",
-        movieDirector:"",
+        movieDirector: "",
         movieGenre: "",
       },
     };
@@ -1077,9 +1125,9 @@ export default {
           data: [this.$store.getters.userId, this.$store.getters.movieId],
         })
         .then((res) => {
-          console.log(res.data.movieInfo)
-          this.movieInfo = res.data.movieInfo
-          let svgbox = d3.select("#force").selectAll("svg")._groups[0]
+          console.log(res.data.movieInfo);
+          this.movieInfo = res.data.movieInfo;
+          let svgbox = d3.select("#force").selectAll("svg")._groups[0];
           if (svgbox.length == 2) {
             d3.select("#force").selectAll("svg")._groups[0][0].remove();
           }
@@ -1088,6 +1136,9 @@ export default {
     },
   },
   methods: {
+    tempconsole(svgData) {
+      console.log(svgData);
+    },
     force(map, data) {
       var net = {},
         expand = {
@@ -1248,8 +1299,8 @@ export default {
       const SVG = d3
         .select(map)
         .append("svg")
-        .attr("width","1123px")
-        .attr("height","700px")
+        .attr("width", "1123px")
+        .attr("height", "700px")
         .append("svg")
         .attr("class", "force")
         .attr(
@@ -1257,17 +1308,15 @@ export default {
           `${-config.width / 4} ${-config.height / 8} ${config.width} ${
             config.height
           }`
-        )
+        );
       init();
 
       SVG.attr("opacity", 1e-6).transition().duration(1000).attr("opacity", 1);
 
       function init() {
-        
-
         net = network(data, net, getType, expand);
-        store.commit("svgData/SET_NOW_DATA",net)
-        
+        store.commit("svgData/SET_NOW_DATA", net);
+
         const simulation = d3
           .forceSimulation(net.nodes)
           .force(
@@ -1453,7 +1502,7 @@ export default {
         [1200, 1, 5, 30, 7.3],
         [600, 4, 2, 64, 8.3],
       ];
-      const x0 = d3  //电影被多少用户看过
+      const x0 = d3 //电影被多少用户看过
         .scaleRadial()
         .domain([0, 2332]) //d3.max(this.data, d => d.total)
         .range([0, 100]);
@@ -1469,7 +1518,7 @@ export default {
         .scaleRadial()
         .domain([0, 100]) //d3.max(this.data, d => d.total)
         .range([0, 100]);
-      const x4 = d3  //电影评分
+      const x4 = d3 //电影评分
         .scaleRadial()
         .domain([0, 10]) //d3.max(this.data, d => d.total)
         .range([0, 100]);
@@ -1520,30 +1569,37 @@ export default {
           .attr("height", 25);
       }
     },
-    prtSc(){
+    prtSc() {
       // html2canvas(this.$refs.force,{
       //   useCORS: true, //（图片跨域相关）
       //   allowTaint: false, //允许跨域（图片跨域相关）
       // }).then(canvas => {
       //   this.imgBlob = canvas.toDataURL('image/jpeg', 1.0); //将图片转为base64, 0-1 表示清晰度
       // });
-      let serializer = new XMLSerializer()
+      let serializer = new XMLSerializer();
       var toExport = d3.select(".force")._groups[0][0].cloneNode(true); // 克隆
       var bb = d3.select(".force")._groups[0][0].getBBox(); // getBBox方法返回一个包含svg元素的最小矩形的坐标对象。 包含(x,y)、width、height 需要用来解决svg中的图超出边界时无法全部完整保存问题
-      toExport.setAttribute('viewBox', (bb.x ) + ' ' + (bb.y ) + ' ' + (bb.width) + ' ' + (bb.height)); // 重新设置svg目前的视口
-      toExport.setAttribute('width', bb.width); // 重新设置svg目前的宽度
-      toExport.setAttribute('height', bb.height); // 重新设置svg目前的高度
+      toExport.setAttribute(
+        "viewBox",
+        bb.x + " " + bb.y + " " + bb.width + " " + bb.height
+      ); // 重新设置svg目前的视口
+      toExport.setAttribute("width", bb.width); // 重新设置svg目前的宽度
+      toExport.setAttribute("height", bb.height); // 重新设置svg目前的高度
 
-      let imgBlob = 'data:image/svg+xml;charset=utf-8,' +
-        encodeURIComponent('<?xml version="1.0" standalone="no"?>\r\n' + serializer.serializeToString(toExport))
-      this.imgBlob = imgBlob
-      
-      let svgData={
-        imgData:imgBlob,
-        d3Data:commonUtils.deepCopy(this.$store.getters.nowData)
+      let imgBlob =
+        "data:image/svg+xml;charset=utf-8," +
+        encodeURIComponent(
+          '<?xml version="1.0" standalone="no"?>\r\n' +
+            serializer.serializeToString(toExport)
+        );
 
-      }
-    }
+      let svgData = {
+        imgBlob: imgBlob,
+        imgHB: this.movieInfo,
+        d3Data: commonUtils.deepCopy(this.$store.getters.nowData),
+      };
+      this.$store.commit("svgData/ADD_D3_DATA_LIST", svgData);
+    },
   },
 };
 </script>
@@ -1565,46 +1621,49 @@ export default {
 .txtInfo {
   height: 40%;
   // background: black;
-  display flex
-  flex-direction:column
+  display: flex;
+  flex-direction: column;
 
-  .m-name{
-    font-size:18px
-    padding-top 15px
+  .m-name {
+    font-size: 18px;
+    padding-top: 15px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-weight: 600;
   }
-  .m-body{
-    flex:1
-    display:flex
-    padding-top:10px;
 
-    .m-img{
-      width:120px;
+  .m-body {
+    flex: 1;
+    display: flex;
+    padding-top: 10px;
+
+    .m-img {
+      width: 120px;
     }
-    .m-text{
-      flex:1
-      padding-top:5px
-      padding-left:10px;
 
-      .m-line{
-        display flex
-        line-height:28px;
-        .m-lable{
+    .m-text {
+      flex: 1;
+      padding-top: 5px;
+      padding-left: 10px;
+
+      .m-line {
+        display: flex;
+        line-height: 28px;
+
+        .m-lable {
           color: #666666;
-          width 40px
+          width: 40px;
         }
-        .m-value{
-          flex 1
-          width 0
+
+        .m-value {
+          flex: 1;
+          width: 0;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
         }
       }
-      
     }
   }
 }
@@ -1615,7 +1674,43 @@ export default {
 
 .snapshot {
   height: 30%;
-  background:#F2F2F2;
+  // background: #F2F2F2;
+  display: flex;
+  flex-direction: column;
+
+  &>div:nth-child(2) {
+    flex: 1;
+    height: 0;
+    overflow: auto;
+  }
+}
+
+.scrollbar::-webkit-scrollbar {
+  /* 滚动条整体样式 */
+  width: 10px; /* 高宽分别对应横竖滚动条的尺寸 */
+  height: 1px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  /* 滚动条里面小方块 */
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #535353;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  /* 滚动条里面轨道 */
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background: #ededed;
+}
+.snapView{
+  background: white;
+  border:2px solid #F2F2F2;
+  margin:0 auto;
+  border-radius: 10px;
+  width:255px;
+  margin-bottom:10px;
 }
 </style>
 

@@ -10,7 +10,7 @@ const getters = {
     NIRecShow: state => state.global.NIRecShow,
 
     // ===========截图功能=============
-    nowData:state => state.svgData.nowData
-   
+    nowData:state => state.svgData.nowData,
+    d3DataList:state => state.svgData.d3DataList
 }
 export default getters
