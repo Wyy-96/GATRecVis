@@ -107,14 +107,6 @@ export default {
         .endAngle((d) => x(d.data.id) + x.bandwidth())
         .padRadius(config.innerRadius);
 
-      const arc2 = d3
-        .arc()
-        .innerRadius((d) => y2(d[0]))
-        .outerRadius((d) => y2(d[1]))
-        .startAngle((d) => x(d.data.id))
-        .endAngle((d) => x(d.data.id) + x.bandwidth())
-        .padRadius(config.innerRadius);
-
       const x = d3
         .scaleBand()
         .domain(data.map((d) => d.id))
@@ -142,16 +134,6 @@ export default {
         .join("path")
         .attr("d", arc);
 
-      // relMap_g
-      //   .append("g")
-      //   // .selectAll("g")
-      //   // .data()
-      //   // .join("g")
-      //   .attr("fill", "#6b486b")
-      //   .selectAll("path")
-      //   .data(d3.stack().keys(data.columns.slice(1))(data)[1])
-      //   .join("path")
-      //   .attr("d", arc2);
 
       relMap_g
         .append("circle")
@@ -310,7 +292,6 @@ export default {
           .on("click", (event, d) => {
             //小矩形的id  例，u217
             store.commit("global/SET_USER_ID", d.data.id);
-            console.log(d.data)
           })
           .attr("id", (d) => "rect_" + d.data.id)
           .attr("transform", `translate(0, 0)`)
@@ -390,7 +371,7 @@ export default {
           innerRadius: 0,
           outerRadius: 200,
         };
-        console.log(data)
+        
         this.drawRadialStackedBarChart(this.$refs.RadialArea, config, data);
       });
     },

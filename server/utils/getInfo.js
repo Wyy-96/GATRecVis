@@ -22,6 +22,7 @@ class doubanInfo {
     KGAT_f = fs.readFileSync('./data/KGAT_rec_result.txt', 'utf-8').split('\n');
     HetGNN_f = fs.readFileSync('./data/HetGNN_rec_result.txt', 'utf-8').split('\n');
     NIRec_f = fs.readFileSync('./data/NIRec_rec_result.txt', 'utf-8').split('\n');
+    user_rec_static = JSON.parse(fs.readFileSync('./data/user_rec_static.json', 'utf-8'));
 
     initialize() {
         this.getQueueInfo(this.Ainfo_f, this.actorInfo)

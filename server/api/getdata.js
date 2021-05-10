@@ -364,6 +364,7 @@ var HetGNNShow = true
 // 查询用户
 router.post('/selectUser', (req, res) => {
   let userId = parseInt(req.body.data.replace("u", ""))
+  
   var jsonData = new Object()
   var Word = getUserInfo(userId)
   var Coodinare = new Array()
@@ -381,12 +382,12 @@ router.post('/selectUser', (req, res) => {
   Coodinare.push(Info.HetGNN[userId])
   Coodinare.push(Info.KGAT[userId])
   Coodinare.push(Info.NIRec[userId])
-  console.log(Info.HetGNN[userId],Info.KGAT[userId],Info.NIRec[userId])
 
   jsonData.Coodinare = Coodinare
   jsonData.Vennresult = Vennresult
   jsonData.Word = Word
   res.json(jsonData)
+
 });
 
 router.post('/selectedMovie', (req, res) => {
