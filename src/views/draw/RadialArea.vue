@@ -1,7 +1,7 @@
 <template>
   <div class="RadialAreaView">
     <div class="metrciSelect">
-      <el-select v-model="value" placeholder="请选择" size="mini">
+      <el-select v-model="value" size="mini">
         <el-option
           v-for="item in options"
           :key="item.value"

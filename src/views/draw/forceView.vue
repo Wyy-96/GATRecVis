@@ -1,6 +1,15 @@
 <template>
   <div class="forceView">
-    <div id="force" ref="force"></div>
+    <div id="force" ref="force">
+      <div class="selectInfo">
+        <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size:20px;line-height:2">
+          <el-breadcrumb-item
+          v-for="item in selectInfo"
+          :key="item"
+        >{{item}}</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+    </div>
     <div class="movieInfo">
       <div class="txtInfo">
         <div class="m-name">{{ movieInfo.movieName }}</div>
@@ -142,23 +151,26 @@ export default {
         movieDirector: "",
         movieGenre: "",
       },
-      DivergingBarData:[],
-      or:"",
+      DivergingBarData: [],
+      or: "",
+      selectInfo:[]
     };
   },
   created: function () {},
-  mounted: function () {
-  },
+  mounted: function () {},
   watch: {
     "$store.getters.movieId"() {
+      let model = this.$store.getters.movieId.charAt(this.$store.getters.movieId.length - 1)
+      this.selectInfo[1] = model
       axios
         .post("api/getdata/selectedMovie", {
           data: [this.$store.getters.userId, this.$store.getters.movieId],
         })
         .then((res) => {
+          this.selectInfo[2] = res.data.movieInfo.movieName
           this.movieInfo = res.data.movieInfo;
-          this.DivergingBarData = [res.data.static]
-          this.or = res.data.model
+          this.DivergingBarData = [res.data.static];
+          this.or = res.data.model;
 
           let svgbox = d3.select("#force").selectAll("svg")._groups[0];
           if (svgbox.length > 1) {
@@ -166,9 +178,14 @@ export default {
           }
 
           this.force(this.$refs.force, res.data.forceData);
-          this.DivergingBar([res.data.static],res.data.model)
-          
+          this.DivergingBar([res.data.static], res.data.model);
         });
+    },
+    "$store.getters.userId"(){
+      this.selectInfo.push(this.$store.getters.userId)
+      this.selectInfo.push('')
+      this.selectInfo.push('')
+      console.log(this.selectInfo)
     },
   },
   methods: {
@@ -219,15 +236,14 @@ export default {
       function deteleObject(obj) {
         var uniques = [];
         var stringify = [];
-        for(var i =0; i < obj.length;i++){
-          if(stringify.includes(obj[i].id) == false)
-            uniques.push(obj[i])
+        for (var i = 0; i < obj.length; i++) {
+          if (stringify.includes(obj[i].id) == false) uniques.push(obj[i]);
         }
         return uniques;
       }
       function network(dataOrigin, prev, index, expand) {
         expand = expand || {};
-        let data = commonUtils.deepCopy(dataOrigin)
+        let data = commonUtils.deepCopy(dataOrigin);
         let links = data.links.map((d) => Object.create(d));
         let nodes = data.nodes.map((d) => Object.create(d));
 
@@ -318,7 +334,7 @@ export default {
             value: linksValue[key[i]] > 20 ? 20 : linksValue[key[i]],
           });
         }
-        newnodes = deteleObject(newnodes)
+        newnodes = deteleObject(newnodes);
         return { links: newlinks, nodes: newnodes };
       }
       function getObjectValues(object) {
@@ -354,7 +370,8 @@ export default {
           `${-config.width / 4} ${-config.height / 8} ${config.width} ${
             config.height
           }`
-        ).call(
+        )
+        .call(
           d3
             .zoom()
             .extent([
@@ -365,10 +382,10 @@ export default {
             .on("zoom", function ({ transform }) {
               g.attr("transform", transform);
             })
-        )
+        );
 
-      const g = SVG.append('g')        
-        
+      const g = SVG.append("g");
+
       init();
 
       g.attr("opacity", 1e-6).transition().duration(1000).attr("opacity", 1);
@@ -376,7 +393,7 @@ export default {
       function init() {
         net = network(data, net, getType, expand);
         store.commit("svgData/SET_NOW_DATA", data);
-        
+
         const simulation = d3
           .forceSimulation(net.nodes)
           .force(
@@ -416,7 +433,8 @@ export default {
             .on("end", dragended);
         };
 
-        const link = g.append("g")
+        const link = g
+          .append("g")
           .attr("stroke", "#D1D1D1")
           .attr("stroke-opacity", 0.6)
           .selectAll("line")
@@ -425,7 +443,8 @@ export default {
           .attr("class", "link")
           .attr("stroke-width", (d) => d.value);
 
-        const node = g.append("g")
+        const node = g
+          .append("g")
           .attr("stroke", "#fff")
           .attr("stroke-width", 1.5)
           .selectAll("circle")
@@ -458,7 +477,8 @@ export default {
 
         node.append("title").text((d) => d.name);
 
-        const text = g.append("g")
+        const text = g
+          .append("g")
           .attr("fill", "white")
           .selectAll("text")
           .data(net.nodes)
@@ -557,8 +577,8 @@ export default {
         }
       }
     },
-    DivergingBar(data,or) {
-      d3.select(".DivergingBar").select("svg").remove()
+    DivergingBar(data, or) {
+      d3.select(".DivergingBar").select("svg").remove();
       const x0 = d3 //电影被多少用户看过
         .scaleRadial()
         .domain([0, 1]) //d3.max(this.data, d => d.total)
@@ -579,8 +599,16 @@ export default {
         .scaleRadial()
         .domain([0, 2332]) //d3.max(this.data, d => d.total)
         .range([0, 110]);
-      const color = {"H":"#B7C4D6", "K":"#AE9BAE", "N":"#FFC57F", "KN":"#AE8174","HKN":"#9E746B","HK":"#8E809C", "HN":"#DBA86B"}
-      const titleName = ["genre","actor","director","tags","viewer"]
+      const color = {
+        H: "#B7C4D6",
+        K: "#AE9BAE",
+        N: "#FFC57F",
+        KN: "#AE8174",
+        HKN: "#9E746B",
+        HK: "#8E809C",
+        HN: "#DBA86B",
+      };
+      const titleName = ["genre", "actor", "director", "tags", "viewer"];
       function guiyi(data, index) {
         if (index == 0) return x0(data);
         else if (index == 1) return x1(data);
@@ -603,8 +631,6 @@ export default {
           }`
         );
 
-
-
       if (data.length > 0) {
         SVG.append("g")
           .attr("fill", color[or])
@@ -612,11 +638,11 @@ export default {
           .data(data[0])
           .join("rect")
           .attr("x", (d, i) => 67 - guiyi(d, i))
-          .attr("y", (d, i) => (i-1) * 25 + 15)
+          .attr("y", (d, i) => (i - 1) * 25 + 15)
           .attr("width", (d, i) => guiyi(d, i))
           .attr("height", 20)
           .append("title")
-          .text((d,i)=> titleName[i]);
+          .text((d, i) => titleName[i]);
       }
     },
     prtSc() {
@@ -646,14 +672,14 @@ export default {
       let svgData = {
         imgBlob: imgBlob,
         imgHB: this.movieInfo,
-        DivergingBarData:this.DivergingBarData,
-        or:this.or,
+        DivergingBarData: this.DivergingBarData,
+        or: this.or,
         d3Data: commonUtils.deepCopy(this.$store.getters.nowData),
       };
       this.$store.commit("svgData/ADD_D3_DATA_LIST", svgData);
     },
-    addForce(data){
-      d3.select("#forceCopy").remove()
+    addForce(data) {
+      d3.select("#forceCopy").remove();
       var netCopy = {},
         expandCopy = {
           targetUser: true,
@@ -669,15 +695,17 @@ export default {
         height: parseInt(d3.select("#force").style("height")),
       };
       const SVG = d3
-        .select("#force").select("svg")
+        .select("#force")
+        .select("svg")
         .append("svg")
         .attr("id", "forceCopy")
         .attr(
           "viewBox",
-          `${-configCopy.width / 4} ${-configCopy.height / 8} ${configCopy.width} ${
-            configCopy.height
-          }`
-        ).call(
+          `${-configCopy.width / 4} ${-configCopy.height / 8} ${
+            configCopy.width
+          } ${configCopy.height}`
+        )
+        .call(
           d3
             .zoom()
             .extent([
@@ -688,37 +716,36 @@ export default {
             .on("zoom", function ({ transform }) {
               g.attr("transform", transform);
             })
-        )
+        );
 
-      const g = SVG.append('g')
+      const g = SVG.append("g");
 
-      init()
+      init();
 
-      
       function init() {
         netCopy = network(data, netCopy, getType, expandCopy);
         const typesCopy = [
-        "targetUser",
-        "targetMovie",
-        "movie",
-        "actor",
-        "director",
-        "genre",
-        "user",
-      ];
-      const colorsCopy = [
-        "#797FA1",
-        "#708EC4",
-        "#DD8998",
-        "#FEC6B9",
-        "#F1DCDB",
-        "#ACC2E2",
-        "#F5A555",
-        "#ECE18C",
-        "#D9B3FF",
-        "#65D5A0",
-        "#C2384F",
-      ];
+          "targetUser",
+          "targetMovie",
+          "movie",
+          "actor",
+          "director",
+          "genre",
+          "user",
+        ];
+        const colorsCopy = [
+          "#797FA1",
+          "#708EC4",
+          "#DD8998",
+          "#FEC6B9",
+          "#F1DCDB",
+          "#ACC2E2",
+          "#F5A555",
+          "#ECE18C",
+          "#D9B3FF",
+          "#65D5A0",
+          "#C2384F",
+        ];
         const simulation = d3
           .forceSimulation(netCopy.nodes)
           .force(
@@ -758,7 +785,8 @@ export default {
             .on("end", dragended);
         };
 
-        const link = g.append("g")
+        const link = g
+          .append("g")
           .attr("stroke", "#D1D1D1")
           .attr("stroke-opacity", 0.6)
           .selectAll("line")
@@ -767,7 +795,8 @@ export default {
           .attr("class", "link")
           .attr("stroke-width", (d) => d.value);
 
-        const node = g.append("g")
+        const node = g
+          .append("g")
           .attr("stroke", "#fff")
           .attr("stroke-width", 1.5)
           .selectAll("circle")
@@ -800,7 +829,8 @@ export default {
 
         node.append("title").text((d) => d.name);
 
-        const text = g.append("g")
+        const text = g
+          .append("g")
           .attr("fill", "white")
           .selectAll("text")
           .data(netCopy.nodes)
@@ -905,15 +935,14 @@ export default {
       function deteleObject(obj) {
         var uniques = [];
         var stringify = [];
-        for(var i =0; i < obj.length;i++){
-          if(stringify.includes(obj[i].id) == false)
-            uniques.push(obj[i])
+        for (var i = 0; i < obj.length; i++) {
+          if (stringify.includes(obj[i].id) == false) uniques.push(obj[i]);
         }
         return uniques;
       }
       function network(dataOrigin, prev, index, expand) {
         expand = expand || {};
-        let data = commonUtils.deepCopy(dataOrigin)
+        let data = commonUtils.deepCopy(dataOrigin);
         let links = data.links.map((d) => Object.create(d));
         let nodes = data.nodes.map((d) => Object.create(d));
 
@@ -1004,7 +1033,7 @@ export default {
             value: linksValue[key[i]] > 20 ? 20 : linksValue[key[i]],
           });
         }
-        newnodes = deteleObject(newnodes)
+        newnodes = deteleObject(newnodes);
         return { links: newlinks, nodes: newnodes };
       }
       function getObjectValues(object) {
@@ -1028,9 +1057,9 @@ export default {
         }
       }
     },
-    addDivergingBar(data,or){
-      d3.select("#BarCopy").remove()
-      const x0 = d3 
+    addDivergingBar(data, or) {
+      d3.select("#BarCopy").remove();
+      const x0 = d3
         .scaleRadial()
         .domain([0, 1]) //d3.max(this.data, d => d.total)
         .range([0, 110]);
@@ -1050,8 +1079,16 @@ export default {
         .scaleRadial()
         .domain([0, 2332]) //d3.max(this.data, d => d.total)
         .range([0, 110]);
-      const color = {"H":"#B7C4D6", "K":"#AE9BAE", "N":"#FFC57F", "KN":"#AE8174","HKN":"#9E746B","HK":"#8E809C", "HN":"#DBA86B"}
-      const titleName = ["genre","actor","director","tags","viewer"]
+      const color = {
+        H: "#B7C4D6",
+        K: "#AE9BAE",
+        N: "#FFC57F",
+        KN: "#AE8174",
+        HKN: "#9E746B",
+        HK: "#8E809C",
+        HN: "#DBA86B",
+      };
+      const titleName = ["genre", "actor", "director", "tags", "viewer"];
       function guiyi(data, index) {
         if (index == 0) return x0(data);
         else if (index == 1) return x1(data);
@@ -1060,31 +1097,29 @@ export default {
         else if (index == 4) return x4(data);
       }
       d3.select(".Bar")
-      .append("g")
-      .attr("id","BarCopy")
-      .attr("fill", color[or])
-      .selectAll("rect")
-      .data(data)
-      .join("rect")
-      .attr("x", 70)
-      .attr("y", (d, i) => (i-1) * 25 + 15)
-      .attr("width", (d, i) => guiyi(d, i))
-      .attr("height", 20)
-      .append("title")
-      .text((d,i)=> titleName[i]);
-      
-
+        .append("g")
+        .attr("id", "BarCopy")
+        .attr("fill", color[or])
+        .selectAll("rect")
+        .data(data)
+        .join("rect")
+        .attr("x", 70)
+        .attr("y", (d, i) => (i - 1) * 25 + 15)
+        .attr("width", (d, i) => guiyi(d, i))
+        .attr("height", 20)
+        .append("title")
+        .text((d, i) => titleName[i]);
     },
-    addCopy(svgdata){
+    addCopy(svgdata) {
       this.addForce(svgdata.d3Data);
-      this.addDivergingBar(svgdata.DivergingBarData[0],svgdata.or)
+      this.addDivergingBar(svgdata.DivergingBarData[0], svgdata.or);
     },
-    empty(){
+    empty() {
       this.$store.commit("svgData/Empty_D3_DATA_LIST", "");
     },
-    reset(){
-      d3.select("#forceCopy").remove()
-      d3.select("#BarCopy").remove()
+    reset() {
+      d3.select("#forceCopy").remove();
+      d3.select("#BarCopy").remove();
     },
   },
 };
@@ -1095,6 +1130,13 @@ export default {
   height: 699px;
   float: left;
   border-bottom: 1px solid #A6A6A6;
+}
+
+.selectInfo {
+  width: 79%;
+  height: 40px;
+  float: left;
+  margin-left: 10px;
 }
 
 .movieInfo {

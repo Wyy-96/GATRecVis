@@ -365,7 +365,13 @@ function getRecMovieStatic(userId,movieId){
   let tags = Info.movieInfo[movieId].movieTags.split("|")
   let user_static = Info.user_rec_static[userId]
   let num =[]
+  let attr = ["actor","director","genre","tags"]
+  for (let i = 0; i < attr.length; i++) {
 
+    if (Object.keys(user_static).includes(attr[i]) == false) {
+      user_static[attr[i]] = ''
+    }
+  }
   let key = Object.keys(user_static["genre"])
   let total = 0
   let test = 0
