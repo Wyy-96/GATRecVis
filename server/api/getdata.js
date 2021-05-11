@@ -427,31 +427,44 @@ var KGATShow = true
 var HetGNNShow = true
 // 查询用户
 router.post('/selectUser', (req, res) => {
-  let userId = parseInt(req.body.data.replace("u", ""))
+  let userId = parseInt(req.body.data["id"].replace("u", ""))
+  let state = req.body.data["state"]
   
-  var jsonData = new Object()
-  var Word = getUserInfo(userId)
-  var Coodinare = new Array()
-  var Venn = new Array()
+  // 修改状态
+  HetGNNShow = state[0]
+  KGATShow = state[1]
+  NIRecShow = state[2]
+
+  let jsonData = new Object()
+
   console.log(userId)
   let arr1 = []
   let arr2 = []
   let arr3 = []
+  let Coodinare = new Array()
 
-  if (HetGNNShow == true) arr1 = Info.HetGNN[userId].rec_result;
-  if (KGATShow == true) arr2 = Info.KGAT[userId].rec_result;
-  if (NIRecShow == true) arr3 = Info.NIRec[userId].rec_result;
+  if (HetGNNShow == true){
+    arr1 = Info.HetGNN[userId].rec_result;
+    Coodinare.push(Info.HetGNN[userId]);
+  } else Coodinare.push([]);
 
-  let Vennresult = GetVennResult(arr1, arr2, arr3)
-  Coodinare.push(Info.HetGNN[userId])
-  Coodinare.push(Info.KGAT[userId])
-  Coodinare.push(Info.NIRec[userId])
+  if (KGATShow == true){
+    arr2 = Info.KGAT[userId].rec_result;
+    Coodinare.push(Info.KGAT[userId])
+  } else Coodinare.push([]);
+
+  if (NIRecShow == true){
+    arr3 = Info.NIRec[userId].rec_result;
+    Coodinare.push(Info.NIRec[userId])
+  } else Coodinare.push([]);
+
 
   jsonData.Coodinare = Coodinare
-  jsonData.Vennresult = Vennresult
-  jsonData.Word = Word
-  res.json(jsonData)
+  jsonData.Vennresult = GetVennResult(arr1, arr2, arr3)
+  jsonData.Word = getUserInfo(userId)
 
+  //回传数据
+  res.json(jsonData)
 });
 
 router.post('/selectedMovie', (req, res) => {

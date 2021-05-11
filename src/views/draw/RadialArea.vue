@@ -60,17 +60,26 @@ export default {
     },
     value: function () {
       this.buildChart()
-    }
+    },
+    "$store.getters.HetGNNShow"() {
+      this.buildChart()
+    },
+    "$store.getters.KGATShow"() {
+      this.buildChart()
+    },
+    "$store.getters.NIRecShow"() {
+      this.buildChart()
+    },
   },
   mounted() {
-    this.getData(this.value,this.slider,store.getters.HetGNNShow,store.getters.KGATShow,store.getters.NIRecShow)
+    this.buildChart()
   },
   methods: {
     buildChart(){
-      d3.select("#RadialArea").selectAll("svg").remove();
       this.getData(this.value,this.slider,store.getters.HetGNNShow,store.getters.KGATShow,store.getters.NIRecShow)
     },
     drawRadialStackedBarChart(map, config, data) {
+      d3.select("#RadialArea").selectAll("svg").remove();
       const SVG = d3
         .select(map)
         .append("svg")
@@ -347,7 +356,6 @@ export default {
       let fileName = "./" +value + ".csv"
       let select = [HetGNN,KGAT,NIRec]
       axios.get(fileName).then((res) => {
-        let index = 0
         var data = d3.csvParse(res.data, (d, _, columns) => {
           let total = 0;
           let min = 1
@@ -359,19 +367,22 @@ export default {
               if(dfloat < min) min = dfloat
               if(dfloat > max) max = dfloat
             }
+            else{
+              d[columns[i]] = 0
+            }
           }
           d.total = total;
           let diff = max - min
           if(diff > slider[0] && diff < slider[1]) return d;
           else return;
         });
+        
         const config = {
           width: 500,
           height: 500,
           innerRadius: 0,
           outerRadius: 200,
         };
-        
         this.drawRadialStackedBarChart(this.$refs.RadialArea, config, data);
       });
     },

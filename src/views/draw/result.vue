@@ -29,9 +29,8 @@ export default {
   },
   watch: {
     "$store.getters.userId"() {
-      // console.log(this.$store.getters.userId);
       axios
-        .post("api/getdata/selectUser", { data: this.$store.getters.userId })
+        .post("api/getdata/selectUser", { data: {'id':this.$store.getters.userId,"state":[store.getters.HetGNNShow,store.getters.KGATShow,store.getters.NIRecShow]}})
         .then((res) => {
           document.getElementById("coordinate").innerHTML = "";
           this.Coordinate(this.$refs.coordinate, res.data.Coodinare);
