@@ -358,6 +358,70 @@ function getUserInfo(userId){
   }
   return {"values":values, "rate":rate}
 }
+function getRecMovieStatic(userId,movieId){
+  let genre = Info.movieInfo[movieId].movieGenre.split("|")
+  let actor = Info.movieInfo[movieId].movieActor.split("|")
+  let director = Info.movieInfo[movieId].movieDirector.split("|")
+  let tags = Info.movieInfo[movieId].movieTags.split("|")
+  let user_static = Info.user_rec_static[userId]
+  let num =[]
+
+  let key = Object.keys(user_static["genre"])
+  let total = 0
+  let test = 0
+  for(let i=0;i< genre.length;i++){
+    if (key.includes(genre[i])){
+      test += user_static["genre"][genre[i]]
+    }
+  }
+  for( i = 0;i<key.length;i++){
+    total += user_static["genre"][key[i]]
+  }
+  num.push(test/total)
+
+  total = 0
+  test = 0
+  key = Object.keys(user_static["actor"])
+  for (let i = 0; i < actor.length; i++) {
+    if (key.includes(actor[i])) {
+      test += user_static["actor"][actor[i]]
+    }
+  }
+  for (i = 0; i < key.length; i++) {
+    total += user_static["actor"][key[i]]
+  }
+  num.push(test / total)
+
+  total = 0
+  test = 0
+  key = Object.keys(user_static["director"])
+  
+  for (let i = 0; i < director.length; i++) {
+    if (key.includes(director[i])) {
+      test += user_static["director"][director[i]]
+    }
+  } 
+  for (i = 0; i < key.length; i++) {
+    total += user_static["director"][key[i]]
+  }
+  num.push(test / total)
+
+  total = 0
+  test = 0
+  key = Object.keys(user_static["tags"])
+  for (let i = 0; i < tags.length; i++) {
+    if (key.includes(tags[i])) {
+      test += user_static["tags"][tags[i]]
+    }
+  } 
+  for (i = 0; i < key.length; i++) {
+    total += user_static["tags"][key[i]]
+  }
+  num.push(test / total)
+  num.push(Info.movieInfo[movieId]["movieUser"])
+
+  return num
+}
 var NIRecShow = true
 var KGATShow = true
 var HetGNNShow = true
@@ -397,6 +461,7 @@ router.post('/selectedMovie', (req, res) => {
   var jsonData = new Object()
   let forceData;
   console.log(userId, movieId, movie_or)
+  let static = getRecMovieStatic(userId,movieId)
   switch (movie_or) {
     case 'H':
       forceData = getKGATatt(userId, movieId); //调用HetGNN推荐原因
@@ -422,6 +487,8 @@ router.post('/selectedMovie', (req, res) => {
 
   jsonData.forceData = forceData
   jsonData.movieInfo = Info.movieInfo[movieId]
+  jsonData.static = static
+  jsonData.model = movie_or
 
 
   res.json(jsonData)

@@ -10,6 +10,9 @@ const mutations = {
   ADD_D3_DATA_LIST: (state, data) => {
     state.d3DataList.push(data)
   },
+  Empty_D3_DATA_LIST: (state,data) =>{
+    state.d3DataList = []
+  },
 }
 const actions = {
     

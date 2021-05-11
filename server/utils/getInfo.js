@@ -58,7 +58,8 @@ class doubanInfo {
                 object.movieRate = parseFloat(line[8])
                 object.movieSim = line[9].split(' ').map(Number)
                 object.movieDoubanID = line[10]
-                object.moviePhoto = line[11].replace("\r","").replace("https","http")
+                object.moviePhoto = line[11].replace("https","http")
+                object.movieUser = parseInt(line[12].replace("\r", ""))
                 array.push(object)
             } catch (err) {
                 console.log()
