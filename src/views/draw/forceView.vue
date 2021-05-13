@@ -2,12 +2,20 @@
   <div class="forceView">
     <div id="force" ref="force">
       <div class="selectInfo">
-        <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size:20px;line-height:2">
+        <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size:20px;line-height:2;float:left">
           <el-breadcrumb-item
           v-for="item in selectInfo"
           :key="item"
         >{{item}}</el-breadcrumb-item>
         </el-breadcrumb>
+        <el-select v-model="value" size="mini" @change="force($refs.force, D3forceData[value])" style="float:right;top:5px;width:90px;height:50px">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
       </div>
     </div>
     <div class="movieInfo">
@@ -153,7 +161,10 @@ export default {
       },
       DivergingBarData: [],
       or: "",
-      selectInfo:[]
+      selectInfo:[],
+      options: [],
+      value:"...",
+      D3forceData:{}
     };
   },
   created: function () {},
@@ -162,6 +173,7 @@ export default {
     "$store.getters.movieId"() {
       let model = this.$store.getters.movieId.charAt(this.$store.getters.movieId.length - 1)
       this.selectInfo[1] = model
+      this.value = "..."
       axios
         .post("api/getdata/selectedMovie", {
           data: [this.$store.getters.userId, this.$store.getters.movieId],
@@ -172,12 +184,17 @@ export default {
           this.DivergingBarData = [res.data.static];
           this.or = res.data.model;
 
-          let svgbox = d3.select("#force").selectAll("svg")._groups[0];
-          if (svgbox.length > 1) {
-            d3.select("#force").selectAll("svg")._groups[0][0].remove();
-          }
+          
+          let option = Object.keys(res.data.forceData) 
 
-          this.force(this.$refs.force, res.data.forceData);
+          let options = []
+          for(var i = 0;i<option.length;i++){
+            options.push({value:option[i]})
+          }
+          this.options = options
+          this.value = option[0]
+          this.D3forceData = res.data.forceData
+          this.force(this.$refs.force, res.data.forceData[option[0]]);
           this.DivergingBar([res.data.static], res.data.model,res.data.movieInfo.movieName);
         });
     },
@@ -186,14 +203,17 @@ export default {
       this.selectInfo.push(this.$store.getters.userId)
       this.selectInfo.push('')
       this.selectInfo.push('')
-    },
+    }
   },
   methods: {
     tempconsole(svgData) {
       console.log(svgData);
     },
     force(map, data) {
-      console.log("data",data)
+      let svgbox = d3.select("#force").selectAll("svg")._groups[0];
+      if (svgbox.length > 1) {
+            d3.select("#force").selectAll("svg")._groups[0][0].remove();
+      }
       var net = {},
         expand = {
           targetUser: true,
@@ -635,7 +655,7 @@ export default {
       if(name.length > 5){
         name = name.substring(0,5) + "....";
       }
-      console.log(name)
+
       SVG.append("g")
           .attr("fill", "black")
           .append("text")
@@ -1069,7 +1089,7 @@ export default {
         }
       }
     },
-    addDivergingBar(data, or) {
+    addDivergingBar(data, or,name) {
       d3.select("#BarCopy").remove();
       const x0 = d3
         .scaleRadial()
@@ -1108,6 +1128,18 @@ export default {
         else if (index == 3) return x3(data);
         else if (index == 4) return x4(data);
       }
+      if(name.length > 5){
+        name = name.substring(0,5) + "....";
+      }
+
+      d3.select(".Bar")
+        .append("g")
+          .attr("fill", "black")
+          .append("text")
+          .text(name)
+          .attr("x", name.length * 11)
+          .attr("y",5)
+
       d3.select(".Bar")
         .append("g")
         .attr("id", "BarCopy")
@@ -1116,7 +1148,7 @@ export default {
         .data(data)
         .join("rect")
         .attr("x", 70)
-        .attr("y", (d, i) => (i - 1) * 25 + 15)
+        .attr("y", (d, i) => i * 25 + 15)
         .attr("width", (d, i) => guiyi(d, i))
         .attr("height", 20)
         .append("title")
@@ -1124,7 +1156,7 @@ export default {
     },
     addCopy(svgdata) {
       this.addForce(svgdata.d3Data);
-      this.addDivergingBar(svgdata.DivergingBarData[0], svgdata.or);
+      this.addDivergingBar(svgdata.DivergingBarData[0], svgdata.or,svgdata.imgHB.movieName);
     },
     empty() {
       this.$store.commit("svgData/Empty_D3_DATA_LIST", "");
@@ -1145,7 +1177,7 @@ export default {
 }
 
 .selectInfo {
-  width: 79%;
+  width: 1090px;
   height: 40px;
   float: left;
   margin-left: 10px;

@@ -138,6 +138,7 @@ export default {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
+      // color = [#AE9BAE,#AE8174,#9E746B,#8E809C,#FFC57F,#B7C4D6,#DBA86B]
       var blend_data = [
         {
           index: 0,
@@ -238,7 +239,7 @@ export default {
         for (var j = 0; j < area.length; j++) {
           var asi = [0, 0];
           switch (
-            i //["He", "KG", "IN", "HeKG", "HeNI", "KGNI", "HeKGNI"]
+            i //["He", "KG", "IN", "HeKG", "HeNI", "KGNI", "HeKGNI"] //[#AE9BAE,#AE8174,#9E746B,#8E809C,#FFC57F,#B7C4D6,#DBA86B]
           ) {
             case 0:
               asi = recInHetGNN();
@@ -359,7 +360,7 @@ export default {
       // HetGNN
       drwacircle
         .append("g")
-        .attr("fill", "#627FA6")
+        .attr("fill", "#627FA6") 
         // .attr("stroke", "red")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
@@ -396,7 +397,7 @@ export default {
         })
         .append("title")
         .text((d) => d.movieName);
-
+      // NIRec
       drwacircle
         .append("g")
         .attr("fill", "#FF9515")
@@ -416,7 +417,7 @@ export default {
         .attr("transform", `rotate(${-60}, ${0} ${0})`)
         .append("title")
         .text((d) => d.movieName);
-
+      //  HK
       drwacircle
         .append("g")
         .attr("fill", "#786A88")
@@ -436,9 +437,10 @@ export default {
         .append("title")
         .text((d) => d.movieName);
 
+      //HN
       drwacircle
         .append("g")
-        .attr("fill", "#786A88")
+        .attr("fill", "#D3974F")
         // .attr("stroke", "red")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
@@ -455,6 +457,7 @@ export default {
         .append("title")
         .text((d) => d.movieName);
 
+      // KN
       drwacircle
         .append("g")
         .attr("fill", "#A77669")
@@ -473,7 +476,7 @@ export default {
         })
         .append("title")
         .text((d) => d.movieName);
-
+      //HKN
       drwacircle
         .append("g")
         .attr("fill", "#786A88")

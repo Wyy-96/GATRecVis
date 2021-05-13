@@ -12,7 +12,7 @@ const { json } = require('d3-fetch');
 let Info = new GetInfo()
 Info.initialize()
 
-function GetVennResult(arr1, arr2, arr3) {
+function GetVennResult(arr1, arr2, arr3,u_id) {
   //数组交集，或得两个数组重复的元素
   let Part12 = arr1.filter(item => arr2.includes(item))
   let Part13 = arr1.filter(item => arr3.includes(item))
@@ -30,18 +30,18 @@ function GetVennResult(arr1, arr2, arr3) {
   Part23 = Part23.filter((x) => !test.some((item) => x === item))
 
   let ALL_part = new Object()
-  ALL_part.He = GetMovieName(Part1)
-  ALL_part.KG = GetMovieName(Part2)
-  ALL_part.NI = GetMovieName(Part3)
-  ALL_part.HeKG = GetMovieName(Part12)
-  ALL_part.HeNI = GetMovieName(Part13)
-  ALL_part.KGNI = GetMovieName(Part23)
-  ALL_part.HeKGNI = GetMovieName(Part123)
+  ALL_part.He = GetMovieName(Part1,u_id)
+  ALL_part.KG = GetMovieName(Part2,u_id)
+  ALL_part.NI = GetMovieName(Part3,u_id)
+  ALL_part.HeKG = GetMovieName(Part12,u_id)
+  ALL_part.HeNI = GetMovieName(Part13,u_id)
+  ALL_part.KGNI = GetMovieName(Part23,u_id)
+  ALL_part.HeKGNI = GetMovieName(Part123,u_id)
 
   return ALL_part
 }
 
-function GetMovieName(data) {
+function GetMovieName(data,u_id) {
   let temp_array = new Array()
   data.forEach((element) => {
     let temp_object = {}
@@ -50,80 +50,6 @@ function GetMovieName(data) {
     temp_array.push(temp_object)
   })
   return temp_array
-}
-
-function KGATRecResult(userId, movieId) {
-  let jsonData = new Object()
-  if (Object.keys(Info.KGAT_att[userId]).includes(movieId + '') == true) {
-    console.log('存在')
-    let data = Info.KGAT_att[userId][movieId + '']
-    let movieName = Info.movieInfo[movieId].movieName
-    var nodes = []
-    var tempNodes = []
-    var links = []
-
-    nodes.push({ id: 'user' + userId, group: 6 })
-    nodes.push({ id: movieName, group: 7 })
-    tempNodes.push('user' + userId)
-    tempNodes.push(movieName)
-
-    data.forEach((element) => {
-      let key = Object.keys(element)
-      let name1 = ''
-      let name2 = ''
-      for (let i in key) {
-        if (key[i] == 'm') {
-          name1 = Info.movieInfo[element[key[i]]].movieName
-          links.push({ source: name1, target: 'user' + userId, value: 1 })
-          if (tempNodes.includes(name1) == false) {
-            nodes.push({ id: name1, group: 2 })
-            tempNodes.push(name1)
-          }
-
-        }
-        else if (key[i] == 'u') {
-          name2 = 'user' + element[key[i]]
-          links.push({ source: name2, target: name1, value: 1 })
-          links.push({ source: movieName, target: name2, value: 1 })
-          if (tempNodes.includes(name2) == false) {
-            nodes.push({ id: name2, group: 1 })
-            tempNodes.push(name2)
-          }
-
-        }
-        else if (key[i] == 'a') {
-          name2 = Info.actorInfo[element[key[i]]]
-          links.push({ source: name2, target: name1, value: 1 })
-          links.push({ source: movieName, target: name2, value: 1 })
-          if (tempNodes.includes(name2) == false) {
-            nodes.push({ id: name2, group: 3 })
-            tempNodes.push(name2)
-          }
-        }
-        else if (key[i] == 'd') {
-          name2 = Info.directorInfo[element[key[i]]]
-          links.push({ source: name2, target: name1, value: 1 })
-          links.push({ source: movieName, target: name2, value: 1 })
-          if (tempNodes.includes(name2) == false) {
-            nodes.push({ id: name2, group: 4 })
-            tempNodes.push(name2)
-          }
-        }
-        else if (key[i] == 'g') {
-          name2 = Info.genreInfo[element[key[i]]]
-          links.push({ source: name2, target: name1, value: 1 })
-          links.push({ source: movieName, target: name2, value: 1 })
-          if (tempNodes.includes(name2) == false) {
-            nodes.push({ id: name2, group: 5 })
-            tempNodes.push(name2)
-          }
-        }
-      }
-    })
-  }
-  jsonData['nodes'] = nodes
-  jsonData['links'] = links
-  return jsonData
 }
 
 var Ainfo_f = fs.readFileSync('./data/att_actor.csv', 'utf-8').split('\n');
@@ -343,8 +269,8 @@ function getNIRecatt(userId, movieId){
   let jsonforce = {}
   jsonforce['links'] = []
   jsonforce['nodes'] = []
-  jsonforce['nodes'].push({ id: 'u' + userId, value: 20, type: 'targetUser' })
-  jsonforce['nodes'].push({ id: 'm' + movieId, value: 20, type: 'targetMovie' })
+  jsonforce['nodes'].push({ id: 'u' + userId, value: 20, type: 'targetUser' ,name:'u' + userId})
+  jsonforce['nodes'].push({ id: 'm' + movieId, value: 20, type: 'targetMovie', name: Info.movieInfo[movieId].movieName })
 
   
   if (Info.NIRecPath[userId] == undefined){
@@ -352,29 +278,30 @@ function getNIRecatt(userId, movieId){
   }
   else if (Object.keys(Info.NIRecPath[userId]).includes('m' + movieId) == true){
     let Pathes = Info.NIRecPath[userId]['m' + movieId]
+    
     Pathes.forEach((element)=>{
       if(element == ''){
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1})
-      }
-      let m_id = parseInt(element.split(",")[0].replace("m",""))
-      jsonforce['nodes'].push({ id: 'm' + m_id, value: 8, type: 'movie', name: Info.movieInfo[m_id].movieName})
-      jsonforce['links'].push({ source: 'u' + userId, target: 'm' + m_id, value: 1 })
+      }else{
+        let m_id = parseInt(element.split(",")[0].replace("m",""))
+        jsonforce['nodes'].push({ id: 'm' + m_id, value: 8, type: 'movie', name: Info.movieInfo[m_id].movieName})
+        jsonforce['links'].push({ source: 'u' + userId, target: 'm' + m_id, value: 1 })
 
-      let tag = element.split(",")[1]
-      let tag_id = parseInt(element.split(",")[1].slice(1))
-      if(tag[0] == 'a'){
-        jsonforce['nodes'].push({ id: tag, value: 8, type: 'actor', name: Info.actorInfo[parseInt(tag_id)]})
-      } else if (tag[0] == 'd'){
-        jsonforce['nodes'].push({ id: tag, value: 8, type: 'director', name: Info.directorInfo[parseInt(tag_id)]})
-      } else if (tag[0] == 'g') {
-        jsonforce['nodes'].push({ id: tag, value: 8, type: 'genre', name: Info.genreInfo[parseInt(tag_id)]})
-      } else if (tag[0] == 'u') {
-        jsonforce['nodes'].push({ id: tag, value: 8, type: 'user', name: tag})
-        
-      }
+        let tag = element.split(",")[1]
+        let tag_id = parseInt(element.split(",")[1].slice(1))
+        if(tag[0] == 'a'){
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'actor', name: Info.actorInfo[parseInt(tag_id)]})
+        } else if (tag[0] == 'd'){
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'director', name: Info.directorInfo[parseInt(tag_id)]})
+        } else if (tag[0] == 'g') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'genre', name: Info.genreInfo[parseInt(tag_id)]})
+        } else if (tag[0] == 'u') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'user', name: tag})
+        }
 
-      jsonforce['links'].push({ source: 'm' + m_id, target: tag, value: 1 })
-      jsonforce['links'].push({ source: tag, target: 'm' + movieId, value: 1 })
+        jsonforce['links'].push({ source: 'm' + m_id, target: tag, value: 1 })
+        jsonforce['links'].push({ source: tag, target: 'm' + movieId, value: 1 })
+      }
     })
   }
   else{
@@ -388,8 +315,8 @@ function getHetGNNatt(userId, movieId){
   let jsonforce = {}
   jsonforce['links'] = []
   jsonforce['nodes'] = []
-  jsonforce['nodes'].push({ id: 'u' + userId, value: 20, type: 'targetUser' })
-  jsonforce['nodes'].push({ id: 'm' + movieId, value: 20, type: 'targetMovie' })
+  jsonforce['nodes'].push({ id: 'u' + userId, value: 20, type: 'targetUser', name:'u' + userId})
+  jsonforce['nodes'].push({ id: 'm' + movieId, value: 20, type: 'targetMovie', name: Info.movieInfo[movieId].movieName})
 
   // 目标用户与推荐结果之间 没有路径
   if (Info.HetGNNPath[userId] == undefined) {
@@ -401,6 +328,7 @@ function getHetGNNatt(userId, movieId){
       let pathItems = element.split(",")
       if (pathItems.length == 1){
         var tag = pathItems[0]
+        var tag_id = parseInt(pathItems[0].slice(1))
         if (tag[0] == 'a') {
           jsonforce['nodes'].push({ id: tag, value: 8, type: 'actor', name: Info.actorInfo[parseInt(tag_id)] })
         } else if (tag[0] == 'd') {
@@ -410,7 +338,7 @@ function getHetGNNatt(userId, movieId){
         } else if (tag[0] == 'u') {
           jsonforce['nodes'].push({ id: tag, value: 8, type: 'user', name: tag })
         }else{
-          jsonforce['nodes'].push({ id: tag, value: 8, type: 'movie', name: Info.movieInfo[m_id].movieName })
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'movie', name: Info.movieInfo[parseInt(tag_id)].movieName })
         }
         
         jsonforce['links'].push({ source: 'u' + userId, target: tag, value: 1 })
@@ -433,7 +361,7 @@ function getHetGNNatt(userId, movieId){
         } else if (tag[0] == 'u') {
           jsonforce['nodes'].push({ id: tag, value: 8, type: 'user', name: tag })
         }else{
-          jsonforce['nodes'].push({ id: tag, value: 8, type: 'movie', name: Info.movieInfo[m_id].movieName })
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'movie', name: Info.movieInfo[parseInt(tag_id)].movieName })
         }
 
         jsonforce['links'].push({ source: 'm' + m_id, target: tag, value: 1 })
@@ -573,7 +501,7 @@ router.post('/selectUser', (req, res) => {
 
 
   jsonData.Coodinare = Coodinare
-  jsonData.Vennresult = GetVennResult(arr1, arr2, arr3)
+  jsonData.Vennresult = GetVennResult(arr1, arr2, arr3,userId)
   jsonData.Word = getUserInfo(userId)
 
   //回传数据
@@ -590,27 +518,26 @@ router.post('/selectedMovie', (req, res) => {
   let static = getRecMovieStatic(userId,movieId)
   switch (movie_or) {
     case 'H':
-      forceData = getHetGNNatt(userId, movieId); //调用HetGNN推荐原因
+      forceData = {HetGNN:getHetGNNatt(userId, movieId)}; //调用HetGNN推荐原因
       break;
     case 'K':
-      forceData = getKGATatt(userId, movieId); //调用KGAT推荐原因
+      forceData = {KGAT:getKGATatt(userId, movieId)}; //调用KGAT推荐原因
       break;
     case 'N':
-      forceData = getNIRecatt(userId, movieId); //调用NIRec推荐原因
+      forceData = {NIRec:getNIRecatt(userId, movieId)}; //调用NIRec推荐原因
       break;
     case 'HK':
-      forceData = getKGATatt(userId, movieId); //调用HetGNN KGAT推荐原因
+      forceData = {HetGNN:getHetGNNatt(userId, movieId),KGAT:getKGATatt(userId, movieId)}; //调用HetGNN KGAT推荐原因
       break;
     case 'HN':
-      jsonData = getKGATatt(userId, movieId); //调用HetGNN NIRec推荐原因
+      forceData = {HetGNN:getHetGNNatt(userId, movieId),NIRec:getNIRecatt(userId, movieId)}; //调用HetGNN NIRec推荐原因
       break;
     case 'KN':
-      forceData = getKGATatt(userId, movieId); //调用KGAT NIRec推荐原因
+      forceData = {KGAT:getKGATatt(userId, movieId),NIRec:getNIRecatt(userId, movieId)}; //调用KGAT NIRec推荐原因
       break;
     default:
-      forceData = getKGATatt(userId, movieId); //调用HetGNN KGAT NIRec推荐原因
+      forceData = {HetGNN:getHetGNNatt(userId, movieId),KGAT:getKGATatt(userId, movieId),NIRec:getNIRecatt(userId, movieId)}; //调用HetGNN KGAT NIRec推荐原因
   }
-
   jsonData.forceData = forceData
   jsonData.movieInfo = Info.movieInfo[movieId]
   jsonData.static = static
