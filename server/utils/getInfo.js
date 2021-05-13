@@ -11,6 +11,11 @@ class doubanInfo {
     userInfo = new Array(9625);
     NIRecPath = new Array(9625);
     HetGNNPath = new Array(9625);
+    HIT = {
+        HetGNN:new Array(9625),
+        KGAT:new Array(9625),
+        NIRec:new Array(9625)
+    };
 
     KGAT = new Array();
     HetGNN = new Array();
@@ -27,6 +32,9 @@ class doubanInfo {
     user_rec_static = JSON.parse(fs.readFileSync('./data/user_rec_static.json', 'utf-8'));
     NIRecPath_f = fs.readFileSync('./data/NIRecpath.txt', 'utf-8').split('|');
     HetGNNPath_f = fs.readFileSync('./data/HetGNNpath.txt', 'utf-8').split('|');
+    hit_HetGNN_f = fs.readFileSync('./data/test_hit_HetGNN.txt', 'utf-8').split('|');
+    hit_KGAT_f = fs.readFileSync('./data/test_hit_KGAT.txt', 'utf-8').split('|');
+    hit_NIRec_f = fs.readFileSync('./data/test_hit_NIRec.txt', 'utf-8').split('|');
 
     initialize() {console.log("start")
         this.getQueueInfo(this.Ainfo_f, this.actorInfo)
@@ -39,6 +47,7 @@ class doubanInfo {
         this.AnalyzeDdata(this.NIRec_f, this.NIRec)
         this.loadNIRecPath(this.NIRecPath_f,this.NIRecPath)
         this.loadHetGNNPath(this.HetGNNPath_f, this.HetGNNPath)
+        this.loadHIT(this.hit_HetGNN_f,this.hit_KGAT_f,this.hit_NIRec_f,this.HIT)
     }
     getQueueInfo(data, arr) {
         data.forEach(element => {
@@ -198,6 +207,9 @@ class doubanInfo {
                 console.log()
             }
         })
+    }
+    loadHIT(data1,data2,data3,object){
+        
     }
 }
 // let test = new doubanInfo
