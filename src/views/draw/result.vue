@@ -132,6 +132,17 @@ export default {
             .attr("stroke-linejoin", "round")
             .attr("stroke", "white")
         );
+        let avrea_matrix =[[0.0623,0.0193,0.7725,0.4667],[0.1074,0.0384,0.8505,0.9907],[0.7773,0.3690,0.7830,0.9772]]
+        Coordinate.append("g").selectAll("g")
+        .data(avrea_matrix)
+        .join("g")
+        .attr("fill",(d,i)=>color[i])
+        .selectAll("circle")
+        .data((d) => d)
+        .join("circle")
+        .attr("cx",(d,i) => x(keys[i]))
+        .attr("cy",(d,i)=> y.get(keys[i])(d))
+        .attr("r",6)
     },
     Venn(map) {
       const config = {
@@ -369,6 +380,8 @@ export default {
         .join("circle")
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
+        .attr("stroke", "red")
+        .attr("stroke-width", (d)=>d.hit)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
@@ -382,8 +395,6 @@ export default {
       drwacircle
         .append("g")
         .attr("fill", "#6b486b")
-        // .attr("stroke", "red")
-        // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
         .selectAll("g")
         .data(data[keys[1]])
@@ -391,6 +402,8 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
+        .attr("stroke", "red")
+        .attr("stroke-width", (d)=>d.hit)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
@@ -410,6 +423,8 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
+        .attr("stroke", "red")
+        .attr("stroke-width", (d)=>d.hit)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
@@ -430,6 +445,8 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
+        .attr("stroke", "red")
+        .attr("stroke-width", (d)=>d.hit)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
@@ -450,6 +467,8 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
+        .attr("stroke", "red")
+        .attr("stroke-width", (d)=>d.hit)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
@@ -470,6 +489,8 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
+        .attr("stroke", "red")
+        .attr("stroke-width", (d)=>d.hit)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
@@ -489,6 +510,8 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
+        .attr("stroke", "red")
+        .attr("stroke-width", (d)=>d.hit)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);

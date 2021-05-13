@@ -30,23 +30,53 @@ function GetVennResult(arr1, arr2, arr3,u_id) {
   Part23 = Part23.filter((x) => !test.some((item) => x === item))
 
   let ALL_part = new Object()
-  ALL_part.He = GetMovieName(Part1,u_id)
-  ALL_part.KG = GetMovieName(Part2,u_id)
-  ALL_part.NI = GetMovieName(Part3,u_id)
-  ALL_part.HeKG = GetMovieName(Part12,u_id)
-  ALL_part.HeNI = GetMovieName(Part13,u_id)
-  ALL_part.KGNI = GetMovieName(Part23,u_id)
-  ALL_part.HeKGNI = GetMovieName(Part123,u_id)
+  ALL_part.He = GetMovieName(Part1,u_id,'H')
+  ALL_part.KG = GetMovieName(Part2,u_id,'K')
+  ALL_part.NI = GetMovieName(Part3,u_id,'N')
+  ALL_part.HeKG = GetMovieName(Part12,u_id,'HK')
+  ALL_part.HeNI = GetMovieName(Part13,u_id,'HN')
+  ALL_part.KGNI = GetMovieName(Part23,u_id,'KN')
+  ALL_part.HeKGNI = GetMovieName(Part123,u_id,'HKN')
 
   return ALL_part
 }
 
-function GetMovieName(data,u_id) {
+function GetMovieName(data,u_id,model) {
   let temp_array = new Array()
   data.forEach((element) => {
     let temp_object = {}
     temp_object.movieId = element
     temp_object.movieName = Info.movieInfo[element].movieName
+    if(model == 'H'){
+      if(Info.HIT["HetGNN"][u_id].includes(element) == true)
+        temp_object.hit = 1
+      else temp_object.hit = 0
+    }
+    else if(model == 'K'){
+      if(Info.HIT["KGAT"][u_id].includes(element) == true)
+        temp_object.hit = 1
+      else temp_object.hit = 0
+    }else if(model == 'N'){
+      if(Info.HIT["NIRec"][u_id].includes(element) == true)
+        temp_object.hit = 1
+      else temp_object.hit = 0
+    }else if(model == 'HK'){
+      if(Info.HIT["KGAT"][u_id].includes(element) == true || Info.HIT["HetGNN"][u_id].includes(element) == true)
+        temp_object.hit = 1
+      else temp_object.hit = 0
+    }else if(model == 'HN'){
+      if(Info.HIT["NIRec"][u_id].includes(element) == true || Info.HIT["HetGNN"][u_id].includes(element) == true)
+        temp_object.hit = 1
+      else temp_object.hit = 0
+    }else if(model == 'KN'){
+      if(Info.HIT["KGAT"][u_id].includes(element) == true || Info.HIT["NIRec"][u_id].includes(element) == true)
+        temp_object.hit = 1
+      else temp_object.hit = 0
+    }else{
+      if(Info.HIT["KGAT"][u_id].includes(element) == true || Info.HIT["NIRec"][u_id].includes(element) == true || Info.HIT["HetGNN"][u_id].includes(element) == true) 
+        temp_object.hit = 1
+      else temp_object.hit = 0
+    }
     temp_array.push(temp_object)
   })
   return temp_array

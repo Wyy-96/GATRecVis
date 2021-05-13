@@ -209,10 +209,54 @@ class doubanInfo {
         })
     }
     loadHIT(data1,data2,data3,object){
-        
+        data1.forEach((element,i)=>{
+            try{
+                let line = element.split(",")
+                if(line[0] == '')
+                    object["HetGNN"][i] = []
+                else{
+                    line = line.map(Number)
+                    object["HetGNN"][i] = line
+                }
+            }catch(err){
+                console.log(i)
+            }
+        })
+
+        data2.forEach((element,i)=>{
+            try{
+                let line = element.split(",")
+                if(line[0] == '')
+                    object["KGAT"][i] = []
+                else{
+                    line = line.map(Number)
+                    object["KGAT"][i] = line
+                }
+            }catch(err){
+                console.log(i)
+            }
+        })
+
+        data3.forEach((element,i)=>{
+            try{
+                let line = element.split(",")
+                if(line[0] == '')
+                    object["NIRec"][i] = []
+                else{
+                    line = line.map(Number)
+                    object["NIRec"][i] = line
+                }
+            }catch(err){
+                console.log(i)
+            }
+        })
     }
 }
 // let test = new doubanInfo
 // test.initialize()
-// console.log(test.HetGNNPath[1])
+// console.log(test.HIT["HetGNN"][3])
+// 0.3690 0.7773 0.7830 0.0228   NIRec
+// 0.0384 0.1074 0.8505 0.0093   KGAT
+// 0.0193 0.0623 0.7725 0.5333   HetGNN
+
 module.exports = doubanInfo;
