@@ -178,14 +178,14 @@ export default {
           }
 
           this.force(this.$refs.force, res.data.forceData);
-          this.DivergingBar([res.data.static], res.data.model);
+          this.DivergingBar([res.data.static], res.data.model,res.data.movieInfo.movieName);
         });
     },
     "$store.getters.userId"(){
+      this.selectInfo = []
       this.selectInfo.push(this.$store.getters.userId)
       this.selectInfo.push('')
       this.selectInfo.push('')
-      console.log(this.selectInfo)
     },
   },
   methods: {
@@ -193,6 +193,7 @@ export default {
       console.log(svgData);
     },
     force(map, data) {
+      console.log("data",data)
       var net = {},
         expand = {
           targetUser: true,
@@ -204,7 +205,7 @@ export default {
           user: false,
         };
       const config = {
-        width: parseInt(d3.select(map).style("width")),
+        width: parseInt(d3.select(map).style("width")) ,
         height: parseInt(d3.select(map).style("height")),
       };
 
@@ -362,7 +363,7 @@ export default {
         .select(map)
         .append("svg")
         .attr("width", "1123px")
-        .attr("height", "700px")
+        .attr("height", "650px")
         .append("svg")
         .attr("class", "force")
         .attr(
@@ -577,7 +578,7 @@ export default {
         }
       }
     },
-    DivergingBar(data, or) {
+    DivergingBar(data, or,name) {
       d3.select(".DivergingBar").select("svg").remove();
       const x0 = d3 //电影被多少用户看过
         .scaleRadial()
@@ -630,7 +631,18 @@ export default {
             config.height
           }`
         );
-
+      
+      if(name.length > 5){
+        name = name.substring(0,5) + "....";
+      }
+      console.log(name)
+      SVG.append("g")
+          .attr("fill", "black")
+          .append("text")
+          .text(name)
+          .attr("x", name.length * -7)
+          .attr("y",5)
+      
       if (data.length > 0) {
         SVG.append("g")
           .attr("fill", color[or])
@@ -638,7 +650,7 @@ export default {
           .data(data[0])
           .join("rect")
           .attr("x", (d, i) => 67 - guiyi(d, i))
-          .attr("y", (d, i) => (i - 1) * 25 + 15)
+          .attr("y", (d, i) => i* 25 + 15)
           .attr("width", (d, i) => guiyi(d, i))
           .attr("height", 20)
           .append("title")
@@ -1147,7 +1159,7 @@ export default {
 }
 
 .txtInfo {
-  height: 40%;
+  height: 35%;
   // background: black;
   display: flex;
   flex-direction: column;
@@ -1197,7 +1209,7 @@ export default {
 }
 
 .DivergingBar {
-  height: 20%;
+  height: 25%;
 }
 
 .snapshot {

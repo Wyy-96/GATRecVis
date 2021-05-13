@@ -145,6 +145,7 @@ loadMovie(Ainfo_f, AM)
 loadMovie(DInfo_f, DM)
 loadMovie(Minfo_f, MU)
 
+// 加载KGAT电影路径信息
 function loadMovie(data, array) {
   data.forEach(element => {
     try {
@@ -184,7 +185,7 @@ function loadMovie(data, array) {
 
   // console.log(MG)
 }
-
+// 构造n*2的二维数组
 function ConstructArray(length) {
   let arr = new Array();
   for (var i = 0; i < length; i++) {          //一维长度为5
@@ -195,6 +196,7 @@ function ConstructArray(length) {
   }
   return arr
 }
+// 删除力导引数据中重复数据
 function deteleObject(obj) {
   var uniques = [];
   var stringify = {};
@@ -216,18 +218,11 @@ function deteleObject(obj) {
   uniques = uniques;
   return uniques;
 }
-
-function remove(arr,item){
-  console.log(arr)
-  let index = arr.indexOf(item)
-  if( index >-1)
-    arr.splice(index,1)
-  return arr
-}
-
+// 计算重复数量
 function counts_num(arr,value){
   return arr.reduce((a, v) => v === value ? a + 1 : a + 0, 0)
 }
+// 构造KGAT力导引数据
 function getKGATatt(userId, movieId) {
   let jsonforce = {}
   jsonforce['links'] = []
@@ -241,10 +236,10 @@ function getKGATatt(userId, movieId) {
       if (AM[el] == undefined) return
       if (AM[el][0].includes(movieId)) {
         jsonforce['links'].push({ source: 'u' + userId, target: 'm' +element, value: 1})
-        jsonforce['nodes'].push({ id: 'm' + element, value: 6, type: 'movie' })
+        jsonforce['nodes'].push({ id: 'm' + element, value: 8, type: 'movie' })
         jsonforce['links'].push({ source: 'm'+element, target: 'a'+el, value: 1 })
         jsonforce['links'].push({ source: 'a' +el, target: 'm' + movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'a' + el, value: 6, type: 'actor' })
+        jsonforce['nodes'].push({ id: 'a' + el, value: 8, type: 'actor' })
       }
     })
     MD[element][0].forEach(el => {
@@ -277,7 +272,7 @@ function getKGATatt(userId, movieId) {
         jsonforce['nodes'].push({ id: 'm' + element, value: 10, type: 'movie' })
         jsonforce['links'].push({ source: 'm' + element, target: 'u' + el, value: 1 })
         jsonforce['links'].push({ source: 'u' + el, target: 'm' +movieId, value: 1 })
-        jsonforce['nodes'].push({ id: 'u' + el, value: 6, type: 'user' })
+        jsonforce['nodes'].push({ id: 'u' + el, value: 8, type: 'user' })
       }
     })
 
@@ -342,6 +337,118 @@ function getKGATatt(userId, movieId) {
   jsonforce['links'] = deteleObject(jsonforce['links'])
 
   return jsonforce
+}
+// 构造NIRec力导引数据
+function getNIRecatt(userId, movieId){
+  let jsonforce = {}
+  jsonforce['links'] = []
+  jsonforce['nodes'] = []
+  jsonforce['nodes'].push({ id: 'u' + userId, value: 20, type: 'targetUser' })
+  jsonforce['nodes'].push({ id: 'm' + movieId, value: 20, type: 'targetMovie' })
+
+  
+  if (Info.NIRecPath[userId] == undefined){
+    jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1 })
+  }
+  else if (Object.keys(Info.NIRecPath[userId]).includes('m' + movieId) == true){
+    let Pathes = Info.NIRecPath[userId]['m' + movieId]
+    Pathes.forEach((element)=>{
+      if(element == ''){
+        jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1})
+      }
+      let m_id = parseInt(element.split(",")[0].replace("m",""))
+      jsonforce['nodes'].push({ id: 'm' + m_id, value: 8, type: 'movie', name: Info.movieInfo[m_id].movieName})
+      jsonforce['links'].push({ source: 'u' + userId, target: 'm' + m_id, value: 1 })
+
+      let tag = element.split(",")[1]
+      let tag_id = parseInt(element.split(",")[1].slice(1))
+      if(tag[0] == 'a'){
+        jsonforce['nodes'].push({ id: tag, value: 8, type: 'actor', name: Info.actorInfo[parseInt(tag_id)]})
+      } else if (tag[0] == 'd'){
+        jsonforce['nodes'].push({ id: tag, value: 8, type: 'director', name: Info.directorInfo[parseInt(tag_id)]})
+      } else if (tag[0] == 'g') {
+        jsonforce['nodes'].push({ id: tag, value: 8, type: 'genre', name: Info.genreInfo[parseInt(tag_id)]})
+      } else if (tag[0] == 'u') {
+        jsonforce['nodes'].push({ id: tag, value: 8, type: 'user', name: tag})
+        
+      }
+
+      jsonforce['links'].push({ source: 'm' + m_id, target: tag, value: 1 })
+      jsonforce['links'].push({ source: tag, target: 'm' + movieId, value: 1 })
+    })
+  }
+  else{
+    jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1 })
+  }
+
+  jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
+  return jsonforce
+}
+function getHetGNNatt(userId, movieId){
+  let jsonforce = {}
+  jsonforce['links'] = []
+  jsonforce['nodes'] = []
+  jsonforce['nodes'].push({ id: 'u' + userId, value: 20, type: 'targetUser' })
+  jsonforce['nodes'].push({ id: 'm' + movieId, value: 20, type: 'targetMovie' })
+
+  // 目标用户与推荐结果之间 没有路径
+  if (Info.HetGNNPath[userId] == undefined) {
+    jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1 })
+  }
+  else if (Object.keys(Info.HetGNNPath[userId]).includes('m' + movieId) == true) {
+    let Pathes = Info.HetGNNPath[userId]['m' + movieId]
+    Pathes.forEach((element) => {
+      let pathItems = element.split(",")
+      if (pathItems.length == 1){
+        var tag = pathItems[0]
+        if (tag[0] == 'a') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'actor', name: Info.actorInfo[parseInt(tag_id)] })
+        } else if (tag[0] == 'd') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'director', name: Info.directorInfo[parseInt(tag_id)] })
+        } else if (tag[0] == 'g') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'genre', name: Info.genreInfo[parseInt(tag_id)] })
+        } else if (tag[0] == 'u') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'user', name: tag })
+        }else{
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'movie', name: Info.movieInfo[m_id].movieName })
+        }
+        
+        jsonforce['links'].push({ source: 'u' + userId, target: tag, value: 1 })
+        jsonforce['links'].push({ source: tag, target: 'm' + movieId, value: 1 })
+      }
+      else{
+        let m_id = parseInt(pathItems[0].replace("m", ""))
+        jsonforce['nodes'].push({ id: 'm' + m_id, value: 8, type: 'movie', name: Info.movieInfo[m_id].movieName })
+        jsonforce['links'].push({ source: 'u' + userId, target: 'm' + m_id, value: 1 })
+        
+        let tag = pathItems[1]
+        let tag_id = parseInt(pathItems[1].slice(1))
+
+        if (tag[0] == 'a') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'actor', name: Info.actorInfo[parseInt(tag_id)] })
+        } else if (tag[0] == 'd') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'director', name: Info.directorInfo[parseInt(tag_id)] })
+        } else if (tag[0] == 'g') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'genre', name: Info.genreInfo[parseInt(tag_id)] })
+        } else if (tag[0] == 'u') {
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'user', name: tag })
+        }else{
+          jsonforce['nodes'].push({ id: tag, value: 8, type: 'movie', name: Info.movieInfo[m_id].movieName })
+        }
+
+        jsonforce['links'].push({ source: 'm' + m_id, target: tag, value: 1 })
+        jsonforce['links'].push({ source: tag, target: 'm' + movieId, value: 1 })
+      }
+    })
+  }
+  else {
+    jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1 })
+  }
+
+  jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
+  return jsonforce
+
+
 }
 function getUserInfo(userId){
   let values = Info.userInfo[userId][0].split(";")
@@ -483,13 +590,13 @@ router.post('/selectedMovie', (req, res) => {
   let static = getRecMovieStatic(userId,movieId)
   switch (movie_or) {
     case 'H':
-      forceData = getKGATatt(userId, movieId); //调用HetGNN推荐原因
+      forceData = getHetGNNatt(userId, movieId); //调用HetGNN推荐原因
       break;
     case 'K':
       forceData = getKGATatt(userId, movieId); //调用KGAT推荐原因
       break;
     case 'N':
-      forceData = getKGATatt(userId, movieId); //调用NIRec推荐原因
+      forceData = getNIRecatt(userId, movieId); //调用NIRec推荐原因
       break;
     case 'HK':
       forceData = getKGATatt(userId, movieId); //调用HetGNN KGAT推荐原因

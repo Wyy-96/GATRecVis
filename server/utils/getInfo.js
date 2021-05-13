@@ -3,12 +3,14 @@ const fs = require('fs');
 
 
 class doubanInfo {
-    actorInfo = new Array()
+    actorInfo = new Array();
     directorInfo = new Array();
     genreInfo = new Array();
     movieInfo = new Array();
     KGAT_att = new Array(9625);
     userInfo = new Array(9625);
+    NIRecPath = new Array(9625);
+    HetGNNPath = new Array(9625);
 
     KGAT = new Array();
     HetGNN = new Array();
@@ -23,8 +25,10 @@ class doubanInfo {
     HetGNN_f = fs.readFileSync('./data/HetGNN_rec_result.txt', 'utf-8').split('\n');
     NIRec_f = fs.readFileSync('./data/NIRec_rec_result.txt', 'utf-8').split('\n');
     user_rec_static = JSON.parse(fs.readFileSync('./data/user_rec_static.json', 'utf-8'));
+    NIRecPath_f = fs.readFileSync('./data/NIRecpath.txt', 'utf-8').split('|');
+    HetGNNPath_f = fs.readFileSync('./data/HetGNNpath.txt', 'utf-8').split('|');
 
-    initialize() {
+    initialize() {console.log("start")
         this.getQueueInfo(this.Ainfo_f, this.actorInfo)
         this.getQueueInfo(this.DInfo_f, this.directorInfo)
         this.getQueueInfo(this.Ginfo_f, this.genreInfo)
@@ -33,6 +37,8 @@ class doubanInfo {
         this.AnalyzeDdata(this.KGAT_f, this.KGAT)
         this.AnalyzeDdata(this.HetGNN_f, this.HetGNN)
         this.AnalyzeDdata(this.NIRec_f, this.NIRec)
+        this.loadNIRecPath(this.NIRecPath_f,this.NIRecPath)
+        this.loadHetGNNPath(this.HetGNNPath_f, this.HetGNNPath)
     }
     getQueueInfo(data, arr) {
         data.forEach(element => {
@@ -99,6 +105,67 @@ class doubanInfo {
         })
         console.log('end')
     }
+    loadNIRecPath(data,array){
+        data.forEach((element)=>{
+            try{
+                let data = element.split(",")
+                if(data.length == 2){
+                    let u_id = parseInt(data[0].replace("u", ""))
+                    let m_id = data[1]
+                    if (array[u_id] == undefined)
+                        array[u_id] = {}
+                    if (Object.keys(array[u_id]).includes(m_id) == false)
+                        array[u_id][m_id] = []
+                    if (array[u_id][m_id].includes("") == false)
+                        array[u_id][m_id].push("")
+                    
+                }
+                else if (data.length == 4){
+                    let u_id = parseInt(data[0].replace("u", ""))
+                    let m_id = data[3]
+                    if (array[u_id] == undefined)
+                        array[u_id] = {}
+                    if (Object.keys(array[u_id]).includes(m_id) == false)
+                        array[u_id][m_id] = []
+                    if (array[u_id][m_id].includes(data[1] + "," + data[2]) == false)
+                        array[u_id][m_id].push(data[1] + "," + data[2])
+                }
+            } catch (err){
+                console.log(err)
+            }
+
+        })
+    }
+    loadHetGNNPath(data,array){
+        data.forEach((element) => {
+            try {
+                let data = element.split(",")
+                if (data.length == 3) {
+                    let u_id = parseInt(data[0].replace("u", ""))
+                    let m_id = data[2]
+                    if (array[u_id] == undefined)
+                        array[u_id] = {}
+                    if (Object.keys(array[u_id]).includes(m_id) == false)
+                        array[u_id][m_id] = []
+                    array[u_id][m_id].push(data[1])
+
+                }
+                else if (data.length == 4) {
+                    let u_id = parseInt(data[0].replace("u", ""))
+                    let m_id = data[3]
+                    if (array[u_id] == undefined)
+                        array[u_id] = {}
+                    if (Object.keys(array[u_id]).includes(m_id) == false)
+                        array[u_id][m_id] = []
+                    if (array[u_id][m_id].includes(data[1] + "," + data[2]) == false)
+                        array[u_id][m_id].push(data[1] + "," + data[2])
+                }
+            } catch (err) {
+                console.log(err)
+            }
+
+        })
+    }
     loadUserInfo(data, array) {
         data.forEach((element, index) => {
             try {
@@ -133,4 +200,7 @@ class doubanInfo {
         })
     }
 }
+// let test = new doubanInfo
+// test.initialize()
+// console.log(test.HetGNNPath[1])
 module.exports = doubanInfo;
