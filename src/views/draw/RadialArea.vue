@@ -10,12 +10,12 @@
         >
         </el-option>
       </el-select>
-      <el-checkbox
+      <!-- <el-checkbox
         v-model="checked"
         style="left: 42px; top: 5px"
         inactive-color="#D1D1D1"
         >检测</el-checkbox
-      >
+      > -->
       <el-slider v-model="slider" range :step="0.1" :max="1" @change="buildChart()"> </el-slider>
     </div>
     <div id="RadialArea" class="RadialArea" ref="RadialArea"></div>
@@ -127,10 +127,6 @@ export default {
         .domain([0,3]) //d3.max(this.data, d => d.total)
         .range([120, 220]);
 
-      const y2 = d3
-        .scaleRadial()
-        .domain([0, 1]) //d3.max(this.data, d => d.total)
-        .range([120, 220]);
 
       relMap_g
         .append("g")
@@ -362,10 +358,12 @@ export default {
           let max = 0
           for (let i = 1; i < columns.length; i++){
             if(select[i-1] == true){
+              if (value == 'personal') d[columns[i]] = 1- d[columns[i]]
               let dfloat = parseFloat(d[columns[i]])
               total += dfloat
               if(dfloat < min) min = dfloat
               if(dfloat > max) max = dfloat
+              
             }
             else{
               d[columns[i]] = 0

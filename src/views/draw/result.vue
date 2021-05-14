@@ -219,7 +219,8 @@ export default {
           }`
         )
         .style("width", "100%")
-        .style("height", "auto");
+        .style("height", "auto")
+        .append("g");
 
       const venn = SVG.append("g")
         .selectAll("path")
@@ -292,9 +293,22 @@ export default {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
-      const SVG = d3.select(map).select("svg");
+      const SVG = d3.select(map).select("svg")
+      .call(
+          d3
+            .zoom()
+            .extent([
+              [0, 0],
+              [config.width, config.height],
+            ])
+            .scaleExtent([1, 8])
+            .on("zoom", function ({ transform }) {
+              svg_g.attr("transform", transform);
+            })
+        );
 
-      const drwacircle = SVG.append("g").attr("class", "none");
+      const svg_g = SVG.select("g")
+      const drwacircle = svg_g.append("g").attr("class", "none");
 
       function random(m, n) {
         return Math.floor(Math.random() * (n - m)) + m;
@@ -372,7 +386,7 @@ export default {
       drwacircle
         .append("g")
         .attr("fill", "#627FA6") 
-        // .attr("stroke", "red")
+        // .attr("stroke", "white")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
         .selectAll("g")
@@ -380,11 +394,20 @@ export default {
         .join("circle")
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
-        .attr("stroke", "red")
-        .attr("stroke-width", (d)=>d.hit)
+        .attr("stroke", "white")
+        .attr("stroke-width", (d)=>d.hit *3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
+        })
+        .on("mouseover", function (event, d) {
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r + 3);
+          })
+        .on("mouseout", function (d) {
+            let type = d3.select(this).attr("class");
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r - 3);
         })
         .attr("transform", `rotate(${60}, ${0} ${0})`)
         .attr("r", 6)
@@ -402,11 +425,20 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
-        .attr("stroke", "red")
-        .attr("stroke-width", (d)=>d.hit)
+        .attr("stroke", "white")
+        .attr("stroke-width", (d)=>d.hit *3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
+        })
+        .on("mouseover", function (event, d) {
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r + 3);
+          })
+        .on("mouseout", function (d) {
+            let type = d3.select(this).attr("class");
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);
@@ -414,7 +446,7 @@ export default {
       drwacircle
         .append("g")
         .attr("fill", "#FF9515")
-        // .attr("stroke", "red")
+        // .attr("stroke", "white")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
         .selectAll("g")
@@ -423,11 +455,20 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
-        .attr("stroke", "red")
-        .attr("stroke-width", (d)=>d.hit)
+        .attr("stroke", "white")
+        .attr("stroke-width", (d)=>d.hit *3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
+        })
+        .on("mouseover", function (event, d) {
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r + 3);
+          })
+        .on("mouseout", function (d) {
+            let type = d3.select(this).attr("class");
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r - 3);
         })
         .attr("transform", `rotate(${-60}, ${0} ${0})`)
         .append("title")
@@ -436,7 +477,7 @@ export default {
       drwacircle
         .append("g")
         .attr("fill", "#786A88")
-        // .attr("stroke", "red")
+        // .attr("stroke", "white")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
         .selectAll("g")
@@ -445,11 +486,20 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
-        .attr("stroke", "red")
-        .attr("stroke-width", (d)=>d.hit)
+        .attr("stroke", "white")
+        .attr("stroke-width", (d)=>d.hit *3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
+        })
+        .on("mouseover", function (event, d) {
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r + 3);
+          })
+        .on("mouseout", function (d) {
+            let type = d3.select(this).attr("class");
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);
@@ -458,7 +508,7 @@ export default {
       drwacircle
         .append("g")
         .attr("fill", "#D3974F")
-        // .attr("stroke", "red")
+        // .attr("stroke", "white")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
         .selectAll("g")
@@ -467,11 +517,20 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
-        .attr("stroke", "red")
-        .attr("stroke-width", (d)=>d.hit)
+        .attr("stroke", "white")
+        .attr("stroke-width", (d)=>d.hit *3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
+        })
+        .on("mouseover", function (event, d) {
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r + 3);
+          })
+        .on("mouseout", function (d) {
+            let type = d3.select(this).attr("class");
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);
@@ -480,7 +539,7 @@ export default {
       drwacircle
         .append("g")
         .attr("fill", "#A77669")
-        // .attr("stroke", "red")
+        // .attr("stroke", "white")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
         .selectAll("g")
@@ -489,11 +548,20 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
-        .attr("stroke", "red")
-        .attr("stroke-width", (d)=>d.hit)
+        .attr("stroke", "white")
+        .attr("stroke-width", (d)=>d.hit *3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
+        })
+        .on("mouseover", function (event, d) {
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r + 3);
+          })
+        .on("mouseout", function (d) {
+            let type = d3.select(this).attr("class");
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);
@@ -501,7 +569,7 @@ export default {
       drwacircle
         .append("g")
         .attr("fill", "#786A88")
-        // .attr("stroke", "red")
+        // .attr("stroke", "white")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
         .selectAll("g")
@@ -510,11 +578,20 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("r", 6)
-        .attr("stroke", "red")
-        .attr("stroke-width", (d)=>d.hit)
+        .attr("stroke", "white")
+        .attr("stroke-width", (d)=>d.hit *3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
+        })
+        .on("mouseover", function (event, d) {
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r + 3);
+          })
+        .on("mouseout", function (d) {
+            let type = d3.select(this).attr("class");
+            let r = parseInt(d3.select(this).attr("r"));
+            d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);

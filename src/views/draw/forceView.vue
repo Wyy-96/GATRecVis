@@ -1091,6 +1091,7 @@ export default {
     },
     addDivergingBar(data, or,name) {
       d3.select("#BarCopy").remove();
+      d3.select(".BarCopyText").remove();
       const x0 = d3
         .scaleRadial()
         .domain([0, 1]) //d3.max(this.data, d => d.total)
@@ -1134,10 +1135,11 @@ export default {
 
       d3.select(".Bar")
         .append("g")
+        .attr("class","BarCopyText")
           .attr("fill", "black")
           .append("text")
           .text(name)
-          .attr("x", name.length * 11)
+          .attr("x", 120 - name.length * 7)
           .attr("y",5)
 
       d3.select(".Bar")
