@@ -81,14 +81,17 @@ export default {
         {
           date: "movie",
           name: "12385",
+          interact:"movie-genre : 42335",
         },
         {
           date: "director",
           name: "6287",
+          interact:"movie-director : 30248",
         },
         {
           date: "actor",
           name: "9598",
+          interact:"movie-actor : 56421",
         },
         {
           date: "genre",

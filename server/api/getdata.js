@@ -304,7 +304,6 @@ function getNIRecatt(userId, movieId){
 
   
   if (Info.NIRecPath[userId] == undefined){
-    jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1 })
   }
   else if (Object.keys(Info.NIRecPath[userId]).includes('m' + movieId) == true){
     let Pathes = Info.NIRecPath[userId]['m' + movieId]
@@ -335,7 +334,6 @@ function getNIRecatt(userId, movieId){
     })
   }
   else{
-    jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1 })
   }
 
   jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
@@ -350,7 +348,6 @@ function getHetGNNatt(userId, movieId){
 
   // 目标用户与推荐结果之间 没有路径
   if (Info.HetGNNPath[userId] == undefined) {
-    jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1 })
   }
   else if (Object.keys(Info.HetGNNPath[userId]).includes('m' + movieId) == true) {
     let Pathes = Info.HetGNNPath[userId]['m' + movieId]
@@ -400,7 +397,6 @@ function getHetGNNatt(userId, movieId){
     })
   }
   else {
-    jsonforce['links'].push({ source: 'u' + userId, target: 'm' + movieId, value: 1 })
   }
 
   jsonforce['nodes'] = deteleObject(jsonforce['nodes'])
