@@ -31,7 +31,7 @@ class doubanInfo {
     NIRec_f = fs.readFileSync('./data/NIRec_rec_result.txt', 'utf-8').split('\n');
     user_rec_static = JSON.parse(fs.readFileSync('./data/user_rec_static.json', 'utf-8'));
     NIRecPath_f = fs.readFileSync('./data/NIRecpath.txt', 'utf-8').split('|');
-    HetGNNPath_f = fs.readFileSync('./data/HetGNNpath.txt', 'utf-8').split('|');
+    HetGNNPath_f = fs.readFileSync('./data/HetGNNPath.txt', 'utf-8').split('|');
     hit_HetGNN_f = fs.readFileSync('./data/test_hit_HetGNN.txt', 'utf-8').split('|');
     hit_KGAT_f = fs.readFileSync('./data/test_hit_KGAT.txt', 'utf-8').split('|');
     hit_NIRec_f = fs.readFileSync('./data/test_hit_NIRec.txt', 'utf-8').split('|');

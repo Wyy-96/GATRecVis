@@ -6,7 +6,6 @@ const async = require('async');
 const _ = require('lodash');
 const GetInfo = require('../utils/getInfo');
 const { info } = require('console');
-const { json } = require('d3-fetch');
 // Asynchronous read
 
 let Info = new GetInfo()
