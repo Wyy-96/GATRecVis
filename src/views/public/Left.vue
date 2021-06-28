@@ -14,7 +14,8 @@
             v-model="KGATIsShow"
             style="display: block; margin-top: 28px"
             active-color="#6b486b"
-            inactive-color="#D1D1D1"
+            inactive-color="#D1D1D1" 
+          
           >
           </el-switch>
           <el-switch
