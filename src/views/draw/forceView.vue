@@ -56,14 +56,7 @@
               <div class="m-lable">TAG</div>
               <div
                 class="m-value"
-                style="
-                  display: -webkit-box;
-                  -webkit-box-orient: vertical;
-                  -webkit-line-clamp: 2;
-                  overflow: hidden;
-                  white-space: break-spaces;
-                  word-break: break-all;
-                "
+                
                 :title="movieInfo.movieTags"
               >
                 {{ movieInfo.movieTags }}
@@ -72,7 +65,9 @@
           </div>
         </div>
       </div>
-      <div class="DivergingBar" ref="DivergingBar"></div>
+      <div class="DivergingBar" ref="DivergingBar">
+        <!-- <p>相关性</p> -->
+      </div>
       <div class="snapshot">
         <div style="width: 280px">
           <i
@@ -629,7 +624,8 @@ export default {
         HK: "#8E809C",
         HN: "#DBA86B",
       };
-      const titleName = ["genre", "actor", "director", "tags", "viewer"];
+
+      const titleName = ["目标电影与用户观影的类型相关性", "目标电影与用户观影的演员相关性", "目标电影与用户观影的导演相关性", "目标电影与用户观影的标签相关性", "目标电影的受欢迎程度"];
       function guiyi(data, index) {
         if (index == 0) return x0(data);
         else if (index == 1) return x1(data);
@@ -655,7 +651,7 @@ export default {
       if(name.length > 5){
         name = name.substring(0,5) + "....";
       }
-
+      let circleData = ["G","A","D","T","U"]
       SVG.append("g")
           .attr("fill", "black")
           .append("text")
@@ -663,13 +659,33 @@ export default {
           .attr("x", name.length * -7)
           .attr("y",5)
       
+      SVG.append("g")
+          .attr("stroke", "#000")
+          .attr("stroke-width", 0.5)
+          .attr("fill", "none")
+          .selectAll("circle")
+          .data(circleData)
+          .join("circle")
+          .attr("r",10)
+          .attr("cx",64)
+          .attr("cy",(d, i) => i* 25 + 25)
+
+      SVG.append("g")
+          .selectAll("text")
+          .data(circleData)
+          .join("text")
+          .attr("fill","#6D6C6C")
+          .attr("x",58.5)
+          .attr("y",(d, i) => i* 25 + 31)
+          .text((d,i)=>d)
+
       if (data.length > 0) {
         SVG.append("g")
           .attr("fill", color[or])
           .selectAll("rect")
           .data(data[0])
           .join("rect")
-          .attr("x", (d, i) => 67 - guiyi(d, i))
+          .attr("x", (d, i) => 47 - guiyi(d, i))
           .attr("y", (d, i) => i* 25 + 15)
           .attr("width", (d, i) => guiyi(d, i))
           .attr("height", 20)
@@ -1139,7 +1155,7 @@ export default {
           .attr("fill", "black")
           .append("text")
           .text(name)
-          .attr("x", 120 - name.length * 7)
+          .attr("x", 140 - name.length * 7)
           .attr("y",5)
 
       d3.select(".Bar")
@@ -1149,7 +1165,7 @@ export default {
         .selectAll("rect")
         .data(data)
         .join("rect")
-        .attr("x", 70)
+        .attr("x", 80)
         .attr("y", (d, i) => i * 25 + 15)
         .attr("width", (d, i) => guiyi(d, i))
         .attr("height", 20)
@@ -1193,7 +1209,7 @@ export default {
 }
 
 .txtInfo {
-  height: 35%;
+  height: 32%;
   // background: black;
   display: flex;
   flex-direction: column;
@@ -1210,7 +1226,7 @@ export default {
   .m-body {
     flex: 1;
     display: flex;
-    padding-top: 10px;
+    // padding-top: 10px;
 
     .m-img {
       width: 120px;
@@ -1243,7 +1259,11 @@ export default {
 }
 
 .DivergingBar {
-  height: 25%;
+  height: 28%;
+
+  p{
+    margin:0px
+  }
 }
 
 .snapshot {

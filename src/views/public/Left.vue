@@ -54,7 +54,7 @@
             </el-table-column>
             <el-table-column prop="name" label="数量" width="80">
             </el-table-column>
-            <el-table-column prop="interact" label="交互" width="310">
+            <el-table-column prop="interact" label="交互数量" width="310">
             </el-table-column>
           </el-table>
         </template>
