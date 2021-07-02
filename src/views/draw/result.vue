@@ -25,12 +25,21 @@ export default {
   mounted: function () {
     this.Venn(this.$refs.venn);
     this.Coordinate(this.$refs.coordinate, []);
-    this.word({"values":[],"rate":[]});
+    this.word({ values: [], rate: [] });
   },
   watch: {
     "$store.getters.userId"() {
       axios
-        .post("api/getdata/selectUser", { data: {'id':this.$store.getters.userId,"state":[store.getters.HetGNNShow,store.getters.KGATShow,store.getters.NIRecShow]}})
+        .post("api/getdata/selectUser", {
+          data: {
+            id: this.$store.getters.userId,
+            state: [
+              store.getters.HetGNNShow,
+              store.getters.KGATShow,
+              store.getters.NIRecShow,
+            ],
+          },
+        })
         .then((res) => {
           document.getElementById("coordinate").innerHTML = "";
           this.Coordinate(this.$refs.coordinate, res.data.Coodinare);
@@ -38,8 +47,8 @@ export default {
           // 已经存在VennResult散点图  则删除
           if (box.length == 1) box[box.length - 1].remove();
           this.VennResult(this.$refs.venn, res.data.Vennresult);
-          d3.select(".Word").selectAll("svg").remove()
-          this.word(res.data.Word)
+          d3.select(".Word").selectAll("svg").remove();
+          this.word(res.data.Word);
         });
     },
   },
@@ -51,6 +60,7 @@ export default {
       };
       var sample_data = data;
       let keys = ["pre", "recall", "auc", "personal"];
+      const keysName = ["准确率", "召回率", "AUC", "个性化"]
       let y = new Map(
         Array.from(keys, (key) => [key, d3.scaleLinear([0, 1], [450, -30])])
       );
@@ -72,19 +82,19 @@ export default {
           }`
         )
         .style("width", "100%")
-        .style("height", "auto")
-        // .call(
-        //   d3
-        //     .zoom()
-        //     .extent([
-        //       [0, 0],
-        //       [config.width, config.height],
-        //     ])
-        //     .scaleExtent([1, 8])
-        //     .on("zoom", function ({ transform }) {
-        //       Coordinate.attr("transform", transform);
-        //     })
-        // );
+        .style("height", "auto");
+      // .call(
+      //   d3
+      //     .zoom()
+      //     .extent([
+      //       [0, 0],
+      //       [config.width, config.height],
+      //     ])
+      //     .scaleExtent([1, 8])
+      //     .on("zoom", function ({ transform }) {
+      //       Coordinate.attr("transform", transform);
+      //     })
+      // );
 
       const color = ["#98abc5", "#6b486b", "#ff8c00"];
 
@@ -120,7 +130,7 @@ export default {
             .attr("text-anchor", "start")
             .attr("fill", "currentColor")
             .attr("font-size", 24)
-            .text((d) => d)
+            .text((d) => keysName[keys.indexOf(d)])
         )
         .call((g) =>
           g
@@ -132,17 +142,24 @@ export default {
             .attr("stroke-linejoin", "round")
             .attr("stroke", "white")
         );
-        let avrea_matrix =[[0.0623,0.0193,0.7725,0.4667],[0.1074,0.0384,0.8505,0.9907],[0.7773,0.3690,0.7830,0.9772]]
-        Coordinate.append("g").selectAll("g")
+      let avrea_matrix = [
+        [0.0623, 0.0193, 0.7725, 0.4667],
+        [0.1074, 0.0384, 0.8505, 0.9907],
+        [0.7773, 0.369, 0.783, 0.9772],
+      ];
+      Coordinate.append("g")
+        .selectAll("g")
         .data(avrea_matrix)
         .join("g")
-        .attr("fill",(d,i)=>color[i])
+        .attr("fill", (d, i) => color[i])
         .selectAll("circle")
         .data((d) => d)
         .join("circle")
-        .attr("cx",(d,i) => x(keys[i]))
-        .attr("cy",(d,i)=> y.get(keys[i])(d))
-        .attr("r",6)
+        .attr("cx", (d, i) => x(keys[i]))
+        .attr("cy", (d, i) => y.get(keys[i])(d))
+        .attr("r", 6)
+        .append("title")
+        .text((d,i)=> "均值为"+d)
     },
     Venn(map) {
       const config = {
@@ -153,56 +170,49 @@ export default {
       var blend_data = [
         {
           index: 0,
-          d:
-            "M245.48,163.65c49.68-28.41,112.87-30.15,165-.5,0-145.46-182.86-218-283.31-114.37A166.2,166.2,0,0,0,80.7,163C132.79,133.5,195.87,135.28,245.48,163.65Z",
+          d: "M245.48,163.65c49.68-28.41,112.87-30.15,165-.5,0-145.46-182.86-218-283.31-114.37A166.2,166.2,0,0,0,80.7,163C132.79,133.5,195.87,135.28,245.48,163.65Z",
           colors: ["#AE9BAE"],
           blend: "#AE9BAE",
           parents: ["KGAT"],
         },
         {
           index: 1,
-          d:
-            "M245.48,163.65a162,162,0,0,1,51.86,47,165,165,0,0,1,30.19,95.81c49.8-29,82.79-83.59,83-143.3C358.35,133.5,295.16,135.24,245.48,163.65Z",
+          d: "M245.48,163.65a162,162,0,0,1,51.86,47,165,165,0,0,1,30.19,95.81c49.8-29,82.79-83.59,83-143.3C358.35,133.5,295.16,135.24,245.48,163.65Z",
           colors: ["#AE9BAE", "#FFC57F"],
           blend: "#AE8174",
           parents: ["KGAT", "NIRec"],
         },
         {
           index: 2,
-          d:
-            "M297.34,210.64a162,162,0,0,0-51.86-47,162,162,0,0,0-51.86,47,165,165,0,0,0-30.19,95.52,166.18,166.18,0,0,0,108.91,20.09,160.34,160.34,0,0,0,55.19-19.8A165,165,0,0,0,297.34,210.64Z",
+          d: "M297.34,210.64a162,162,0,0,0-51.86-47,162,162,0,0,0-51.86,47,165,165,0,0,0-30.19,95.52,166.18,166.18,0,0,0,108.91,20.09,160.34,160.34,0,0,0,55.19-19.8A165,165,0,0,0,297.34,210.64Z",
           colors: ["#AE9BAE", "#FFC57F", "#B7C4D6"],
           blend: "#9E746B",
           parents: ["above three"],
         },
         {
           index: 3,
-          d:
-            "M93.17,227a164.23,164.23,0,0,0,70.26,79.13,165,165,0,0,1,30.19-95.52,162,162,0,0,1,51.86-47C195.87,135.28,132.79,133.5,80.7,163A163.1,163.1,0,0,0,93.17,227Z",
+          d: "M93.17,227a164.23,164.23,0,0,0,70.26,79.13,165,165,0,0,1,30.19-95.52,162,162,0,0,1,51.86-47C195.87,135.28,132.79,133.5,80.7,163A163.1,163.1,0,0,0,93.17,227Z",
           colors: ["#AE9BAE", "#B7C4D6"],
           blend: "#8E809C",
           parents: ["KGAT", "HetGNN"],
         },
         {
           index: 4,
-          d:
-            "M410.48,163.15c-.16,59.71-33.15,114.28-83,143.3A165.08,165.08,0,0,1,289,412.51a161.52,161.52,0,0,1-43.52,36.21c40.48,23.15,90.22,28.94,135.43,13.66C514.69,417.19,528.84,233.94,410.48,163.15Z",
+          d: "M410.48,163.15c-.16,59.71-33.15,114.28-83,143.3A165.08,165.08,0,0,1,289,412.51a161.52,161.52,0,0,1-43.52,36.21c40.48,23.15,90.22,28.94,135.43,13.66C514.69,417.19,528.84,233.94,410.48,163.15Z",
           colors: ["#FFC57F"],
           blend: "#FFC57F",
           parents: ["NIRec"],
         },
         {
           index: 5,
-          d:
-            "M202,412.51a165.08,165.08,0,0,1-38.52-106.35A162.5,162.5,0,0,1,80.7,163l-.22.12c-118.36,70.79-104.21,254,29.57,299.23,45.21,15.28,95,9.49,135.43-13.66A161.71,161.71,0,0,1,202,412.51Z",
+          d: "M202,412.51a165.08,165.08,0,0,1-38.52-106.35A162.5,162.5,0,0,1,80.7,163l-.22.12c-118.36,70.79-104.21,254,29.57,299.23,45.21,15.28,95,9.49,135.43-13.66A161.71,161.71,0,0,1,202,412.51Z",
           colors: ["#B7C4D6"],
           blend: "#B7C4D6",
           parents: ["HetGNN"],
         },
         {
           index: 6,
-          d:
-            "M289,412.51a165.08,165.08,0,0,0,38.53-106.06,160.34,160.34,0,0,1-55.19,19.8,166.18,166.18,0,0,1-108.91-20.09A165.08,165.08,0,0,0,202,412.51a161.71,161.71,0,0,0,43.53,36.21A161.52,161.52,0,0,0,289,412.51Z",
+          d: "M289,412.51a165.08,165.08,0,0,0,38.53-106.06,160.34,160.34,0,0,1-55.19,19.8,166.18,166.18,0,0,1-108.91-20.09A165.08,165.08,0,0,0,202,412.51a161.71,161.71,0,0,0,43.53,36.21A161.52,161.52,0,0,0,289,412.51Z",
           colors: ["#FFC57F", "#B7C4D6"],
           blend: "#DBA86B",
           parents: ["HetGNN", "NIRec"],
@@ -230,6 +240,34 @@ export default {
         .attr("d", (d) => d.d)
         .attr("opacity", 0.6)
         .attr("fill", (d) => (d.blend ? d.blend : "transparent"));
+
+      
+
+      const legend = SVG.append("g").attr("class", "legend");
+
+      legend.append("text")
+      .text("推荐电影")
+      .attr("x",-40)
+      .attr("y",-15)
+
+      legend.append("text")
+      .text("命中的推荐电影")
+      .attr("x",-40)
+      .attr("y",15)
+
+      legend.append("circle")
+        .attr("cx", -50)
+        .attr("cy", -20)
+        .attr("r", 7)
+        .attr("fill", "#AE9BAE");
+      
+      legend.append("circle")
+        .attr("cx", -50)
+        .attr("cy", 9)
+        .attr("r", 7)
+        .attr("fill", "#AE9BAE")
+        .attr("stroke","#505050")
+        .attr("stroke-width",4)
 
       venn
         .append("title")
@@ -293,8 +331,10 @@ export default {
         width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
-      const SVG = d3.select(map).select("svg")
-      .call(
+      const SVG = d3
+        .select(map)
+        .select("svg")
+        .call(
           d3
             .zoom()
             .extent([
@@ -307,7 +347,7 @@ export default {
             })
         );
 
-      const svg_g = SVG.select("g")
+      const svg_g = SVG.select("g");
       const drwacircle = svg_g.append("g").attr("class", "none");
 
       function random(m, n) {
@@ -385,7 +425,7 @@ export default {
       // HetGNN
       drwacircle
         .append("g")
-        .attr("fill", "#627FA6") 
+        .attr("fill", "#627FA6")
         // .attr("stroke", "white")
         // .attr("stroke-width", 4)
         .style("fill-opacity", 1)
@@ -395,19 +435,19 @@ export default {
         .attr("cx", (d) => d.x)
         .attr("cy", (d) => d.y)
         .attr("stroke", "white")
-        .attr("stroke-width", (d)=>d.hit *3)
+        .attr("stroke-width", (d) => d.hit * 3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
         })
         .on("mouseover", function (event, d) {
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r + 3);
-          })
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r + 3);
+        })
         .on("mouseout", function (d) {
-            let type = d3.select(this).attr("class");
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r - 3);
+          let type = d3.select(this).attr("class");
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r - 3);
         })
         .attr("transform", `rotate(${60}, ${0} ${0})`)
         .attr("r", 6)
@@ -426,19 +466,19 @@ export default {
         .attr("cy", (d) => d.y)
         .attr("r", 6)
         .attr("stroke", "white")
-        .attr("stroke-width", (d)=>d.hit *3)
+        .attr("stroke-width", (d) => d.hit * 3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
         })
         .on("mouseover", function (event, d) {
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r + 3);
-          })
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r + 3);
+        })
         .on("mouseout", function (d) {
-            let type = d3.select(this).attr("class");
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r - 3);
+          let type = d3.select(this).attr("class");
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);
@@ -456,19 +496,19 @@ export default {
         .attr("cy", (d) => d.y)
         .attr("r", 6)
         .attr("stroke", "white")
-        .attr("stroke-width", (d)=>d.hit *3)
+        .attr("stroke-width", (d) => d.hit * 3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
         })
         .on("mouseover", function (event, d) {
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r + 3);
-          })
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r + 3);
+        })
         .on("mouseout", function (d) {
-            let type = d3.select(this).attr("class");
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r - 3);
+          let type = d3.select(this).attr("class");
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r - 3);
         })
         .attr("transform", `rotate(${-60}, ${0} ${0})`)
         .append("title")
@@ -487,19 +527,19 @@ export default {
         .attr("cy", (d) => d.y)
         .attr("r", 6)
         .attr("stroke", "white")
-        .attr("stroke-width", (d)=>d.hit *3)
+        .attr("stroke-width", (d) => d.hit * 3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
         })
         .on("mouseover", function (event, d) {
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r + 3);
-          })
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r + 3);
+        })
         .on("mouseout", function (d) {
-            let type = d3.select(this).attr("class");
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r - 3);
+          let type = d3.select(this).attr("class");
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);
@@ -518,19 +558,19 @@ export default {
         .attr("cy", (d) => d.y)
         .attr("r", 6)
         .attr("stroke", "white")
-        .attr("stroke-width", (d)=>d.hit *3)
+        .attr("stroke-width", (d) => d.hit * 3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
         })
         .on("mouseover", function (event, d) {
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r + 3);
-          })
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r + 3);
+        })
         .on("mouseout", function (d) {
-            let type = d3.select(this).attr("class");
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r - 3);
+          let type = d3.select(this).attr("class");
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);
@@ -549,19 +589,19 @@ export default {
         .attr("cy", (d) => d.y)
         .attr("r", 6)
         .attr("stroke", "white")
-        .attr("stroke-width", (d)=>d.hit *3)
+        .attr("stroke-width", (d) => d.hit * 3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
         })
         .on("mouseover", function (event, d) {
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r + 3);
-          })
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r + 3);
+        })
         .on("mouseout", function (d) {
-            let type = d3.select(this).attr("class");
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r - 3);
+          let type = d3.select(this).attr("class");
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);
@@ -579,19 +619,19 @@ export default {
         .attr("cy", (d) => d.y)
         .attr("r", 6)
         .attr("stroke", "white")
-        .attr("stroke-width", (d)=>d.hit *3)
+        .attr("stroke-width", (d) => d.hit * 3)
         .on("click", (event, d) => {
           //小矩形的id  例，u217
           store.commit("global/SET_MOVIE_ID", d.movieId + "_" + d.or);
         })
         .on("mouseover", function (event, d) {
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r + 3);
-          })
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r + 3);
+        })
         .on("mouseout", function (d) {
-            let type = d3.select(this).attr("class");
-            let r = parseInt(d3.select(this).attr("r"));
-            d3.select(this).attr("r", r - 3);
+          let type = d3.select(this).attr("class");
+          let r = parseInt(d3.select(this).attr("r"));
+          d3.select(this).attr("r", r - 3);
         })
         .append("title")
         .text((d) => d.movieName);
@@ -637,8 +677,8 @@ export default {
         ],
         years: [1900, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020],
       };
-      data.values = data1.values
-      data.rate = data1.rate
+      data.values = data1.values;
+      data.rate = data1.rate;
       const config = {
         width: parseInt(d3.select("#Word").style("width")),
         height: parseInt(d3.select("#Word").style("height")),
@@ -654,8 +694,8 @@ export default {
       const height = 11.5;
       const width = 350;
       const innerHeight = height * data.years.length;
-      const color = d3.scaleSequentialSqrt([-1, 80], d3.interpolateInferno); //d3.max(data.values, d => d3.max(d)) 
-      // const color = d3.scaleSequential([0, 80], ["#98abc5", "#6b486b", "#ff8c00"]); 
+      const color = d3.scaleSequentialSqrt([-1, 80], d3.interpolateInferno); //d3.max(data.values, d => d3.max(d))
+      // const color = d3.scaleSequential([0, 80], ["#98abc5", "#6b486b", "#ff8c00"]);
       const y = d3.scaleBand().domain(data.years).rangeRound([-22, 210]);
 
       const x = d3.scaleBand().domain(data.names).rangeRound([-150, 500]);
@@ -690,12 +730,12 @@ export default {
         .call((g) => g.select(".domain").remove());
 
       const row = SVG.append("g")
-        .attr("class","Rect")
+        .attr("class", "Rect")
         .selectAll("g")
         .data(data.values)
         .join("g")
         .attr("transform", (d, i) => `translate(0,${y(data.years[i])})`);
-        // .attr("class",(d, i) => data.years[i]);
+      // .attr("class",(d, i) => data.years[i]);
 
       row
         .selectAll("rect")
@@ -704,8 +744,9 @@ export default {
         .attr("x", (d, i) => x(data.names[i]) + 1)
         .attr("width", 14)
         .attr("height", y.bandwidth() - 1)
-        .attr("fill", (d) =>
-          isNaN(d) ? "#eee" : d === 0 ? "white" : color(d)  //#e8e8e8
+        .attr(
+          "fill",
+          (d) => (isNaN(d) ? "#eee" : d === 0 ? "white" : color(d)) //#e8e8e8
         )
         .append("title");
 
@@ -727,15 +768,31 @@ export default {
         .data((d) => d)
         .join("rect")
         .attr("x", (d, i) => x(data.names[i]) + 1)
-        .attr("transform", (d, i) => `translate(0,${(21/7.0 * Math.abs(d - 3))})`)
+        .attr(
+          "transform",
+          (d, i) => `translate(0,${(21 / 7.0) * Math.abs(d - 3)})`
+        )
         .attr("width", 14)
         .attr("height", 2)
         .attr("fill", "white");
 
-      let rectView = d3.select(".Rect").selectAll("g").selectAll('rect').select('title')
-      for(let i=0;i<rectView._groups.length;i++){
-        for(let j =0;j<rectView._groups[i].length;j++){
-          rectView._groups[i][j].append("时间：" + data.years[i] + "\n类型：" + data.names[j]+ "\nrate："+data.rate[i][j] + "\n数量："+data.values[i][j] )
+      let rectView = d3
+        .select(".Rect")
+        .selectAll("g")
+        .selectAll("rect")
+        .select("title");
+      for (let i = 0; i < rectView._groups.length; i++) {
+        for (let j = 0; j < rectView._groups[i].length; j++) {
+          rectView._groups[i][j].append(
+            "时间：" +
+              data.years[i] +
+              "\n类型：" +
+              data.names[j] +
+              "\nrate：" +
+              data.rate[i][j] +
+              "\n数量：" +
+              data.values[i][j]
+          );
         }
       }
       function legend({
@@ -766,6 +823,12 @@ export default {
             .attr("y2", 1);
         let x;
 
+        svg
+          .append("g")
+          .append("text")
+          .text("数量")
+          .attr("x", 273)
+          .attr("y", 23);
         // Continuous
         if (color.interpolate) {
           const n = Math.min(color.domain().length, color.range().length);

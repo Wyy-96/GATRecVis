@@ -290,6 +290,7 @@ export default {
           .selectAll("rect")
           .data((d) => d)
           .join("rect")
+          .attr("class","selectRect")
           .attr("x", (d, i) => x(d.data.id))
           .attr("y", function (d) {
             return y(d[1]);
@@ -302,7 +303,10 @@ export default {
           .attr("transform", `translate(0, 0)`)
           .attr("height", (d) => y(d[0]) - y(d[1]))
           .attr("width", x.bandwidth())
-          .append("title")
+
+        d3.selectAll(".selectRect").selectAll("title").remove() //防止重复append 
+
+        d3.selectAll(".selectRect").append("title")
           .text((d)=> d.data.id);
       }
       // 交互的容器

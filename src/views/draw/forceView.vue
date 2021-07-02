@@ -2,20 +2,27 @@
   <div class="forceView">
     <div id="force" ref="force">
       <div class="selectInfo">
-        <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size:20px;line-height:2;float:left">
-          <el-breadcrumb-item
-          v-for="item in selectInfo"
-          :key="item"
-        >{{item}}</el-breadcrumb-item>
-        </el-breadcrumb>
-        <el-select v-model="value" size="mini" @change="force($refs.force, D3forceData[value])" style="float:right;top:5px;width:90px;height:50px">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :value="item.value"
+        <el-breadcrumb
+          separator-class="el-icon-arrow-right"
+          style="font-size: 20px; line-height: 2; float: left"
         >
-        </el-option>
-      </el-select>
+          <el-breadcrumb-item v-for="item in selectInfo" :key="item">{{
+            item
+          }}</el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-select
+          v-model="value"
+          size="mini"
+          @change="force($refs.force, D3forceData[value])"
+          style="float: right; top: 5px; width: 90px; height: 50px"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
       </div>
     </div>
     <div class="movieInfo">
@@ -54,11 +61,7 @@
             </div>
             <div class="m-line">
               <div class="m-lable">TAG</div>
-              <div
-                class="m-value"
-                
-                :title="movieInfo.movieTags"
-              >
+              <div class="m-value" :title="movieInfo.movieTags">
                 {{ movieInfo.movieTags }}
               </div>
             </div>
@@ -113,6 +116,7 @@
         <div class="scrollbar">
           <div
             class="snapView"
+            style="position: relative"
             v-for="svgData of $store.getters.d3DataList"
             :key="svgData.imgBlob"
           >
@@ -125,6 +129,18 @@
               :src="svgData.imgHB.moviePhoto"
               style="height: 150px; width: 100px"
             />
+            <p
+              style="
+                position: absolute;
+                top: 50px;
+                background-color: #E4E1E1A8;
+                width: 100%;
+                text-align: center;
+                opacity: 0.8;
+              "
+            >
+              {{ svgData.value + " : "+svgData.imgHB.movieName }}
+            </p>
           </div>
         </div>
       </div>
@@ -156,49 +172,54 @@ export default {
       },
       DivergingBarData: [],
       or: "",
-      selectInfo:[],
+      selectInfo: [],
       options: [],
-      value:"...",
-      D3forceData:{}
+      value: "...",
+      D3forceData: {},
     };
   },
   created: function () {},
   mounted: function () {},
   watch: {
     "$store.getters.movieId"() {
-      let model = this.$store.getters.movieId.charAt(this.$store.getters.movieId.length - 1)
-      this.selectInfo[1] = model
-      this.value = "..."
+      let model = this.$store.getters.movieId.charAt(
+        this.$store.getters.movieId.length - 1
+      );
+      this.selectInfo[1] = model;
+      this.value = "...";
       axios
         .post("api/getdata/selectedMovie", {
           data: [this.$store.getters.userId, this.$store.getters.movieId],
         })
         .then((res) => {
-          this.selectInfo[2] = res.data.movieInfo.movieName
+          this.selectInfo[2] = res.data.movieInfo.movieName;
           this.movieInfo = res.data.movieInfo;
           this.DivergingBarData = [res.data.static];
           this.or = res.data.model;
 
-          
-          let option = Object.keys(res.data.forceData) 
+          let option = Object.keys(res.data.forceData);
 
-          let options = []
-          for(var i = 0;i<option.length;i++){
-            options.push({value:option[i]})
+          let options = [];
+          for (var i = 0; i < option.length; i++) {
+            options.push({ value: option[i] });
           }
-          this.options = options
-          this.value = option[0]
-          this.D3forceData = res.data.forceData
+          this.options = options;
+          this.value = option[0];
+          this.D3forceData = res.data.forceData;
           this.force(this.$refs.force, res.data.forceData[option[0]]);
-          this.DivergingBar([res.data.static], res.data.model,res.data.movieInfo.movieName);
+          this.DivergingBar(
+            [res.data.static],
+            res.data.model,
+            res.data.movieInfo.movieName
+          );
         });
     },
-    "$store.getters.userId"(){
-      this.selectInfo = []
-      this.selectInfo.push(this.$store.getters.userId)
-      this.selectInfo.push('')
-      this.selectInfo.push('')
-    }
+    "$store.getters.userId"() {
+      this.selectInfo = [];
+      this.selectInfo.push(this.$store.getters.userId);
+      this.selectInfo.push("");
+      this.selectInfo.push("");
+    },
   },
   methods: {
     tempconsole(svgData) {
@@ -207,7 +228,7 @@ export default {
     force(map, data) {
       let svgbox = d3.select("#force").selectAll("svg")._groups[0];
       if (svgbox.length > 1) {
-            d3.select("#force").selectAll("svg")._groups[0][0].remove();
+        d3.select("#force").selectAll("svg")._groups[0][0].remove();
       }
       var net = {},
         expand = {
@@ -220,7 +241,7 @@ export default {
           user: false,
         };
       const config = {
-        width: parseInt(d3.select(map).style("width")) ,
+        width: parseInt(d3.select(map).style("width")),
         height: parseInt(d3.select(map).style("height")),
       };
 
@@ -593,7 +614,7 @@ export default {
         }
       }
     },
-    DivergingBar(data, or,name) {
+    DivergingBar(data, or, name) {
       d3.select(".DivergingBar").select("svg").remove();
       const x0 = d3 //电影被多少用户看过
         .scaleRadial()
@@ -625,7 +646,13 @@ export default {
         HN: "#DBA86B",
       };
 
-      const titleName = ["目标电影与用户观影的类型相关性", "目标电影与用户观影的演员相关性", "目标电影与用户观影的导演相关性", "目标电影与用户观影的标签相关性", "目标电影的受欢迎程度"];
+      const titleName = [
+        "目标电影与用户观影的类型相关性",
+        "目标电影与用户观影的演员相关性",
+        "目标电影与用户观影的导演相关性",
+        "目标电影与用户观影的标签相关性",
+        "目标电影的受欢迎程度",
+      ];
       function guiyi(data, index) {
         if (index == 0) return x0(data);
         else if (index == 1) return x1(data);
@@ -647,37 +674,37 @@ export default {
             config.height
           }`
         );
-      
-      if(name.length > 5){
-        name = name.substring(0,5) + "....";
-      }
-      let circleData = ["G","A","D","T","U"]
-      SVG.append("g")
-          .attr("fill", "black")
-          .append("text")
-          .text(name)
-          .attr("x", name.length * -7)
-          .attr("y",5)
-      
-      SVG.append("g")
-          .attr("stroke", "#000")
-          .attr("stroke-width", 0.5)
-          .attr("fill", "none")
-          .selectAll("circle")
-          .data(circleData)
-          .join("circle")
-          .attr("r",10)
-          .attr("cx",64)
-          .attr("cy",(d, i) => i* 25 + 25)
 
+      if (name.length > 5) {
+        name = name.substring(0, 5) + "....";
+      }
+      let circleData = ["G", "A", "D", "T", "U"];
       SVG.append("g")
-          .selectAll("text")
-          .data(circleData)
-          .join("text")
-          .attr("fill","#6D6C6C")
-          .attr("x",58.5)
-          .attr("y",(d, i) => i* 25 + 31)
-          .text((d,i)=>d)
+        .attr("fill", "black")
+        .append("text")
+        .text(name)
+        .attr("x", name.length * -7)
+        .attr("y", 5);
+
+      // SVG.append("g")
+      //     .attr("stroke", "#000")
+      //     .attr("stroke-width", 0.5)
+      //     .attr("fill", "none")
+      //     .selectAll("circle")
+      //     .data(circleData)
+      //     .join("circle")
+      //     .attr("r",10)
+      //     .attr("cx",64)
+      //     .attr("cy",(d, i) => i* 25 + 25)
+
+      // SVG.append("g")
+      //     .selectAll("text")
+      //     .data(circleData)
+      //     .join("text")
+      //     .attr("fill","#6D6C6C")
+      //     .attr("x",58.5)
+      //     .attr("y",(d, i) => i* 25 + 31)
+      //     .text((d,i)=>d)
 
       if (data.length > 0) {
         SVG.append("g")
@@ -685,8 +712,8 @@ export default {
           .selectAll("rect")
           .data(data[0])
           .join("rect")
-          .attr("x", (d, i) => 47 - guiyi(d, i))
-          .attr("y", (d, i) => i* 25 + 15)
+          .attr("x", (d, i) => 67 - guiyi(d, i))
+          .attr("y", (d, i) => i * 25 + 15)
           .attr("width", (d, i) => guiyi(d, i))
           .attr("height", 20)
           .append("title")
@@ -722,6 +749,7 @@ export default {
         imgHB: this.movieInfo,
         DivergingBarData: this.DivergingBarData,
         or: this.or,
+        value:this.value,
         d3Data: commonUtils.deepCopy(this.$store.getters.nowData),
       };
       this.$store.commit("svgData/ADD_D3_DATA_LIST", svgData);
@@ -1105,7 +1133,7 @@ export default {
         }
       }
     },
-    addDivergingBar(data, or,name) {
+    addDivergingBar(data, or, name) {
       d3.select("#BarCopy").remove();
       d3.select(".BarCopyText").remove();
       const x0 = d3
@@ -1137,7 +1165,13 @@ export default {
         HK: "#8E809C",
         HN: "#DBA86B",
       };
-      const titleName = ["genre", "actor", "director", "tags", "viewer"];
+      const titleName = [
+        "目标电影与用户观影的类型相关性",
+        "目标电影与用户观影的演员相关性",
+        "目标电影与用户观影的导演相关性",
+        "目标电影与用户观影的标签相关性",
+        "目标电影的受欢迎程度",
+      ];
       function guiyi(data, index) {
         if (index == 0) return x0(data);
         else if (index == 1) return x1(data);
@@ -1145,18 +1179,18 @@ export default {
         else if (index == 3) return x3(data);
         else if (index == 4) return x4(data);
       }
-      if(name.length > 5){
-        name = name.substring(0,5) + "....";
+      if (name.length > 5) {
+        name = name.substring(0, 5) + "....";
       }
 
       d3.select(".Bar")
         .append("g")
-        .attr("class","BarCopyText")
-          .attr("fill", "black")
-          .append("text")
-          .text(name)
-          .attr("x", 140 - name.length * 7)
-          .attr("y",5)
+        .attr("class", "BarCopyText")
+        .attr("fill", "black")
+        .append("text")
+        .text(name)
+        .attr("x", 140 - name.length * 7)
+        .attr("y", 5);
 
       d3.select(".Bar")
         .append("g")
@@ -1165,7 +1199,7 @@ export default {
         .selectAll("rect")
         .data(data)
         .join("rect")
-        .attr("x", 80)
+        .attr("x", 70)
         .attr("y", (d, i) => i * 25 + 15)
         .attr("width", (d, i) => guiyi(d, i))
         .attr("height", 20)
@@ -1174,7 +1208,11 @@ export default {
     },
     addCopy(svgdata) {
       this.addForce(svgdata.d3Data);
-      this.addDivergingBar(svgdata.DivergingBarData[0], svgdata.or,svgdata.imgHB.movieName);
+      this.addDivergingBar(
+        svgdata.DivergingBarData[0],
+        svgdata.or,
+        svgdata.imgHB.movieName
+      );
     },
     empty() {
       this.$store.commit("svgData/Empty_D3_DATA_LIST", "");
@@ -1226,8 +1264,8 @@ export default {
   .m-body {
     flex: 1;
     display: flex;
-    // padding-top: 10px;
 
+    // padding-top: 10px;
     .m-img {
       width: 120px;
     }
@@ -1261,8 +1299,8 @@ export default {
 .DivergingBar {
   height: 28%;
 
-  p{
-    margin:0px
+  p {
+    margin: 0px;
   }
 }
 
