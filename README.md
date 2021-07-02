@@ -1,4 +1,4 @@
-HINcompare has been accepted for presentation at ChinaVis 2021
+HINcompare has been accepted for presentation at ChinaVis 2021,
 Systerm access link: https://mgaia.top/HINcompare/
 
 ## Project setup
