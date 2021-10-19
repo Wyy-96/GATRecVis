@@ -753,9 +753,9 @@ export default {
       SVG.select(".axisX")
         .selectAll("text")
         .attr("transform", `rotate(${90}, ${1} ${-9})`)
-        .attr("font-size", "12");
+        .attr("font-size", "16");
 
-      SVG.select(".axisY").selectAll("text").attr("font-size", "12");
+      SVG.select(".axisY").selectAll("text").attr("font-size", "13");
 
       const rateView = SVG.append("g")
         .selectAll("g")
